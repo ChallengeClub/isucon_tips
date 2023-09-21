@@ -1,4 +1,4 @@
-![image](https://github.com/ChallengeClub/isucon_tips/assets/62125060/9db042b6-7130-4d90-b532-b0b3d1e8f7bb)ISUCON本の2章に倣い、prometheusを使用してモニタリング
+ISUCON本の2章に倣い、prometheusを使用してモニタリング
 
 ## Prometheus のインストール。
 ```bash
