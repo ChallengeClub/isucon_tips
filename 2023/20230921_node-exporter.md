@@ -7,7 +7,11 @@ $ apt -y install prometheus prometheus-node-exporter
 aptでインストールすると、インストール直後に自動で実行されている。ネットワークのソケットの情報を出力するssコマンドで確認すると、prometheusが9090ポートで出力していることが分かる。
 
 ```bash
-sudo ss -tlp | grep 
+$ sudo ss -tlp | grep 
+```
+もしくはlsofでオープンしているファイルを調べる。
+```bash
+$ sudo lsof -P -i | grep -v sshd
 ```
 
 ## AWSの設定変更
