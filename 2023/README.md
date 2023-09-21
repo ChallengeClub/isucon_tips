@@ -12,3 +12,4 @@
 - 9/14 takaさん参加（anchobi-naさん含めあと～３人）
 - 9/16 10:00～　素振会、github(Project,issue)お試し、共有one note作成
 - 9/19 20:00～　takaさん参加、isucon12qベンチマーク実施
+- 9/20 21:00～　kiws,miteru,hidetake ToDoの洗い出し prometeus,prometeus-node-expoterをapt install, スケールアップしてstress -c 1とbenchを実施。
