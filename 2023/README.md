@@ -17,31 +17,31 @@
 - 9/28 21:30～ nginxログjson化の修正、alpのインストールと実行、abのインストールと実行。jq導入。
 
 ## ■ISUCON本攻略チェクリスト
-    ✔１章　基礎
-	✔ top
-	✔ ベンチマーク
-    ✔２章　モニタリング
-	✔ stress -c 1
-	✔ node_expoter(prometeus)
-  　□３章　負荷試験
-	✔ nginxのjsonログ
-	✔ alp
-	✔ ab
-  	✔ log rotate
-	□ slow queryログ(mysqldumpslow)
-  	□ mysql接続, EXPLAIN, ADD INDEX
-    	□ dstat
-　　□４章　シナリオ試験
-	□ k6
-    □５章　データベース
-    	□ SHOW PLOCESSLIST
-     	□ pt-query-digest
-     	□ query-digester
-      　□ ADD FULLTEXT INDEX
-　　　　□ N+1問題
-    　　□ memcached
-    □６章　リバースプロキシ
-	□ 静的ファイル配信
+	✔１章　基礎
+		✔ top
+		✔ ベンチマーク
+	✔２章　モニタリング
+		✔ stress -c 1
+		✔ node_expoter(prometeus)
+  	□３章　負荷試験
+		✔ nginxのjsonログ
+		✔ alp
+		✔ ab
+  		✔ log rotate
+		□ slow queryログ(mysqldumpslow)
+		□ mysql接続, EXPLAIN, ADD INDEX
+		□ dstat
+　	□４章　シナリオ試験
+		□ k6
+	□５章　データベース
+    		□ SHOW PLOCESSLIST
+     		□ pt-query-digest
+     		□ query-digester
+      　	□ ADD FULLTEXT INDEX
+　　　　	□ N+1問題
+    　　	□ memcached
+	□６章　リバースプロキシ
+		□ 静的ファイル配信
 
 ## ■ToDo収集
     □　全員isuconで作業しなくて良いpermissionを/home/isuconに設定する
