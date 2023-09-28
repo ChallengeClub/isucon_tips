@@ -14,18 +14,19 @@
 - 9/19 20:00～　takaさん参加、isucon12qベンチマーク実施
 - 9/21 21:00～　kiws,miteru,hidetake ToDoの洗い出し prometeus,prometeus-node-expoterをapt install, スケールアップしてstress -c 1とbenchを実施。
 - 9/26 21:00～ takaさんのSSH設定＠isucon12q1。AWSのIAM発行。nginxのログをjson化してreloadとログローテート実施。
+- 9/28 21:30～ nginxログjson化の修正、alpのインストールと実行、abのインストールと実行。jq導入。
 
 ## ■ISUCON本攻略チェクリスト
     ✔１章　基礎
-	    ✔　top
-	    ✔　ベンチマーク
+	    ✔ top
+	    ✔ ベンチマーク
     ✔２章　モニタリング
 		✔ stress -c 1
 		✔ node_expoter(prometeus)
 	□３章　負荷試験
 		✔ nginxのjsonログ
-		□　alp
-		□　ab
+		✔ alp
+		✔ ab
 		□　slow queryログ
 	□４章　シナリオ試験
 		□ k6
