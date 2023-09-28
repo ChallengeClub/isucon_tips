@@ -31,7 +31,7 @@
 		□ slow queryログ(mysqldumpslow)
 		□ mysql接続, EXPLAIN, ADD INDEX
 		□ dstat
-　	□４章　シナリオ試験
+	□４章　シナリオ試験
 		□ k6
 	□５章　データベース
     		□ SHOW PLOCESSLIST
