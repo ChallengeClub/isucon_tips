@@ -43,4 +43,9 @@ $ /usr/sbin/nginx -s reopen          # ログローテート
 
 ## mysql  
 ```
+$ mysq -u isucon -p
+mysql> show databases;
+mysql> use hoge_db;
+mysql> show tables;
+mysql> describe hoge_table;
 ```
