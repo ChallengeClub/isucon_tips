@@ -7,9 +7,16 @@ $ sudo su - isucon
 
 ## インストール  
 ```
-$ sudo apt install dstat
+$ sudo apt -y install dstat             # dstat
+$ sudo apt -y install jq                # jq
+# prometheus; http://{IP}:9090/ or curl localhost:9090/metrics
 $ sudo apt -y install prometheus prometheus-node-exporter
-$ sudo apt -y install jq
+# alp
+$ wget https://github.com/tkuchiki/alp/releases/download/v1.0.18/alp_linux_amd64.tar.gz
+$ tar xvzf alp_linux_amd64.tar.gz
+$ mv alp /usr/local/bin/alp
+$ sudo apt -y install apache2-utils     # ab
+$ sudo yum install epel-release         # (未検証)
 ```
 
 ## 環境調査  
@@ -23,13 +30,18 @@ $ systemctl status hoge                 # service確認
 $ file hoge                             # file素性確認
 ```
 
-## 負荷関係 
+## 負荷試験関係 
 ```
-$ stress -c 1
+$ stress -c 1                           # 並列度1で負荷試験
+$ ab -c 1 -n 10 https://localhost/      # 並列度1で10回アクセス試験
+$ alp json --file access.log            # アクセスログ解析
+
 ```
 
 ## 接続確認
 ```
+$ curl -k https://localhost
+$ curl -kv https://localhost
 ```
 
 ## nginx  
