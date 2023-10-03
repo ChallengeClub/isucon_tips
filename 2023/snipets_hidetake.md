@@ -61,3 +61,8 @@ mysql> use hoge_db;
 mysql> show tables;
 mysql> describe hoge_table;
 ```
+
+## その他一般
+```
+echo 'eHh4Cg==' | openssl enc -d -base64
+```
