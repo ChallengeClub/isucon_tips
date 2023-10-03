@@ -20,7 +20,7 @@
 - [キー] フィールドに公開キーを貼り付けます。
 - [Add SSH key](SSH キーの追加) をクリックします。  
 - githubのURL.keysで確認できる。https://github.com/HideakiTakechi.keys  
-<img src="./images/2023-10-03-github-ssh-pubkey.png" width="70%">
+<img src="./images/2023-10-03-github-ssh-pubkey.png" width="50%">
 
 ### CloudFormationのテンプレートをダウンロード
 
@@ -208,9 +208,9 @@ Resources:
 </details>
 
 ### CloudFormationのスタック作成  
-テンプレートファイルを元にスタックを作成するとVPCやEC2が作成される。
+ダウンロードしたテンプレートファイルを元にスタックを作成するとVPCやEC2が作成される。
 - AWSログイン > サービス > CloudFormation > スタックの作成  
-- テンプレートの準備完了 (テンプレートファイルはあるので)
+- テンプレートの準備完了を選ぶ (テンプレートファイルはあるので)
 - テンプレートソースは、ファイルのアップロードで行う。
 - ここでデザイナーを使うとGUIでサイトの構成をレビューできる。
 - スタック名を指定する(isucon-env-check-01など)
