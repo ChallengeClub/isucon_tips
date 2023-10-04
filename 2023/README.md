@@ -48,5 +48,5 @@
 ```
 
 ## ■ToDo収集
-    □　全員isuconで作業しなくて良いpermissionを/home/isuconに設定する
+    ✔　全員isuconで作業しなくて良いpermissionを/home/isuconに設定する
     □　nginx log設定変更作業一式をスクリプト化する。
