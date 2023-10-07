@@ -141,6 +141,9 @@ Count: 1298  Time=0.09s (117s)  Lock=0.00s (0s)  Rows=89.9 (116720), isucon[isuc
 ```
 全体で2分くらいかかってる（相手にとって不足なし）。ここで、benchをもう一回実行して、scoreのばらつきを確認。。。結構ばらつきがある（ト書きのみでスミマセン）
 
+### bench中のメトリクス・モニターの様子  
+<img src="./images/2023-10-05-Prometheus-OnBench.png" width="60%">
+
 ## DBのチューニング手順を試してみる
 ```
 $ mysql -u isucon -p

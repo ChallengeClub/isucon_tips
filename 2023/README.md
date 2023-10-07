@@ -16,7 +16,7 @@
 - 9/26 21:00～ takaさんSSH設定＠isucon12q1。AWSのIAM発行。nginxログをjson化しログローテート実施。
 - 9/28 21:30～ nginxログjson化の修正、alpのインストールと実行、abのインストールと実行。jq導入。
 - 10/3 21:00～ ISUCON参加条件クリア（AWS環境チェック）
-- 10/5
+- 10/5 20:30～ ISUCON参加条件クリア（AWS環境チェック）@miteru, mysql slowlog, add index tenant_id_competition_id_idx(tenant_id, competition_id), bench,
 
 ## ■ISUCON本攻略チェクリスト
 ```
@@ -31,8 +31,8 @@
 		✔ alp
 		✔ ab
   		✔ log rotate
-		□ slow queryログ(mysqldumpslow)
-		□ mysql接続, EXPLAIN, ADD INDEX
+		✔  slow queryログ(mysqldumpslow)
+		✔  mysql接続, EXPLAIN, ADD INDEX
 		□ dstat
 	□４章　シナリオ試験
 		□ k6
@@ -41,7 +41,7 @@
      		□ pt-query-digest
      		□ query-digester
       　	□ ADD FULLTEXT INDEX
-　　　　	□ N+1問題
+      　	□ N+1問題
     　　	□ memcached
 	□６章　リバースプロキシ
 		□ 静的ファイル配信
