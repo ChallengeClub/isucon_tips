@@ -9,7 +9,7 @@ CA局手順[HERE](20230916_nginx_cert_selfsign.md)
 ----|:----:|----
 |isucon.crt|サーバ証明書|nginx設定(/etc/nginx内)|
 |isucon.key|サーバ秘密鍵|nginx設定(/etc/nginx内)|
-|isuconCA.crt|RootCA証明書|ブラウザの証明書ストア|
+|[isuconCA.crt](./data/public_Credentials/isuconCA.crt)|RootCA証明書|ブラウザの証明書ストア|
 
 # サーバ手順  
 
@@ -104,9 +104,9 @@ $ service nginx restart
 # ブラウザ手順  
 
 ## RootCA証明書導入（Edgeの場合） 
-手順は[ここ](https://jp.globalsign.com/support/clientcert/manual-browser/pkcs12-import-msedge.html)とか参照。 
+手順は[ここ](https://jp.globalsign.com/support/clientcert/manual-browser/pkcs12-import-msedge.html)とか参照。  
 今回の証明は中間局でなくRootCA証明なので「信頼されたルート証明書機関」に導入する。  
-（ハマりました。所謂ルート証明書ストアです。社用PCや自分の管理にないPCに導入しないこと。）  
+（最初ダブルクリックで中間局ストアに配置してハマりました。今回の導入先は所謂ルート証明書ストアですので社用PCや自分の管理にないPCに導入しないこと。）  
 導入すると下記の様な感じ。
 
 <img src="./images/20230913_hidetake_edge_imported_cert.png" width="40%">
