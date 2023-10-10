@@ -28,22 +28,35 @@ k6 v0.47.0 (commit/5ceb210056, go1.21.2, linux/amd64)
 
 ```js:ab.js
 import http from 'k6/http';
-const BASE_URL = "https://localhost";
+const BASE_URL = "http://localhost";
 
 export default function () {
   http.get(`${BASE_URL}/`);
 }
-
 ```
-しかし、アクセスできない。worningが発生し、alpで確認してもアクセスログが存在しない。
+しかし、アクセスできない。k6ではconnection refusedが発生し、nginxのアクセスログ(/var/log/nginx/access.log)のファイルサイズも増えない。
+当然、alpにアクセスログを食わせても、アクセス回数が表示されない。
 
-nginxが動いているか確認する。オプション-nで名前を付けずに表示。
+そこでまず、nginxが動いているか確認する。オプション-nで、ポート番号->名前の変換をせずに表示。
 ```bash
 $ sudo ss -tlp -n | grep nginx
 LISTEN 0      511          0.0.0.0:443        0.0.0.0:*    users:(("nginx",pid=655,fd=6),("nginx",pid=654,fd=6),("nginx",pid=643,fd=6))
 ```
 
-証明書によるエラーが起きているようなので、証明書を無視する。
+すると、nginxは80番では待ち受けておらず、443番で待ち受けていることがわかった。
+これは、httpsのポート番号であり、httpのポート番号ではない。
+そこで次に、ab.jsのURLを、httpからhttpsに変更する。
+
+```js:ab.js
+import http from 'k6/http';
+const BASE_URL = "https://localhost";
+
+export default function () {
+  http.get(`${BASE_URL}/`);
+}
+```
+
+すると、今度はアクセスログのファイルサイズが増えたが、証明書によるエラーが起きているようなので、証明書を無視する。
 
 ### 回避策(1)
 
