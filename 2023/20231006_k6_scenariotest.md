@@ -45,6 +45,7 @@ LISTEN 0      511          0.0.0.0:443        0.0.0.0:*    users:(("nginx",pid=6
 
 すると、nginxは80番では待ち受けておらず、443番で待ち受けていることがわかった。
 これは、httpsのポート番号であり、httpのポート番号ではない。
+
 そこで次に、ab.jsのURLを、httpからhttpsに変更する。
 
 ```js:ab.js
@@ -159,7 +160,7 @@ $ curl -k https://localhost/api/player/player/:1
 </html>
 ```
 
-`https://admin.t.isucon.dev`へアクセスできることが分かったので、こちらへ接続。
+試しに`https://admin.t.isucon.dev`へアクセスしたところ、アクセスできることが分かったので、こちらへ接続。
 
 ```bash
 $ curl -k https://admin.t.isucon.dev
@@ -175,6 +176,9 @@ $ curl -k https://admin.t.isucon.dev/api/me
   "message": ""
 }
 ```
+
+結果を見ると、同じcurlによるURLアクセスでも、URLのホスト名がlocalhostの場合と、admin.t.isucon.devの場合では、結果が異なる。
+これは、1つのサーバーに対してでも、別の名前でアクセスすると別のコンテンツを返すように(=admin.t.isucon.devでアクセスしないと404が返るように)、nginxが設定されている可能性がある。
 
 # メモ
 ベンチマーカーですべて動かすのではなく、k6で指定したAPIだけ評価することも可能。
