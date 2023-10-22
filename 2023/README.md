@@ -17,6 +17,10 @@
 - 9/28 21:30～ nginxログjson化の修正、alpのインストールと実行、abのインストールと実行。jq導入。
 - 10/3 21:00～ ISUCON参加条件クリア（AWS環境チェック）
 - 10/5 20:30～ ISUCON参加条件クリア（AWS環境チェック）@miteru, mysql slowlog, add index tenant_id_competition_id_idx(tenant_id, competition_id), bench,
+- 10/10 k6を導入しapi呼び出し
+- 10/12 振り返り演習（@hidetakeは試作室）
+- 10/17 isucon12アプリ構成を確認。Docker等確認。
+- 10/19 webappをgithub登録
 
 ## ■ISUCON本攻略チェクリスト
 ```
