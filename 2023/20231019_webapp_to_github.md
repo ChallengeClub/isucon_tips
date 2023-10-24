@@ -1,6 +1,6 @@
 # webappをgithub登録
 ## 大枠の手順
-- githubにリポジトリを作る
+- githubのWeb UIでリポジトリを作る
 - AWS上のVMから`git push`
 
 ## 手順詳細
