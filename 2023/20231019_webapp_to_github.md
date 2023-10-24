@@ -7,6 +7,7 @@
 - ~/.gitconfigの設定
   - `git config --global user.email "isucon@test"`
   - `git config --global user.name "isucon"`
+  - `git config --global init.defaultBranch main`
 - リポジトリ作成とソース登録
   - `git init`
   - `git add *`
