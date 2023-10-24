@@ -7,10 +7,18 @@
 - ~/.gitconfigの設定
   - `git config --global user.email "isucon@test"`
   - `git config --global user.name "isucon"`
+- リポジトリ作成とソース登録
+  - `git init`
+  - `git add *`
+  - `git status`
+  - `commit -m "first commit"`
+  - `git log`
 - remoteの設定
   - `git remote add origin https://github.com/HideakiTakechi/isucon12q.git`
 - remoteへpush
   - `git push`
+    - main/master不整合でエラーになる場合は`git push origin main`にする
+    - [Gitのデフォルトブランチをmasterからmainに変更する方法](https://qiita.com/fk_chang/items/a4839a595fef9a2c3724)も参照しよう
 - 認証
   - git urlはsshでなくhttpsでも認証できる
   - httpsでの認証で使うアクセストークンの使用方法が変わった

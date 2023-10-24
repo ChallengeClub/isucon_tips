@@ -1,4 +1,4 @@
-# 2023
+# 2023 ISUCON13攻略
 
 [ISUCON13 開催概要(公式)](https://isucon.net/archives/57566481.html)
 
@@ -21,6 +21,7 @@
 - 10/12 振り返り演習（@hidetakeは試作室）
 - 10/17 isucon12アプリ構成を確認。Docker等確認。
 - 10/19 webappをgithub登録
+- 10/24 isucon12予選解説を辿ってvisit_historyにcreated_at含むCovering Index追加。スコア3000→3500とアップ。さっらに解説に従いvisit_historyを300万行→20万行に削減するがベンチに失敗。テーブルを元に戻した。	
 
 ## ■ISUCON本攻略チェクリスト
 ```
@@ -30,14 +31,14 @@
 	✔２章　モニタリング
 		✔ stress -c 1
 		✔ node_expoter(prometeus)
-  	□３章　負荷試験
+  	✔３章　負荷試験
 		✔ nginxのjsonログ
 		✔ alp
 		✔ ab
   		✔ log rotate
 		✔  slow queryログ(mysqldumpslow)
 		✔  mysql接続, EXPLAIN, ADD INDEX
-		□ dstat
+		✔ dstat
 	□４章　シナリオ試験
 		□ k6
 	□５章　データベース
@@ -50,7 +51,13 @@
 	□６章　リバースプロキシ
 		□ 静的ファイル配信
 ```
-
+## ■IUSCON12予選解説に沿った攻略
+- [ISUCON12 予選の解説 (Node.jsでSQLiteのまま10万点行く方法)](https://isucon.net/archives/56842718.html)  
+- [ISUCON12 予選問題の解説と講評](https://isucon.net/archives/56850281.html)  
+```
+	✔visit_historyへのindex追加
+	□ visit_historyの不要行の削減(300万→20万行)
+```
 ## ■ToDo収集
     ✔　全員isuconで作業しなくて良いpermissionを/home/isuconに設定する
     □　nginx log設定変更作業一式をスクリプト化する。
