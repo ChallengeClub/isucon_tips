@@ -134,7 +134,7 @@ $ sudo systemctl restart sshd
 
 ### 各ユーザーの作成
 ユーザーの作成と公開鍵の設定は、[isucon_tools](https://github.com/ChallengeClub/isucon_tools)にあるツールを使う。<br>
-リポジトリ丸ごとEC2インスタンス内でgit cloneして使うのが簡単。
+gitは元から入っていたため、リポジトリ丸ごとEC2インスタンス内でgit cloneして使うのが簡単。
 ```
 $ mkdir git; cd git
 $ git clone https://github.com/ChallengeClub/isucon_tools
@@ -143,7 +143,7 @@ $ ./03_createUsers.sh
 ```
 ここでuser_info.txtが無いというエラー発生。これはプライバシー懸念でgithubに上げていなかった。<br>
 ローカルでuser_info.txtの内容をもらい、viにコピペ。<br>
-再度03_createUsers.shを実行。ユーザーの作成と公開鍵の設置が自動で行われた。すばらしい！
+再度03_createUsers.shを実行。ユーザーの作成と公開鍵の設置が自動で行われたことを/etc/passwdを見て確認。すばらしい！
 
 serviceコマンドによるsshdの再起動がうまく行っていないようだが、一旦気にしない！<br>
 なおエラーはこんな感じ。
@@ -204,3 +204,4 @@ isucon12q3に対する、
 - nginxログのjson化
 - prometheusの設定
 - k6など、必要なaptパッケージのinstall
+- アプリケーションのgit clone
