@@ -50,6 +50,14 @@ sudo timedatectl set-timezone Asia/Tokyo
 ### hostsの変更
 - isucon.devではなくisucon.localを使用 -> .devドメインのHSTSを回避できる -> 自己署名証明書の設定が不要に
 - 各ユーザーのPCだけでなく、EC2インスタンス内の/etc/hostsも書き換え -> curlでブラウザ同等にアクセス可能に
+各ユーザーのhostsファイル(WindowsだとC:¥Windows¥System32¥drivers¥etc¥hosts)や/etc/hostsを、以下に書き換え。
+```
+(IPアドレス) admin.t.isucon.dev admin.t.isucon.local isucon.t.isucon.dev isucon.t.isucon.local kayac.t.isucon.dev kayac.t.isucon.local
+```
+(IPアドレス)の部分は、
+- 各ユーザーのPCでは、(外部からアクセスできるグローバルな)Elastic IP
+- EC2インスタンス内では、127.0.0.1(=localhost)
+これにより、どこからでも、同じホスト名で、サービスにアクセスできる。
 ### デフォルトシェルの変更
 個人ユーザーでログインしたところ、シェルが/bin/shになっていたため、bashへ変更。
 ```
@@ -61,6 +69,9 @@ Enter the new value, or press ENTER for the default
 ```
 ## 確認
 ### ブラウザでのアクセス
+- 管理者画面 -> https://admin.t.isucon.local/ -> ログイン名にadminと入れても入れなくても?ログイン -> 一覧が出てくる！
+- 利用者画面 -> https://isucon.t.isucon.local/ -> ログイン名に0001と入れてログイン -> 一覧が出てくる！
+(たぶん)めでたしめでたし…(ベンチマーク未実行)
 
 # TODO
 - nginxログのjson化
