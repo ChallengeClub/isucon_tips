@@ -68,7 +68,7 @@ user_info.txtが無いというエラー発生。これはさすがにgithubに�
 ### Elastic IPの関連付け
 Elastic IPをisucon12q1から引き剥がし、isucon12q3に関連づければ、今まで通りのadmin.t.isucon.devなどのホスト名でisucon12q3にアクセスできるのでは?<br>
 というコントローラーからの天才的お告げにより、AWSのWebUIにて上記を実施。<br>
-起動中にもあっさり関連付けの変更ができてしまった。ただしsshdのホストキーは引っ越していないので、ssh接続時にエラーとなるはず。~/.ssh/known_hostsを適当に編集下さい。
+インスタンス実行中にも関連付けの変更ができてしまった。ただしsshdのホストキーは引っ越していないので、ssh接続時にエラーとなるはず。その際は~/.ssh/known_hostsを適当に編集下さい。
 ### hostsの変更
 - isucon.devではなくisucon.localを使用 -> .devドメインのHSTSを回避できる -> 自己署名証明書の設定が不要に
 - 各ユーザーのPCだけでなく、EC2インスタンス内の/etc/hostsも書き換え -> curlでブラウザ同等にアクセス可能に
