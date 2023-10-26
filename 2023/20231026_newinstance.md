@@ -96,6 +96,7 @@ Enter the new value, or press ENTER for the default
 ### ブラウザでのアクセス
 - 管理者画面を見るには: https://admin.t.isucon.local/ -> ログイン名にadminと入れて(入れなくてもよい?)ログイン -> 一覧が出てくる！
 - 利用者画面を見るには: https://isucon.t.isucon.local/ -> ログイン名に0001と入れてログイン -> 一覧が出てくる！
+
 /api/adminと/api/playerのどちらも、ブラウザでもcurlでも確認できるようになったはず。<br>
 (たぶん)めでたしめでたし(なおベンチマーク未実行…)
 
