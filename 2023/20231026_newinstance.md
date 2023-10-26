@@ -59,6 +59,7 @@ $ sudo timedatectl set-timezone Asia/Tokyo
 ユーザーに簡単パスワードを設定してしまうと、sshで簡単に入れてしまうため、sshのパスワード認証を無効化。
 ```
 $ sudo sh -c "echo 'PasswordAuthentication no' > /etc/ssh/sshd_config.d/password.conf"
+$ sudo systemctl restart sshd
 ```
 
 ### 各ユーザーの作成
@@ -74,7 +75,7 @@ user_info.txtが無いというエラー発生。これはさすがにgithubに�
 ローカルでuser_info.txtの内容をもらい、viにコピペ。<br>
 再度03_createUsers.shを実行。ユーザーの作成と公開鍵の設置が自動で行われた。すばらしい！<br>
 serviceコマンドによるsshdの再起動がうまく行っていないようだが、一旦気にしない！
-sshdを手動でも再起動し、ログインできることを確認。
+sshdを手動でも再起動し(もしかして不要?)、ログインできることを確認。
 
 ### Elastic IPの関連付け
 Elastic IPをisucon12q1から引き剥がし、isucon12q3に関連づければ、今まで通りのadmin.t.isucon.devなどのホスト名でisucon12q3にアクセスできるのでは?<br>
