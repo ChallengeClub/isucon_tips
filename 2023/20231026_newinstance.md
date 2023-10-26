@@ -63,7 +63,7 @@ $ git clone https://github.com/ChallengeClub/isucon_tools
 $ ./03_createUsers.sh
 ```
 user_info.txtが無いというエラー発生。これはさすがにgithubに上げていなかった。<br>
-ローカルでuser_info.txtの内容をもらい、viでコピペ。<br>
+ローカルでuser_info.txtの内容をもらい、viにコピペ。<br>
 再度03_createUsers.shを実行。ユーザーの作成と公開鍵の設置が自動で行われた。すばらしい！
 ### Elastic IPの関連付け
 Elastic IPをisucon12q1から引き剥がし、isucon12q3に関連づければ、今まで通りのadmin.t.isucon.devなどのホスト名でisucon12q3にアクセスできるのでは?<br>
