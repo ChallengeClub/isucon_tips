@@ -74,7 +74,15 @@ $ ./03_createUsers.sh
 user_info.txtが無いというエラー発生。これはさすがにgithubに上げていなかった。<br>
 ローカルでuser_info.txtの内容をもらい、viにコピペ。<br>
 再度03_createUsers.shを実行。ユーザーの作成と公開鍵の設置が自動で行われた。すばらしい！<br>
-serviceコマンドによるsshdの再起動がうまく行っていないようだが、一旦気にしない！
+serviceコマンドによるsshdの再起動がうまく行っていないようだが、一旦気にしない！<br>
+なおエラーはこんな感じ。
+```
+username1 ALL=(ALL) NOPASSWD:ALL
+ユーザー username1 が作成され、sudo権限とパスワード確認の省略が設定されました。
+Job for ssh.service failed.
+See "systemctl status ssh.service" and "journalctl -xeu ssh.service" for details.
+SSH公開鍵が設定されました。
+```
 sshdを手動でも再起動し(もしかして不要?)、ログインできることを確認。
 
 ### Elastic IPの関連付け
