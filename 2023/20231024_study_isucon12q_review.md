@@ -237,10 +237,10 @@ isucon@ip-172-31-10-204:~/bench$ ./bench -target-addr 127.0.0.1:443
 ```
 
 チューニング前よりスコアが500程度アップしました！！！
-その時のPrometheusモニタリング結果は以下です。kiwaさんが取得してくれました。感謝！
+その時のPrometheusモニタリング結果は以下です。kiwsさんが取得してくれました。感謝！
 
 ![Prometheusモニタリング結果](images/2023-10-24_Prometheus.png)
-kiwaさんのコメント転記↓
+kiwsさんのコメント転記↓
 ```
 CPU使用率も下がってます。
 1個目の山がデフォルトbench、
