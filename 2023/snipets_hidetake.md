@@ -35,7 +35,14 @@ $ file hoge                             # file素性確認
 $ stress -c 1                           # 並列度1で負荷試験
 $ ab -c 1 -n 10 https://localhost/      # 並列度1で10回アクセス試験
 $ alp json --file access.log            # アクセスログ解析
-
+$ ./bench -target-addr 127.0.0.1:443    # isucon12qベンチマーク
+```
+## 負荷確認  
+ブラウザで`http://{IPアドレス}:9090/`を開くと、GUIが表示される。
+ここで、GUI上部のコンソールに以下を入力し、Excecuteするとグラフが表示される。
+以下は、CPUの利用時間を1分ごとに出力するクエリ。
+```
+avg without(cpu) (rate(node_cpu_seconds_total{mode!="idle"}[1m]))
 ```
 
 ## 接続確認
