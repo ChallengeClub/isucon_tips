@@ -50,6 +50,7 @@ sudo timedatectl set-timezone Asia/Tokyo
 ### hostsの変更
 - isucon.devではなくisucon.localを使用 -> .devドメインのHSTSを回避できる -> 自己署名証明書の設定が不要に
 - 各ユーザーのPCだけでなく、EC2インスタンス内の/etc/hostsも書き換え -> curlでブラウザ同等にアクセス可能に
+
 各ユーザーのhostsファイル(WindowsだとC:¥Windows¥System32¥drivers¥etc¥hosts)や/etc/hostsを、以下に書き換え。
 ```
 (IPアドレス) admin.t.isucon.dev admin.t.isucon.local isucon.t.isucon.dev isucon.t.isucon.local kayac.t.isucon.dev kayac.t.isucon.local
