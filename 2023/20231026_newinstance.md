@@ -1,6 +1,6 @@
 # 本日のポイント
 - isucon12q1インスタンスが壊れてきたので、isucon12q3を新たに作った
-- Elastic IPを関連づけることで、IPアドレスを変わらなくした
+- Elastic IPを関連付けることで、IPアドレスを変わらなくした
 - isucon12q3は、nginxログのjson化やprometheusは未設定
 
 # Elastic IPでアイスブレイク
@@ -8,7 +8,7 @@
 「Elastic IPは?」 -> 「あっ！停止中インスタンスに関連付いてた！」<br>
 以下、オペレーター=hide_takeさん。
 
-Elastic IPをEC2のインスタンスに関連づけると、固定のIPを使い続けられるので、AWSのGUI操作で、関連づけてみた。<br>
+Elastic IPをEC2のインスタンスに関連付けると、固定のIPを使い続けられるので、AWSのGUI操作で、関連付けてみた。<br>
 実行中インスタンスにも関連付けられる。IPアドレスが固定となるので、今後楽になりそう。
 
 # 前回の復習
@@ -157,7 +157,7 @@ SSH公開鍵が設定されました。
 sshdを手動でも再起動し(もしかして不要?)、ログインできることを確認。
 
 ### Elastic IPの関連付け
-Elastic IPをisucon12q1から引き剥がし、isucon12q3に関連づければ、今まで通りのadmin.t.isucon.devなどのホスト名でisucon12q3にアクセスできるのでは?<br>
+Elastic IPをisucon12q1から引き剥がし、isucon12q3に関連付ければ、今まで通りのadmin.t.isucon.devなどのホスト名でisucon12q3にアクセスできるのでは?<br>
 …というコントローラーからの天才的お告げにより、AWSのWebUIにて上記を実施。<br>
 インスタンス実行中にも関連付けの変更ができてしまった。ただしsshdのホストキーは引っ越していないので、ssh接続時にエラーとなるはず。その際は~/.ssh/known_hostsを適当に編集下さい。
 
