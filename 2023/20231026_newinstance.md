@@ -105,6 +105,7 @@ Enter the new value, or press ENTER for the default
 (たぶん)めでたしめでたし(なおベンチマーク未実行…)
 
 # TODO
+isucon12q3に対する、
 - nginxログのjson化
 - prometheusの設定
 - k6など、必要なaptパッケージのinstall
