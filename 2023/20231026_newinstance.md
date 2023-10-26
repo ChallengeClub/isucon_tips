@@ -35,16 +35,23 @@ curlでHTTPのAPIにアクセスするには、認証が必要。<br>
 
 # EC2新新インスタンスisucon12q3
 ## 作成
-インスタンス作成は基本的にisucon12q2と同様。名前はisucon12q3に。セキュリティはisucon12q2で作成したものを使用。<br>
-起動し、ユーザーubuntuでsshログインできることを確認。
-
+インスタンス作成は基本的にisucon12q2と同様。
+- キーは上記の通りインポートしたともさんキーを設定
+- 名前は新たにisucon12q3に設定
+- セキュリティはisucon12q2で作成したものを使用
+ - ただし、HTTPSと9090(Prometheus用)のポート番号も外部からアクセスできるように、穴あけ設定を追加
+EC2インスタンスを起動し、ユーザーubuntuでsshログインできることを確認。
 ## 設定 
 ### タイムゾーンの変更
-ログ解析時に不便に思っていたので、これを機に設定。
+ログ解析時に不便に思っていたので、これを機にタイムゾーンをJSTに設定。
 ```
-sudo timedatectl set-timezone Asia/Tokyo
+$ sudo timedatectl set-timezone Asia/Tokyo
 ```
 ### sshパスワード認証の無効化
+ユーザーに簡単パスワードを設定してしまうと、sshで簡単に入れてしまうため、sshのパスワード認証を無効化。
+```
+$ sudo sh -c "echo 'PasswordAuthentication no' > /etc/ssh/sshd_config.d/password.conf"
+```
 ### 各ユーザーの作成
 ユーザーの作成と公開鍵の設定は、[isucon_tools](https://github.com/ChallengeClub/isucon_tools)にあるツールを使う。<br>
 リポジトリ丸ごとEC2インスタンス内でgit cloneして使うのが簡単。
@@ -62,6 +69,11 @@ user_info.txtが無いというエラー発生。これはさすがにgithubに�
 ### hostsの変更
 - isucon.devではなくisucon.localを使用 -> .devドメインのHSTSを回避できる -> 自己署名証明書の設定が不要に
 - 各ユーザーのPCだけでなく、EC2インスタンス内の/etc/hostsも書き換え -> curlでブラウザ同等にアクセス可能に
+
+/etc/hostsの書き換え前に、適当に別ファイル名でバックアップ。
+```
+$ sudo cp -a /etc/hosts /etc/hosts.ORIG
+```
 
 各ユーザーのhostsファイル(WindowsだとC:¥Windows¥System32¥drivers¥etc¥hosts)や/etc/hostsを、以下に書き換え。
 ```
@@ -82,11 +94,12 @@ Enter the new value, or press ENTER for the default
 ```
 ## 確認
 ### ブラウザでのアクセス
-- 管理者画面 -> https://admin.t.isucon.local/ -> ログイン名にadminと入れて(入れなくてもよい?)ログイン -> 一覧が出てくる！
-- 利用者画面 -> https://isucon.t.isucon.local/ -> ログイン名に0001と入れてログイン -> 一覧が出てくる！
-(たぶん)めでたしめでたし…(ベンチマーク未実行)
+- 管理者画面を見るには… https://admin.t.isucon.local/ -> ログイン名にadminと入れて(入れなくてもよい?)ログイン -> 一覧が出てくる！
+- 利用者画面を見るには… https://isucon.t.isucon.local/ -> ログイン名に0001と入れてログイン -> 一覧が出てくる！
+(たぶん)めでたしめでたし(なおベンチマーク未実行…)<br>
+/api/adminと、/api/playerのどちらも、curlなどで
 
 # TODO
 - nginxログのjson化
 - prometheusの設定
-- 必要なaptパッケージのinstall
+- k6など、必要なaptパッケージのinstall
