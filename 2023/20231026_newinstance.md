@@ -15,12 +15,15 @@ Elastic IPをEC2のインスタンスに関連づけると、固定のIPを使�
 「データベース壊れたけど戻せてベンチマークも動いた！でもログをよく見るとエラーを見つけた」 -> 「エラーを探ろう！」
 
 # APIエラーの探求
+
 ## ブラウザでの確認
 ブラウザの開発者ツールでHTTPのステータスコードを見る -> 確かにエラーが発生している -> curlで試してみるとどうなる?
+
 ## curlでのAPIアクセス
 curlでHTTPのAPIにアクセスするには、認証が必要。<br>
 そこで、ブラウザでログイン後、ブラウザの開発者ツールのHTTPヘッダからCookieをコピー。<br>
 これを`curl -b "Cookie文字列" -k URL文字列` でcurlに渡してAPIアクセスしたところ、アクセスできなかったURLにアクセスできるようになった。
+
 ## 壊れているかも
 ベンチマークでエラーになっているAPIをCookie付きでアクセスしたが、応答のHTTPボディに入っているjsonがほぼ空。行き詰まり感。<br>
 「ここいらで新しいインスタンス作って、比較しますか…？」 -> 「それだ！」<br>
@@ -34,6 +37,7 @@ curlでHTTPのAPIにアクセスするには、認証が必要。<br>
 そこで、isucon12q2インスタンスは一旦放棄、ともさんのssh公開鍵をAWSにインポート、これを使った新たなインスタンスを作成することに。
 
 # EC2新新インスタンスisucon12q3
+
 ## 作成
 インスタンス作成は基本的にisucon12q2と同様。
 - キーは上記の通りインポートしたともさんキーを設定
@@ -42,17 +46,21 @@ curlでHTTPのAPIにアクセスするには、認証が必要。<br>
   - ただし、HTTPSと9090(Prometheus用)のポート番号も外部からアクセスできるように、穴あけ設定を追加
 
 EC2インスタンスを起動し、ユーザーubuntuでsshログインできることを確認。
+
 ## 設定 
+
 ### タイムゾーンの変更
 ログ解析時に不便に思っていたので、これを機にタイムゾーンをJSTに設定。
 ```
 $ sudo timedatectl set-timezone Asia/Tokyo
 ```
+
 ### sshパスワード認証の無効化
 ユーザーに簡単パスワードを設定してしまうと、sshで簡単に入れてしまうため、sshのパスワード認証を無効化。
 ```
 $ sudo sh -c "echo 'PasswordAuthentication no' > /etc/ssh/sshd_config.d/password.conf"
 ```
+
 ### 各ユーザーの作成
 ユーザーの作成と公開鍵の設定は、[isucon_tools](https://github.com/ChallengeClub/isucon_tools)にあるツールを使う。<br>
 リポジトリ丸ごとEC2インスタンス内でgit cloneして使うのが簡単。
@@ -64,11 +72,14 @@ $ ./03_createUsers.sh
 ```
 user_info.txtが無いというエラー発生。これはさすがにgithubに上げていなかった。<br>
 ローカルでuser_info.txtの内容をもらい、viにコピペ。<br>
-再度03_createUsers.shを実行。ユーザーの作成と公開鍵の設置が自動で行われた。すばらしい！
+再度03_createUsers.shを実行。ユーザーの作成と公開鍵の設置が自動で行われた。すばらしい！<br>
+serviceコマンドによるsshdの再起動がうまく行っていないようだが、一旦気にしない！手動で再起動し、ログインできることを確認。
+
 ### Elastic IPの関連付け
 Elastic IPをisucon12q1から引き剥がし、isucon12q3に関連づければ、今まで通りのadmin.t.isucon.devなどのホスト名でisucon12q3にアクセスできるのでは?<br>
 …というコントローラーからの天才的お告げにより、AWSのWebUIにて上記を実施。<br>
 インスタンス実行中にも関連付けの変更ができてしまった。ただしsshdのホストキーは引っ越していないので、ssh接続時にエラーとなるはず。その際は~/.ssh/known_hostsを適当に編集下さい。
+
 ### hostsの変更
 - isucon.devではなくisucon.localを使用 -> .devドメインのHSTSを回避できる -> 自己署名証明書の設定が不要に
 - 各ユーザーのPCだけでなく、EC2インスタンス内の/etc/hostsも書き換え -> curlでブラウザ同等にアクセス可能に
@@ -87,6 +98,7 @@ $ sudo cp -a /etc/hosts /etc/hosts.ORIG
 - EC2インスタンス内では、127.0.0.1(=localhost)
 
 これにより、どこからでも、同じホスト名で、サービスにアクセスできる。
+
 ### デフォルトシェルの変更
 個人ユーザーでログインしたところ、シェルがshになっていたため、bashへ変更。
 ```
@@ -96,7 +108,9 @@ Changing the login shell for username
 Enter the new value, or press ENTER for the default
     Login Shell [/bin/sh]: /bin/bash
 ```
+
 ## 確認
+
 ### ブラウザでのアクセス
 - 管理者画面を見るには: https://admin.t.isucon.local/ -> ログイン名にadminと入れて(入れなくてもよい?)ログイン -> 一覧が出てくる！
 - 利用者画面を見るには: https://isucon.t.isucon.local/ -> ログイン名に0001と入れてログイン -> 一覧が出てくる！
