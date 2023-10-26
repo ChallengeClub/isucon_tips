@@ -23,6 +23,76 @@ Elastic IPをEC2のインスタンスに関連づけると、固定のIPを使�
 curlでHTTPのAPIにアクセスするには、認証が必要。<br>
 そこで、ブラウザでログイン後、ブラウザの開発者ツールのHTTPヘッダからCookieをコピー。<br>
 これを`curl -b "Cookie文字列" -k URL文字列` でcurlに渡してAPIアクセスしたところ、アクセスできなかったURLにアクセスできるようになった。
+```
+$ curl -b "isuports_session=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYWRtaW4iXSwiZXhwIjoxNjk4NDA4NzczLCJpc3MiOiJpc3Vwb3J0cyIsInJvbGUiOiJhZG1pbiIsInN1YiI6ImFkbWluIn0.ht_hv8R-Yyze9CHDAf0jgb4t_kPHZv529o1dzgQZjawgxRO4-5xdcDgwDQeMZCrD_Yn4FodInSbfoyKxiz8ymXw578f-XEqtr2BMEaIxmqrtm2baf15Zzvf7VfXPHzawy2WuHjlba5BaXcCMqQU5MHGXjEeFdmW_EFE57A8g3Jjb8X3Mi7FWeTdL_dTJTj86n1hwC3E8nEf808TykmmfedPXvaW1b2tp89zJhFuhp6E3mmJ8pfzndWTeYd8H3uNv5QSVGfEmYHfvNInWmpgHXKNlaktJuSYW95moO-5gX4jyrbPZUcHrppkSDVL47hUtjbf0inUDloSn81Rm_gjPdA" -k https://admin.t.isucon.local/api/admin/tenants/billing
+{
+  "status": true,
+  "data": {
+    "tenants": [
+      {
+        "id": "167",
+        "name": "hidetake-test",
+        "display_name": "武知がテストで追加",
+        "billing": 0
+      },
+      {
+        "id": "100",
+        "name": "lhl-a-100",
+        "display_name": "終末の千葉のーと",
+        "billing": 61770
+      },
+      {
+        "id": "99",
+        "name": "hyx-ppj-99",
+        "display_name": "椅子メロン研究所",
+        "billing": 7800
+      },
+      {
+        "id": "98",
+        "name": "j-p-98",
+        "display_name": "やわらかリキュールプリン",
+        "billing": 79920
+      },
+      {
+        "id": "97",
+        "name": "g-ram-97",
+        "display_name": "スピリチュアルアメリカンチェリーの惨劇",
+        "billing": 44680
+      },
+      {
+        "id": "96",
+        "name": "vx-bem-96",
+        "display_name": "こだわりピザ海岸",
+        "billing": 107380
+      },
+      {
+        "id": "95",
+        "name": "qvec-lfjf-95",
+        "display_name": "酎ハイのオタク",
+        "billing": 8680
+      },
+      {
+        "id": "94",
+        "name": "jepk-dqj-94",
+        "display_name": "横浜共和国",
+        "billing": 113170
+      },
+      {
+        "id": "93",
+        "name": "cryfl-xe-93",
+        "display_name": "清酒こわれました",
+        "billing": 82780
+      },
+      {
+        "id": "92",
+        "name": "lunv-vbtf-92",
+        "display_name": "自動ダッシュ部",
+        "billing": 14010
+      }
+    ]
+  }
+}
+```
 
 ## 壊れているかも
 ベンチマークでエラーになっているAPIをCookie付きでアクセスしたが、応答のHTTPボディに入っているjsonがほぼ空。行き詰まり感。<br>
