@@ -141,7 +141,7 @@ $ git clone https://github.com/ChallengeClub/isucon_tools
  :(中略)
 $ ./03_createUsers.sh
 ```
-user_info.txtが無いというエラー発生。これはさすがにgithubに上げていなかった。<br>
+ここでuser_info.txtが無いというエラー発生。これはプライバシー懸念でgithubに上げていなかった。<br>
 ローカルでuser_info.txtの内容をもらい、viにコピペ。<br>
 再度03_createUsers.shを実行。ユーザーの作成と公開鍵の設置が自動で行われた。すばらしい！
 
