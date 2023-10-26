@@ -46,6 +46,18 @@ sudo timedatectl set-timezone Asia/Tokyo
 ```
 ### sshパスワード認証の無効化
 ### 各ユーザーの作成
+ユーザーの作成と公開鍵の設定は、[isucon_tools](https://github.com/ChallengeClub/isucon_tools)にあるツールを使う。<br>
+リポジトリ丸ごとEC2インスタンス内でgit cloneして使うのが簡単。
+```
+$ mkdir git; cd git
+$ git clone https://github.com/ChallengeClub/isucon_tools
+ :(中略)
+$ ./03_createUsers.sh
+```
+user_info.txtが無いというエラー発生。これはさすがにgithubに上げていなかった。<br>
+ローカルでuser_info.txtの内容をもらい、viでコピペ。<br>
+再度03_createUsers.shを実行。
+
 ### Elastic IPの関連付け
 ### hostsの変更
 - isucon.devではなくisucon.localを使用 -> .devドメインのHSTSを回避できる -> 自己署名証明書の設定が不要に
@@ -60,7 +72,7 @@ sudo timedatectl set-timezone Asia/Tokyo
 - EC2インスタンス内では、127.0.0.1(=localhost)
 これにより、どこからでも、同じホスト名で、サービスにアクセスできる。
 ### デフォルトシェルの変更
-個人ユーザーでログインしたところ、シェルが/bin/shになっていたため、bashへ変更。
+個人ユーザーでログインしたところ、シェルがshになっていたため、bashへ変更。
 ```
 $ chsh
 Password:
@@ -70,7 +82,7 @@ Enter the new value, or press ENTER for the default
 ```
 ## 確認
 ### ブラウザでのアクセス
-- 管理者画面 -> https://admin.t.isucon.local/ -> ログイン名にadminと入れても入れなくても?ログイン -> 一覧が出てくる！
+- 管理者画面 -> https://admin.t.isucon.local/ -> ログイン名にadminと入れて(入れなくてもよい?)ログイン -> 一覧が出てくる！
 - 利用者画面 -> https://isucon.t.isucon.local/ -> ログイン名に0001と入れてログイン -> 一覧が出てくる！
 (たぶん)めでたしめでたし…(ベンチマーク未実行)
 
