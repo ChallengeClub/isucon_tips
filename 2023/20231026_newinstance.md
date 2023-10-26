@@ -22,7 +22,7 @@ Elastic IPをEC2のインスタンスに関連付けると、固定のIPを使�
 ## curlでのAPIアクセス
 curlでHTTPのAPIにアクセスするには、認証が必要。<br>
 そこで、ブラウザでログイン後、ブラウザの開発者ツールのHTTPヘッダからCookieをコピー。<br>
-これを`curl -b "Cookie文字列" -k URL文字列` でcurlに渡してAPIアクセスしたところ、アクセスできなかったURLにアクセスできるようになった。
+これを、[こちら](https://qiita.com/beckyJPN/items/e85d40459e7e535dae73)を参考に`curl -b "Cookie文字列" -k URL文字列` でcurlに渡してAPIアクセスしたところ、アクセスできなかったURLにアクセスできるようになった。
 ```
 $ curl -b "isuports_session=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYWRtaW4iXSwiZXhwIjoxNjk4NDA4NzczLCJpc3MiOiJpc3Vwb3J0cyIsInJvbGUiOiJhZG1pbiIsInN1YiI6ImFkbWluIn0.ht_hv8R-Yyze9CHDAf0jgb4t_kPHZv529o1dzgQZjawgxRO4-5xdcDgwDQeMZCrD_Yn4FodInSbfoyKxiz8ymXw578f-XEqtr2BMEaIxmqrtm2baf15Zzvf7VfXPHzawy2WuHjlba5BaXcCMqQU5MHGXjEeFdmW_EFE57A8g3Jjb8X3Mi7FWeTdL_dTJTj86n1hwC3E8nEf808TykmmfedPXvaW1b2tp89zJhFuhp6E3mmJ8pfzndWTeYd8H3uNv5QSVGfEmYHfvNInWmpgHXKNlaktJuSYW95moO-5gX4jyrbPZUcHrppkSDVL47hUtjbf0inUDloSn81Rm_gjPdA" -k https://admin.t.isucon.local/api/admin/tenants/billing
 {
@@ -162,7 +162,7 @@ Elastic IPをisucon12q1から引き剥がし、isucon12q3に関連付ければ�
 インスタンス実行中にも関連付けの変更ができてしまった。ただしsshdのホストキーは引っ越していないので、ssh接続時にエラーとなるはず。その際は~/.ssh/known_hostsを適当に編集下さい。
 
 ### hostsの変更
-- isucon.devではなくisucon.localを使用 -> .devドメインのHSTSを回避できる(その代わりブラウザで変な証明書だけど無視するボタンを押す) -> 自己署名証明書の設定が不要に
+- isucon.devではなくisucon.localを使用 -> .devドメインのHSTSを回避できる -> 自己署名証明書の設定が不要に(その代わり、.devではHSTSで出てこなかった、ブラウザで変な証明書だけど無視するボタンを押す)
 - 各ユーザーのPCだけでなく、EC2インスタンス内の/etc/hostsも書き換え -> curlでブラウザ同等にアクセス可能に
 
 /etc/hostsの書き換え前に、適当に別ファイル名でバックアップ。
