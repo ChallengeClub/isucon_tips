@@ -21,7 +21,8 @@
 - 10/12 振り返り演習（@hidetakeは試作室）
 - 10/17 isucon12アプリ構成を確認。Docker等確認。
 - 10/19 webappをgithub登録
-- 10/24 isucon12予選解説を辿ってvisit_historyにcreated_at含むCovering Index追加。スコア3000→3500とアップ。さっらに解説に従いvisit_historyを300万行→20万行に削減するがベンチに失敗。テーブルを元に戻した。	
+- 10/24 isucon12予選解説を辿ってvisit_historyにcreated_at含むCovering Index追加。スコア3000→3500とアップ。さっらに解説に従いvisit_historyを300万行→20万行に削減するがベンチに失敗。テーブルを元に戻した。
+- 10/26 isucon12q1が壊れ気味のため、isucon12q3を新規に作成。adminに加えplayerでも一覧が取れるようになった。Elastic IPを関連付けてIPアドレスを固定にした。
 
 ## ■ISUCON本攻略チェクリスト
 ```
