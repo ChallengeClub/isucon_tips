@@ -57,23 +57,23 @@ http://admin.t.isucon.local:9090/ にアクセスし、[呪文](https://github.c
 # ISUCONにおけるgithub管理
 議論の過程で、ISUCON当日のgithub管理において、アクセストークンをどうするか、アカウントとリポジトリをどうするか、といった検討が必要なことが判明。<br>
 検索の結果、[ISUCONの先人の調査](http://tatamo.81.la/blog/2018/09/16/isucon8-qual-2/)が深い。
-- bot用の専用アカウントを作る
+- bot用の専用githubアカウントを作る
 - リポジトリは、
-  - 作成した専用アカウントにリポジトリを作成しても、メンバー登録してChallengeClub内にリポジトリを作成しでもよい
+  - 作成した専用githubアカウントにリポジトリを作成しても、メンバー登録してChallengeClub内にリポジトリを作成しでもよい
   - /etc/内の重要情報の登録や、ISUCONレギュレーションでの共有不可から考えると、プライベートリポジトリにする
-- 専用アカウントでアクセストークンを払い出す
+- 専用githubアカウントでアクセストークンを払い出す
   - ユーザーisuconがgit cloneするだけならアクセストークン不要だが、プライベートリポジトリで、かつ、ISUCON本番での初手がgit pushなので、アクセストークンが必要
 
 という理解に至る。
 
-## 専用アカウントの作成
-アカウント作成にはメールアドレスが必要。gmailには、アカウント名+サフィックス@gmail.com というエイリアスが作成できるとの[情報](https://mailwise.cybozu.co.jp/column/114.html)があり、実践。<br>
+## 専用githubアカウントの作成
+githubのアカウント作成には、メールアドレスが必要。gmailには、アカウント名+サフィックス@gmail.com というエイリアスが作成できるとの[情報](https://mailwise.cybozu.co.jp/column/114.html)があり、実践。<br>
 結果、同じメールボックスに来る別メールアドレスが作成できた。<br>
 このメールアドレスを作って、[githubアカウント](https://github.com/kiws-isucon-bot)が作成できた。
 
 ## お試しリポジトリの作成とpush
 ### リポジトリの作成
-専用アカウントで、[webappのリポジトリ](https://github.com/kiws-isucon-bot/isucon12q3-testbot)を、githubのWebUIで作成。
+専用githubアカウントで、[webappのリポジトリ](https://github.com/kiws-isucon-bot/isucon12q3-testbot)を、githubのWebUIで作成。
 
 ### アクセストークンの生成と保存
 webappをgit pushする際に必要となる、アクセストークンの保存について議論。
