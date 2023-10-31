@@ -173,7 +173,9 @@ push成功!
 # スクリプトのisucon_toolsリポジトリ登録
 ChallengeClubにkiws-isucon-botをメンバー登録すれば、ChallengeClub内のisucon_toolsにも、git pushできるはず。
 
-まずは、remote側の更新が無いか、確認。
+まずは、ChallengeClubのメンバーにkiws-isucon-botを登録。
+
+次に、remote側の更新が無いか、確認。
 ```
 $ cd ~/git/isucon_tools
 $ git fetch
@@ -181,7 +183,7 @@ $ git merge --ff-only
 Already up to date.
 ```
 
-問題ないため、~/bin/から、本日作成の*.shを ~/git/isucon_toolsに持ってきて、git addとcommit。<br>
+問題ないため、~/bin/から、本日作成の*.shを ~/git/isucon_toolsにcp。続いて、git addとcommit。<br>
 アクセストークンのcacheが効いており、パスワードを聞かれずにpush成功!
 
 # TODO
