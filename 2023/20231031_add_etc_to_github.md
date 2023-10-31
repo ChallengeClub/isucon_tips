@@ -52,7 +52,7 @@ http://admin.t.isucon.local:9090/ にアクセスし、[呪文](https://github.c
 
 # /etc/の設定変更
 次は[nginxの設定変更](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20230926_nginx_jsonLog.md)かと思ったが、設定変更をgithubで変更管理する提案あり。また、webappもgithubで管理する必要がある。<br>
-本日のゴールとして、設定変更するか、github管理するかの2択となったが、設定変更するにはgithub管理する必要があるため、github管理を先に実施する方針となった。
+本日のゴールとして、設定変更するか、github管理するかの2択となったが、設定変更するにはgithub管理する必要があるため、先にgithub管理を実施する方針となった。
 
 # ISUCONにおけるgithub管理
 議論の過程で、ISUCON当日のgithub管理で、アクセストークンをどうするか、アカウントとリポジトリをどうするのか、要検討であることが判明。<br>
