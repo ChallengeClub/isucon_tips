@@ -183,7 +183,7 @@ $ git merge --ff-only
 Already up to date.
 ```
 
-問題ないため、~/bin/から、本日作成の*.shを ~/git/isucon_toolsにcp。続いて、git addとcommit。<br>
+問題ないため、本日作成の~/bin/*.shを ~/git/isucon_tools/にcp。続いて、git addとcommit。<br>
 アクセストークンのcacheが効いており、パスワードを聞かれずにpush成功!
 
 # TODO
