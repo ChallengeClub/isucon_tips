@@ -173,6 +173,17 @@ push成功!
 # スクリプトのisucon_toolsリポジトリ登録
 ChallengeClubにkiws-isucon-botをメンバー登録すれば、ChallengeClub内のisucon_toolsにも、git pushできるはず。
 
+まずは、remote側の更新が無いか、確認。
+```
+$ cd ~/git/isucon_tools
+$ git fetch
+$ git merge --ff-only
+Already up to date.
+```
+
+問題ないため、~/bin/から本日作成の*.shを~/git/isucon_toolsに持ってきて、git addとcommit。<br>
+アクセストークのcacheが効いており、パスワードを聞かれずにpush成功!
+
 # TODO
 - gitk over ssh
 - `~isucon/isucon_tools/10-install-packages.sh`を`10_install_packages.sh`に`git mv`して`git push origin main`したら、ユーザー名とパスワードを聞かれてしまった…`~/.cache/git/credential/`が空だからか? 謎。
