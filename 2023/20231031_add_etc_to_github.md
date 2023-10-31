@@ -10,3 +10,4 @@
 
 # TODO
 - gitk over ssh
+- `~isucon/isucon_tools/10-install-packages.sh`を`10_install_packages.sh`に`git mv`して`git push origin main`したら、ユーザー名とパスワードを聞かれてしまった…`~/.cache/git/credential/`が空だからか? 謎。
