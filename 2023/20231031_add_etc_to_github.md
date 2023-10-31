@@ -181,7 +181,7 @@ $ git merge --ff-only
 Already up to date.
 ```
 
-問題ないため、~/bin/から本日作成の*.shを~/git/isucon_toolsに持ってきて、git addとcommit。<br>
+問題ないため、~/bin/から、本日作成の*.shを ~/git/isucon_toolsに持ってきて、git addとcommit。<br>
 アクセストークのcacheが効いており、パスワードを聞かれずにpush成功!
 
 # TODO
