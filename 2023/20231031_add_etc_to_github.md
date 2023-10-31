@@ -56,15 +56,19 @@ http://admin.t.isucon.local:9090/ にアクセスし、[呪文](https://github.c
 
 # ISUCONにおけるgithub管理
 議論の過程で、ISUCON当日のgithub共同作業において、アクセストークンをどうするか、アカウントとリポジトリをどうするか、といった検討が必要なことが判明。<br>
-検索の結果、[ISUCONの先人の調査](http://tatamo.81.la/blog/2018/09/16/isucon8-qual-2/)が深い。
+検索の結果、[ISUCONの先人の調査](http://tatamo.81.la/blog/2018/09/16/isucon8-qual-2/)が深い。みんなで読んで議論。
 - bot用の専用githubアカウントを作る
 - リポジトリは、
   - 作成した専用githubアカウントにリポジトリを作成しても、メンバー登録してChallengeClub内にリポジトリを作成しでもよい
   - /etc/内の重要情報の登録や、ISUCONレギュレーションでの共有不可から考えると、プライベートリポジトリにする
 - 専用githubアカウントでアクセストークンを払い出す
   - ユーザーisuconがgit cloneするだけならアクセストークン不要だが、プライベートリポジトリで、かつ、ISUCON本番での初手がgit pushなので、アクセストークンが必要
+  - 専用githubアカウントに加えて、個人のアカウントもメンバーに加えておけば、ローカルにcloneして個人のアカウントでpushもできる
+  - ブランチ戦略は、小規模短時間が想定されるので、ブランチ無し、誰々さんブランチ、などが考えられるかも、要検討
 
 という理解に至る。
+
+なお、各人のgithubアカウントが分からなくなったので、[こちら](https://github.com/orgs/ChallengeClub/people)で確認。入れていなかった方の追加も行った。
 
 ## 休憩コラム〜gitでのユーザー管理とアクセス権設定〜
 gitでのユーザー管理とアクセス権設定が話題に。MakerFaireでのARコンテンツ登録リポジトリは、以下の構成。
@@ -89,7 +93,7 @@ githubのアカウント作成には、メールアドレスが必要。gmailに
 ### アクセストークンの生成と保存
 webappをgit pushする際に必要となる、アクセストークンの保存について議論。
 
-git pushに備え、githubのWebUIから、アクセストークンをClassicで生成。権限はreposのみ。期限は7日。
+git pushに備え、[githubのWebUIから、アクセストークンをClassicで生成](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)。権限はreposのみ。期限は7日。
 
 アクセストークンの保存は、[こちら](https://rfs.jp/server/git/github/personal_access_tokens.html)を見て検討した結果、以下の設定で30日間cacheに保存することにする。
 ```
