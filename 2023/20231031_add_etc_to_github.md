@@ -78,9 +78,9 @@ http://admin.t.isucon.local:9090/ にアクセスし、[呪文](https://github.c
 ### アクセストークンの生成と保存
 webappをgit pushする際に必要となる、アクセストークンの保存について議論。
 
-git pushに備え、githubのWebUIから、アクセストークンを(とりあえずClassicで)生成。期限は7日。
+git pushに備え、githubのWebUIから、アクセストークンをClassicで生成。権限はreposのみ。期限は7日。
 
-アクセストークンの保存は、[こちら](https://rfs.jp/server/git/github/personal_access_tokens.html)を見て検討した結果、以下で30日間cacheに保存することにする。
+アクセストークンの保存は、[こちら](https://rfs.jp/server/git/github/personal_access_tokens.html)を見て検討した結果、以下の設定で30日間cacheに保存することにする。
 ```
 git config --global credential.helper 'cache --timeout=2592000'
 ```
@@ -171,6 +171,7 @@ To https://github.com/kiws-isucon-bot/isucon12q3-testbot.git
 push成功!
 
 # スクリプトのisucon_toolsリポジトリ登録
+ChallengeClubにkiws-isucon-botをメンバー登録すれば、ChallengeClub内のisucon_toolsにも、git pushできるはず。
 
 # TODO
 - gitk over ssh
