@@ -24,7 +24,19 @@ $ gitk
 Command 'gitk' not found, but can be installed with:
 sudo apt install gitk
 ```
-ということで、`sudo apt install gitk`でインストール。
+ということで、`sudo apt install gitk`でインストール。ところが、実行すると
+```
+$ gitk
+application-specific initialization failed: no display name and no $DISPLAY environment variable
+Error in startup script: no display name and no $DISPLAY environment variable
+    while executing
+"load /usr/lib/x86_64-linux-gnu/libtk8.6.so"
+    ("package ifneeded Tk 8.6.12" script)
+    invoked from within
+"package require Tk"
+    (file "/usr/bin/gitk" line 10)
+```
+ということで、sshでログインしたCLIからは、(そのままでは)GUIは表示できない模様。TODO。
 
 ## Prometheus
 [以前のtips](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20230921_node-exporter.md)より、
