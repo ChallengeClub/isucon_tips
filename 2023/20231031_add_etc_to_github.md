@@ -74,7 +74,7 @@ gitでのユーザー管理とアクセス権設定が話題に。MakerFaireで�
 - リポジトリは複数設置
 
 簡単だが、リポジトリ単位のアクセス権設定ができない。<br>
-GitLabなど高度な管理を備えたシステムの利用や、各ユーザー毎にauthorized_keysを設定するなどの方法もある。<br>
+[GitLab](https://gitlab.com/gitlab-org/gitlab)など高度な管理を備えたシステムの利用や、各ユーザー毎にauthorized_keysを設定するなどの方法もある。<br>
 TODO: seigotさんに解説いただく。
 
 ## 専用githubアカウントの作成
