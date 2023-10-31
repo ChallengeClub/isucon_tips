@@ -198,9 +198,11 @@ $ git merge --ff-only
 Already up to date.
 ```
 
-問題ないため、本日作成の~/bin/*.shを ~/git/isucon_tools/にcp。続いて、git addとcommit。<br>
+問題ないため、本日作成の~/bin/*.shを ~/git/isucon_tools/にcp。続いて、git add。<br>
+直接関連のない2つのスクリプトの登録だったので、commitは2つに分ける案もあったが、まぁいいやと丸っと1つでcommit。<br>
 アクセストークンのcacheが効いており、パスワードを聞かれずにpush成功!
 
 # TODO
 - gitk over ssh
-- `~isucon/isucon_tools/10-install-packages.sh`を`10_install_packages.sh`に`git mv`して`git push origin main`したら、ユーザー名とパスワードを聞かれてしまった。まだ30日はおろか、7日も経ってないのに! `~/.cache/git/credential/`が空だからか? 謎。
+- アクセストークンのcacheが消えた?
+  - `~isucon/isucon_tools/10-install-packages.sh`を`10_install_packages.sh`に`git mv`して`git push origin main`したら、ユーザー名とパスワードを聞かれてしまった。まだ30日はおろか、7日も経ってないのに! `~/.cache/git/credential/`が空だからか? 謎。
