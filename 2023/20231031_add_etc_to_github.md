@@ -7,6 +7,32 @@
 - 最終的に
   - webappと/etc/を、[kiwsさんのISUCON専用アカウント](https://github.com/kiws-isucon-bot)の[リポジトリ](https://github.com/kiws-isucon-bot/isucon12q3-testbot)にpushできた
   - シェルスクリプト2本を、[isucon_tools](https://github.com/ChallengeClub/isucon_tools)にpushできた
+ 
+# Elastic IPアイスブレイク再び
+「先週のElastic IPがなんちゃらって何ですか?」 -> 「EC2インスタンスに固定IPを関連付けたので、もうIPアドレス変わらないんですよ〜」<br>
+「それってどうやって確認するんですか?」 -> AWSにログインして、isucon12q3のElastic IPを見ると分かります〜」
+
+確認したIPアドレスでログイン完了。
+
+# パッケージのインストール
+## ツール
+本番含め、慣れたツールが一番。
+- ともさん: `sudo apt install emacs-nox`
+- kiwsさん: gitkを入れたいが、パッケージ名が不明
+```
+$ gitk
+Command 'gitk' not found, but can be installed with:
+sudo apt install gitk
+```
+ということで、`sudo apt install gitk`でインストール。
+
+## Prometheus
+[以前のtips](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20230921_node-exporter.md)より、
+```
+sudo apt -y install prometheus prometheus-node-exporter
+```
+を`~isucon/bin/10_install_packages.sh`に記入、実行。<br>
+Prometheusがインストールされた。
 
 # TODO
 - gitk over ssh
