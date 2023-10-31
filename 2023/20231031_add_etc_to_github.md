@@ -26,8 +26,8 @@ sudo apt install gitk
 ```
 
 無いコマンドを入力すると、インストール方法が表示される。<br>
-そこで、`sudo apt install gitk`でインストール。<br>
-ところが、実行すると
+そこで、`sudo apt install gitk`を実行、インストールは成功。<br>
+ところが、gitkを実行すると、
 ```
 $ gitk
 application-specific initialization failed: no display name and no $DISPLAY environment variable
@@ -40,7 +40,7 @@ Error in startup script: no display name and no $DISPLAY environment variable
     (file "/usr/bin/gitk" line 10)
 ```
 
-ということで、sshでログインしたCLIからは、(そのままでは)GUIは表示できない模様。TODO。
+というエラーが発生。sshでログインしたCLIからは、(そのままでは)GUIは表示できない模様。TODO。
 
 ## Prometheus
 [以前のtips](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20230921_node-exporter.md)より、
