@@ -43,8 +43,8 @@ Error in startup script: no display name and no $DISPLAY environment variable
 ```
 sudo apt -y install prometheus prometheus-node-exporter
 ```
-を`~isucon/bin/10_install_packages.sh`に記入、実行。<br>
-Prometheusがインストールされた。
+を`~isucon/bin/10_install_packages.sh`に記入、実行。Prometheusがインストールされた。<br>
+http://admin.t.isucon.local:9090/ にアクセスし、[呪文](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20230921_node-exporter.md#prometheus%E7%A2%BA%E8%AA%8D)を入力、Executeボタンを押し、グラフ表示も確認OK。
 
 # TODO
 - gitk over ssh
