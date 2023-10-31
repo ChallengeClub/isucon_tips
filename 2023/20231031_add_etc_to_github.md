@@ -148,13 +148,14 @@ tipsとともにスクリプトも修正。
 ### /etcのpush
 /etc丸ごとgithubに登録するかどうか、議論。
 
-判断のために、サイズを算出。大きくないので、丸ごと登録する。
+判断のために、サイズを算出。/etc/にはrootでないとアクセスできないものがあるため、sudoしてdu。<br>
 ```
 $ sudo du -sh /etc
 6.5M	/etc
 ```
 
-rootでないとアクセスできないものがあるため、sudoして/etcをwebappにコピー。
+大きくないので、丸ごと登録する。<br>
+/etc/にはrootでないとアクセスできないものがあるため、sudoして/etcをwebappにコピー。
 ```
 sudo cp -a /etc ~/webapp/
 ```
