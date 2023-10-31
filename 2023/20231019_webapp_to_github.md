@@ -12,7 +12,7 @@
   - `git init`
   - `git add *`
   - `git status`
-  - `commit -m "first commit"`
+  - `git commit -m "first commit"`
   - `git log`
 - remoteの設定
   - `git remote add origin https://github.com/HideakiTakechi/isucon12q.git`
