@@ -196,7 +196,10 @@ Enter the new value, or press ENTER for the default
 - 管理者(admin)画面を見るには: https://admin.t.isucon.local/ -> ログイン名にadminと入れて(入れなくてもよい?)ログイン -> 一覧が出てくる！
 - 利用者(player)画面を見るには: https://isucon.t.isucon.local/ -> ログイン名に0001と入れてログイン -> 一覧が出てくる！
 
-/api/adminと/api/playerのどちらも、ブラウザでもcurlでも確認できるようになったはず。<br>
+過去に*.t.isucon.localや*.t.isucon.devの証明書を独自に発行したCAの証明書を、ブラウザやOSにインポートした方は、削除しましょう。<br>
+isucon12q3のnginxにデフォルトで設定されている自己署名証明書の署名検証に失敗して、ブラウザがエラーとなります。
+
+これで、/api/adminと/api/playerのどちらも、ブラウザでもcurlでも確認できるようになったはず。<br>
 (たぶん)めでたしめでたし(なおベンチマーク未実行…)
 
 # TODO
