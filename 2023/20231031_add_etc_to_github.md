@@ -76,13 +76,14 @@ http://admin.t.isucon.local:9090/ にアクセスし、[呪文](https://github.c
 専用アカウントで、[webappのリポジトリ](https://github.com/kiws-isucon-bot/isucon12q3-testbot)を、githubのWebUIで作成。
 
 ### アクセストークンの生成と保存
-webappをgit pushする際に必要となる、アクセストークンの保存について議論<br>
-[こちら](https://rfs.jp/server/git/github/personal_access_tokens.html)を見て検討した結果、以下で30日間cacheに保存することにする。
+webappをgit pushする際に必要となる、アクセストークンの保存について議論。
+
+git pushに備え、githubのWebUIから、アクセストークンを(とりあえずClassicで)生成。期限は7日。
+
+アクセストークンの保存は、[こちら](https://rfs.jp/server/git/github/personal_access_tokens.html)を見て検討した結果、以下で30日間cacheに保存することにする。
 ```
 git config --global credential.helper 'cache --timeout=2592000'
 ```
-
-git pushに備え、githubのWebUIから、アクセストークンを(とりあえずClassicで)生成。
 
 ### シェルスクリプト化とwebappのpush
 webapp丸ごとgithubに登録するか、議論。
@@ -93,7 +94,7 @@ $ du -sh ~/webapp
 445M	/home/isucon/webapp
 ````
 
-登録できるサイズではある。
+445MB、登録できるサイズではある。
 
 .gitignoreを調べると、
 ```
@@ -110,7 +111,7 @@ $ find ~/webapp -name '.gitignore'
 /home/isucon/webapp/.gitignore
 ```
 
-既に必要な.gitignoreが運営の手によって設定されている。素晴らしい!<br>
+…となっており、既に必要な.gitignoreが運営の手によって設定されている。素晴らしい!<br>
 例えば、tenant_dbは、dbもlockもignore対象。
 ```
 $ cat ~/webapp/tenant_db/.gitignore
@@ -118,24 +119,25 @@ $ cat ~/webapp/tenant_db/.gitignore
 *.lock
 ```
 
-よって、丸ごと登録することとする。
+よって、webapp丸ごとgithubに登録することにする。
 
 [以前のtips](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20231019_webapp_to_github.md)を元に、先ほどのアクセストークンをcacheする設定も含めて、webappのgithubへの登録を[`~/bin/05_add_webapp_to_github.sh`]()でシェルスクリプト化。<br>
-実行したところ、git commitができていない。調べると、tipsで`git commit`とすべきところが、`commit`となっていて、それをコピペしたため、エラーが発生。<br>
-tipsとともにスクリプトも修正。<br>
+実行したところ、エラー発生。git statusで確認すると、git commitができていない。<br>
+調べると、tipsで`git commit`とすべきところが、`commit`となっていて、それをコピペしたため、エラーが発生。<br>
+tipsとともにスクリプトも修正。
+
 修正後のスクリプトを実行したところ、ユーザー名とパスワードを聞かれる<br>
 ユーザー名は先ほど作成した専用アカウントのものを、パスワードは生成したアクセストークンを入力。<br>
 結果、push成功!
 
 ### /etcのpush
-/etc丸ごとgithubに登録するかどうか、議論。<br>
-判断のために、サイズを算出。
+/etc丸ごとgithubに登録するかどうか、議論。
+
+判断のために、サイズを算出。大きくないので、丸ごと登録する。
 ```
 $ sudo du -sh /etc
 6.5M	/etc
 ```
-
-大きくないので、丸ごと登録する。
 
 rootでないとアクセスできないものがあるため、sudoして/etcをwebappにコピー。
 ```
@@ -168,7 +170,7 @@ To https://github.com/kiws-isucon-bot/isucon12q3-testbot.git
 
 push成功!
 
-# スクリプトのリポジトリ登録
+# スクリプトのisucon_toolsリポジトリ登録
 
 # TODO
 - gitk over ssh
