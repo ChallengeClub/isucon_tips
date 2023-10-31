@@ -56,7 +56,7 @@ http://admin.t.isucon.local:9090/ にアクセスし、[呪文](https://github.c
 
 # ISUCONにおけるgithub管理
 議論の過程で、ISUCON当日のgithub管理で、アクセストークンをどうするか、アカウントとリポジトリをどうするのか、要検討であることが判明。<br>
-調査の結果、[先人の調査](http://tatamo.81.la/blog/2018/09/16/isucon8-qual-2/)が深い。結果、
+検索の結果、[ISUCONの先人の調査](http://tatamo.81.la/blog/2018/09/16/isucon8-qual-2/)が深い。結果、
 - bot用の専用アカウントを作る
 - リポジトリは、
   - 作成した専用アカウントにリポジトリを作成しても、メンバー登録してChallengeClub内にリポジトリを作成しでもよい
