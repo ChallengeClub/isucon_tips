@@ -17,7 +17,7 @@
 # 必要なパッケージのインストール
 ## 人間が使うツール
 本番含め、慣れたツールが必要。
-- ともさん: `sudo apt install emacs-nox`
+- ともさん: 慣れたエディタのemacsを入れたい。`sudo apt install emacs-nox`
 - kiwsさん: gitkを入れたいが、パッケージ名が不明
 ```
 $ gitk
