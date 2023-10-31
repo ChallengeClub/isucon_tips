@@ -4,7 +4,7 @@
 - サーバーを設定するには、/etc/の変更が必要になった
 - /etc/の変更を履歴管理できるように、webappのgitリポジトリに入れようとした
 - 本番に備えて、githubのリポジトリとアカウントの運用を考え始めたら、学びが深かった
-- 最終的に
+- 最終的に、
   - webappと/etc/を、[kiwsさんのISUCON専用アカウント](https://github.com/kiws-isucon-bot)の[リポジトリ](https://github.com/kiws-isucon-bot/isucon12q3-testbot)にpushできた
   - シェルスクリプト2本を、[isucon_tools](https://github.com/ChallengeClub/isucon_tools)にpushできた
  
