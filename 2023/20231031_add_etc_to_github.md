@@ -66,6 +66,17 @@ http://admin.t.isucon.local:9090/ にアクセスし、[呪文](https://github.c
 
 という理解に至る。
 
+## 休憩コラム〜gitでのユーザー管理とアクセス権設定〜
+gitでのユーザー管理とアクセス権設定が話題に。MakerFaireでのARコンテンツ登録リポジトリは、以下の構成。
+- gitのURLにsshを使用
+- ユーザーgitだけを使用
+  - ユーザーgitの.ssh/authorized_keysに、複数ユーザーのssh公開鍵を登録
+- リポジトリは複数設置
+
+簡単だが、リポジトリ単位のアクセス権設定ができない。<br>
+GitLabなど高度な管理を備えたシステムの利用や、各ユーザー毎にauthorized_keysを設定するなどの方法もある。<br>
+TODO: seigotさんに解説いただく。
+
 ## 専用githubアカウントの作成
 githubのアカウント作成には、メールアドレスが必要。gmailには、アカウント名+サフィックス@gmail.com というエイリアスが作成できるとの[情報](https://mailwise.cybozu.co.jp/column/114.html)があり、実践。<br>
 結果、同じメールボックスに来る別メールアドレスが作成できた。<br>
