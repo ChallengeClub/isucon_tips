@@ -188,4 +188,4 @@ Already up to date.
 
 # TODO
 - gitk over ssh
-- `~isucon/isucon_tools/10-install-packages.sh`を`10_install_packages.sh`に`git mv`して`git push origin main`したら、ユーザー名とパスワードを聞かれてしまった…`~/.cache/git/credential/`が空だからか? 謎。
+- `~isucon/isucon_tools/10-install-packages.sh`を`10_install_packages.sh`に`git mv`して`git push origin main`したら、ユーザー名とパスワードを聞かれてしまった。まだ30日はおろか、7日も経ってないのに! `~/.cache/git/credential/`が空だからか? 謎。
