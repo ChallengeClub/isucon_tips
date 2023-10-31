@@ -70,7 +70,7 @@ http://admin.t.isucon.local:9090/ にアクセスし、[呪文](https://github.c
 gitでのユーザー管理とアクセス権設定が話題に。MakerFaireでのARコンテンツ登録リポジトリは、以下の構成。
 - gitのURLにsshを使用
 - ユーザーgitだけを使用
-  - ユーザーgitの.ssh/authorized_keysに、複数ユーザーのssh公開鍵を登録
+  - ユーザーgitの~/.ssh/authorized_keysに、複数ユーザーのssh公開鍵を登録
 - リポジトリは複数設置
 
 簡単だが、リポジトリ単位のアクセス権設定ができない。<br>
