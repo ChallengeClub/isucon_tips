@@ -7,3 +7,6 @@
 - 最終的に
   - webappと/etc/を、我々のISUCON専用アカウントのリポジトリにpushできた
   - シェルスクリプト2本を、isucon_toolsにpushできた
+
+# TODO
+- gitk over ssh
