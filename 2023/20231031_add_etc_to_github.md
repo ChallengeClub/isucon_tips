@@ -136,7 +136,7 @@ $ cat ~/webapp/tenant_db/.gitignore
 
 よって、webapp丸ごとgithubに登録することにする。
 
-[以前のtips](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20231019_webapp_to_github.md)を元に、先ほどのアクセストークンをcacheする設定も含めて、webappのgithubへの登録を[`~/bin/05_add_webapp_to_github.sh`]()でシェルスクリプト化。<br>
+[以前のtips](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20231019_webapp_to_github.md)を元に、先ほどのアクセストークンをcacheする設定も含めて、webappのgithubへの登録を[`~/bin/05_add_webapp_to_github.sh`](https://github.com/ChallengeClub/isucon_tools/blob/main/05_add_webapp_to_github.sh)でシェルスクリプト化。<br>
 実行したところ、エラー発生。git statusで確認すると、git commitができていない。<br>
 調べると、tipsで`git commit`とすべきところが、`commit`となっていて、それをコピペしたため、エラーが発生。<br>
 tipsとともにスクリプトも修正。
