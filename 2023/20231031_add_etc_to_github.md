@@ -6,7 +6,7 @@
 - 本番に備えて、githubのリポジトリとアカウントの運用を考え始めたら、学びが深かった
 - 最終的に
   - webappと/etc/を、我々のISUCON専用アカウントのリポジトリにpushできた
-  - シェルスクリプト2本を、isucon_toolsにpushできた
+  - シェルスクリプト2本を、[isucon_tools](https://github.com/ChallengeClub/isucon_tools)にpushできた
 
 # TODO
 - gitk over ssh
