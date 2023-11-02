@@ -24,6 +24,7 @@
 - 10/24 isucon12予選解説を辿ってvisit_historyにcreated_at含むCovering Index追加。スコア3000→3500とアップ。さっらに解説に従いvisit_historyを300万行→20万行に削減するがベンチに失敗。テーブルを元に戻した。
 - 10/26 isucon12q1が壊れ気味のため、isucon12q3を新規に作成。adminに加えplayerでも一覧が取れるようになった。Elastic IPを関連付けてIPアドレスを固定にした。
 - 10/31 isucon12q3をシェルスクリプトを書きながら育てようと思ったが、育てるには/etc/の編集が必要。webappとともに/etc/もgithub管理できるよう、本番も想定したgithub運用を検討及び整備。
+- 11/02 isucon12q3の登録先リポジトリを訂正。(isucon-botの管理からchallenge-clubのorganization管理のものへ）/etc/の下の全登録をやめ/etc/nginx,mysqlのみに。isucon12q3のnginxログのjson化、jq,alp,ab導入など。  
 
 ## ■ISUCON本攻略チェクリスト
 ```
