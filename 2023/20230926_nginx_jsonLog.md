@@ -113,6 +113,34 @@ http {
 
 参考：[NginxのアクセスログをJSON形式で出力する](https://qiita.com/progrhyme/items/c85d28eb18359f3f50d9)
 
+-----
+※2023/11/02(木) 更新
+isucon12q1の最終形態は以下です。
+```
+http {
+
+   log_format json escape=json '{"time":"$time_local",'
+                                '"host":"$remote_addr",'
+                                '"forwardedfor":"$http_x_forwarded_for",'
+                                '"req":"$request",'
+                                '"status":"$status",'
+                                '"method":"$request_method",'
+                                '"uri":"$request_uri",'
+                                '"body_bytes":$body_bytes_sent,'
+                                '"referer":"$http_referer",'
+                                '"ua":"$http_user_agent",'
+                                '"request_time":$request_time,'
+                                '"cache":"$upstream_http_x_cache",'
+                                '"runtime":"$upstream_http_x_runtime",'
+                                '"response_time":"$upstream_response_time",'
+                                '"vhost":"$host"}';
+
+        access_log /var/log/nginx/access.log json;
+中略
+       # access_log /var/log/nginx/access.log;
+```
+-----
+
 ## nginxのconfiguration設定が正しいかテスト
 sudo で権限問題は解決。
 ```bash 
