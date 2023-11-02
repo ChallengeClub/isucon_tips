@@ -117,6 +117,8 @@ http {
 ※2023/11/02(木) 更新
 isucon12q1の最終形態は以下です。
 ```
+$ cat /etc/nginx/nginx.conf
+    :
 http {
 
    log_format json escape=json '{"time":"$time_local",'
