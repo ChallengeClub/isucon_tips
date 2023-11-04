@@ -24,6 +24,7 @@ $ sudo lsof -P -i | grep -v sshd
 ```
 avg without(cpu) (rate(node_cpu_seconds_total{mode!="idle"}[1m]))
 ```
+(wsl2環境上に環境構築した場合は、IPアドレスにはwsl2のeth0の値を設定する)
 
 ## ベンチマーク実行
 ```bash
