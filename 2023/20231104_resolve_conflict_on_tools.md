@@ -129,7 +129,7 @@ To https://github.com/ChallengeClub/isucon_tools.git
 
 - 記載された作業指示に従って下記を実施。  
 （単にconflict_resolutionにmainの内容をマージして問題なければpushしてねということの模様。  
-本来マージ後にテスト通してOKにする筈。今回は目で見て問題なさそうで通す。）
+　本来マージ後にテスト通してOKにする筈。今回は目で見て問題がなさそうなので通す。）
 
 ```
 $ git pull origin main
@@ -183,7 +183,7 @@ branch 'conflict_resolution' set up to track 'origin/conflict_resolution'.
 
 <img src="./images/2023-11-04-pull-request-4.png" width="40%">
 
-- 以上で下図様にマージ出来た。
+- 以上で下の様にマージ出来た。
 
 <img src="./images/2023-11-04-network-2.png" width="40%">
 
