@@ -123,13 +123,13 @@ To https://github.com/ChallengeClub/isucon_tools.git
 
 <img src="./images/2023-11-04-pull-request-1.png" width="40%">
 
-- 作ったプルリクの中身を見ると、ローカルのコマンドラインで実施すべき作業指示の記載がある。
+- 作成したプルリクの中を見ると、ローカルのコマンドラインで実施すべき作業指示の記載がある。
 
 <img src="./images/2023-11-04-pull-request-2.png" width="40%">
 
-- 作業指示に従って下記実施。  
-単にconflict_resolutionにmainの内容をマージして問題なければpushしてねということの模様。  
-本来ここでテスト通してOKにする筈。今回は目で見て問題なさそうで通す。
+- 記載された作業指示に従って下記を実施。  
+（単にconflict_resolutionにmainの内容をマージして問題なければpushしてねということの模様。  
+本来マージ後にテスト通してOKにする筈。今回は目で見て問題なさそうで通す。）
 
 ```
 $ git pull origin main
