@@ -129,7 +129,8 @@ To https://github.com/ChallengeClub/isucon_tools.git
 
 - 記載された作業指示に従って下記を実施。  
 （単にconflict_resolutionにmainの内容をマージして問題なければpushしてねということの模様。  
-　本来マージ後にテスト通してOKにする筈。今回は目で見て問題がなさそうなので通す。）
+　本来はエディタでdiffを見ながら編集したりマージ後にテストを通してOKにしたりする筈？  
+　今回は目で見て問題がなさそうなので通す。）
 
 ```
 $ git pull origin main
