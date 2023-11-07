@@ -50,10 +50,11 @@ $ cd /var/log/mysql
 ```bash
 $ ls -ld /var/log/mysql
 drwxr-x--- 2 mysql adm 4096 Oct  6 00:00 /var/log/mysql
-$ sudo vigr
+$ sudo vigr -s
 こんな感じで編集
 - adm:x:4:syslog,ubuntu
-+ adm:x:4:syslog,ubuntu,isucon
++ adm:x:4:syslog,ubuntu,isucon,hidetake,seigot,kiwasa,maleicacid,takaaki,nakamura,miteru
+
 ここでログインしなおす
 $ id
 uid=1001(isucon) gid=1001(isucon) groups=1001(isucon),4(adm),27(sudo),122(docker)
