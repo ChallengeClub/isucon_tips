@@ -246,6 +246,8 @@ Count: 4081  Time=0.00s (11s)  Lock=0.00s (0s)  Rows=130.8 (533780), isucon[isuc
   SELECT player_id, MIN(created_at) AS min_created_at FROM visit_history WHERE tenant_id = N AND competition_id = 'S' GROUP BY player_id
 ```
 
+## （攻略２）
+同じ資料を参考に攻略を試みました。
 ### isit_history削除（300万→20万）、エラーで切り戻し
 （未記入）
 
