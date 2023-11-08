@@ -34,13 +34,15 @@ $ sudo vigr -s
 こんな感じで編集
 - adm:x:4:syslog,ubuntu
 + adm:x:4:syslog,ubuntu,isucon,hidetake,seigot,kiwasa,maleicacid,takaaki,nakamura,miteru
+スローログファイルのグループがmysqlだったのでadmグループに変更。ローテートしてもグループは引き継がれる。
+$ chgrp adm /var/log/mysql/mysql-slow.log
 ```
 ## （攻略１）
 「[ISUCON12 予選問題の解説と講評]((https://isucon.net/archives/56850281.html))」と[10/24素振り](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20231024_study_isucon12q_review.md)を参考に攻略を試みました。
 ### logrotate
 bench前にmysqlのログローテート実施（以下の操作でerror.logとmysql-slow.logとも対象）
 ```
-/etc/logrotate.d/mysql-server
+sudo logrotate -f /etc/logrotate.conf
 ```
 ### bench実施
 ```
