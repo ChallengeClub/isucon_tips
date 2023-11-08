@@ -35,6 +35,7 @@ $ file hoge                             # file素性確認
 $ stress -c 1                           # 並列度1で負荷試験
 $ ab -c 1 -n 10 https://localhost/      # 並列度1で10回アクセス試験
 $ alp json --file access.log            # アクセスログ解析
+$ sudo logrotate -f /etc/logrotate.conf.   # logrotate
 $ ./bench -target-addr 127.0.0.1:443    # isucon12qベンチマーク
 ```
 ## 負荷確認  
