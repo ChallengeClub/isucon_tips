@@ -17,8 +17,8 @@ MIN(created_at) の行だけを使って新しいテーブルを作成し、既�
 ```go	
 	// 大会ごとの課金レポートを計算する
 	func billingReportByCompetition(ctx context.Context, tenantDB dbOrTx, tenantID int64, competitonID string) (*BillingReport, error) {
-    // 略	
-    // ランキングにアクセスした参加者のIDを取得する
+	// 略	
+	// ランキングにアクセスした参加者のIDを取得する
 	vhs := []VisitHistorySummaryRow{}
 	if err := adminDB.SelectContext(
 		ctx,
@@ -41,7 +41,7 @@ MIN(created_at) の行だけを使って新しいテーブルを作成し、既�
 ```
 - visit_historyに対する操作は、SELECT１箇所、INSERT1箇所。
 - SELECTでupdated_atは使ってない。
-- 以上からcompetitionIDの利用をやめればOK。具体的には下記。
+- 以上からINSERTでupdated_atの利用をやめればOK。具体的には下記。
 ```diff
 --- a/go/isuports.go
 +++ b/go/isuports.go
