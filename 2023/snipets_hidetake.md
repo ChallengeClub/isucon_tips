@@ -63,7 +63,7 @@ $ /usr/sbin/nginx -s reopen          # ログローテート
 
 ## mysql  
 ```
-$ mysq -u isucon -p
+$ mysql -u isucon -p
 mysql> show databases;
 mysql> use hoge_db;
 mysql> show tables;
