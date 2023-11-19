@@ -9,19 +9,19 @@
 - [ ] お昼ごはん、おやつ、ドリンク、睡眠  
 
 ## 【当日競技開始】
-:::note info  
-10:00 競技開始。競技当日の流れは11/21目途に発表予定。  
-:::  
-11/21発表の競技当日の流れを読んで置き、当日発表されるisucon13本戦当日マニュアルを読む。  
-内容に応じてRUNBOOKは読み替える。isucon13 Discordを都度確認する。  
+> **Info:**   10:00 競技開始。競技当日の流れは11/21目途に発表予定。
+  
+11/21発表の競技当日の流れを事前読んでおいて、当日は当日発表されるisucon13本戦当日マニュアルを読む。  
+内容に応じてRUNBOOKは読み替える。isucon13 Discordは都度確認する。  
 
 ### ■起動
-[ここ](./20231003_cloudFormation.md)を参考に作業する
-- [ ] ISUCON13 PortalからCloudFormationのテンプレートをダウンロード。  
-- [ ] ダウンロードしたテンプレートファイルを元にAWSでスタックを作成しCREATE_COMPLETE待ち。  
+[ここ](./20231003_cloudFormation.md)を参考に以下の作業を行う。
+- [ ] [ISUCON13 Portal](https://portal.isucon.net/auth/settings/team/)からCloudFormationのテンプレートをダウンロード。  
+- [ ] ダウンロードしたテンプレートファイルを元にAWSでスタックを作成しCREATE_COMPLETEを待つ。  
 
 ### ■接続
-同一インスタンスx3が作成される前提で以下各自の作業用に１インスタンスを使う想定にしましょう。（.ssh/configへの全インスタンス(isucon13fxとか)のIPアドレス追記がお薦め。）  
+同一インスタンスx3が作成される前提で各自の作業用に１インスタンスを使う想定にしましょう。  
+（.ssh/configへ全インスタンス(isucon13fxとか)のIPアドレス追記するのがお薦め。）  
 - [ ] 出来たインスタンスに各自ssh接続する。成功したらsudo su - isuconまで実施。  
 - [ ] ~/webapp/binを作成しisucon_toolsをgit cloneする。  
 - [ ] 04_setupSSH.shを実行してssh keepalive設定を行う。  
@@ -45,13 +45,13 @@ memcahedやRedisも居るかも。結果や不明点を適度にログる。
 ~/webappのディレクトリ構成を調べ必要に応じ/etc, var/logの様子も確認。
 
 ### ■環境保全とCICD準備
-isucon13f1を代表としgithubのプライベートリポジトリを作成し環境保全する。
+isucon13f1を代表としてgithubのプライベートリポジトリへpushし環境保全する。
 - [ ] /etcから主要なアプリ設定を~/webapp/etcにコピー。（nginx,mysqlなど。systemdあたりも？）
-- [ ] リモートリポジトリ登録して初回push。05_add_webapp_to_github.shを改変して実行、または[ここ](20231019_webapp_to_github.md)を参考に手動でリモートリポジトリに設定。
-- [ ] その他のインスタンスでpullしてコンフリクトがないことを確認。
+- [ ] リモートリポジトリ登録して初回push。05_add_webapp_to_github.shを改変して実行、または[ここ](20231019_webapp_to_github.md)を参考に手動で設定する。
+- [ ] 他のインスタンスでpullしてコンフリクトがないことを確認する。
 
 ### ■サーバ環境設定
-準備が出来たら以後の作業のため環境設定を行う。
+以後の作業のため環境設定を行う。
 ```
 $ sudo apt -y install dstat             # dstat
 $ sudo apt -y install jq                # jq
