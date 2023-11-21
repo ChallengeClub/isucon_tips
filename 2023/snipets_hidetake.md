@@ -25,6 +25,7 @@ $ cat /etc/os-release                   # os確認
 $ cat /etc/passwd | grep -v nologin     # user確認  
 $ sudo lsof -P -i | grep -v sshd        # process確認
 $ sudo ss -tlp | grep hoge              # process確認
+$ sudo ss -tlpn | grep hoge             # process確認
 $ service --status-all                  # serviceリスト確認
 $ systemctl status hoge                 # service確認
 $ file hoge                             # file素性確認
