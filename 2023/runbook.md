@@ -31,7 +31,7 @@
 下記などでインスタンスの概要調査を行う。  
 ```
 $ cat /etc/os-release                   # os確認  
-$ cat /etc/passwd | grep -v nologin     # user確認  
+$ grep -v nologin /etc/passwd    # user確認  
 $ sudo lsof -P -i | grep -v sshd        # process確認
 $ sudo ss -tlp | grep hoge              # process確認
 $ sudo ss -tlpn | grep hoge             # process確認
@@ -57,6 +57,7 @@ isucon13f1を代表としてgithubのプライベートリポジトリへpushし
 $ sudo apt -y install dstat             # dstat
 $ sudo apt -y install jq                # jq
 # prometheus; http://{IP}:9090/ or curl localhost:9090/metrics --> AWSの9090ポートを開けること
+# 呪文:　avg without(cpu) (rate(node_cpu_seconds_total{mode!="idle"}[1m]))
 $ sudo apt -y install prometheus prometheus-node-exporter
 # alp
 $ wget https://github.com/tkuchiki/alp/releases/download/v1.0.18/alp_linux_amd64.tar.gz
@@ -72,8 +73,7 @@ $ sudo apt -y install apache2-utils     # ab
 ```
 $ sudo vigr -s
 - adm:x:4:syslog,ubuntu
-+ adm:x:4:syslog,ubuntu,isucon,hidetake,seigot,maleicacid
-+ adm:x:4:syslog,ubuntu,isucon,kiwasa,takaaki,miteru
++ adm:x:4:syslog,ubuntu,isucon,hidetake,seigot,maleicacid,kiwasa,takaaki,miteru
 ```
 他にもisucon,webapp,mysql等のグループが存在して作業の都合が良ければ必要に応じユーザ追加する。
 
@@ -81,7 +81,7 @@ $ sudo vigr -s
 アプリケーションマニュアルを参照しつつブラウザでアクセスして動作を把握する。
 
 ### ■初回ベンチマーク
-logrotateしてからベンチマーク実施。
+sudo logrotate -f /etc/logrotate.confしてからベンチマーク実施。
 
 ## 【攻略】
 ### ■RDB攻略
