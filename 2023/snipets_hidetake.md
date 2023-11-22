@@ -54,6 +54,12 @@ $ curl -k https://localhost
 $ curl -kv https://localhost
 ```
 
+## Docker
+```
+$ docker ps -a                      # コンテナの確認
+$ docker exec -it hoge bash         # コンテナへの接続（bashなければsh）
+```
+
 ## nginx  
 ```
 $ sudo systemctl status nginx        # ステータス
