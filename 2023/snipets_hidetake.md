@@ -7,38 +7,38 @@ $ sudo su - isucon
 
 ## インストール  
 ```
-$ sudo apt -y install dstat             # dstat
-$ sudo apt -y install jq                # jq
+$ sudo apt -y install dstat               # dstat
+$ sudo apt -y install jq                  # jq
 # prometheus; http://{IP}:9090/ or curl localhost:9090/metrics
 $ sudo apt -y install prometheus prometheus-node-exporter
 # alp
 $ wget https://github.com/tkuchiki/alp/releases/download/v1.0.18/alp_linux_amd64.tar.gz
 $ tar xvzf alp_linux_amd64.tar.gz
 $ mv alp /usr/local/bin/alp
-$ sudo apt -y install apache2-utils     # ab
-$ sudo yum install epel-release         # (未検証)
+$ sudo apt -y install apache2-utils       # ab
+$ sudo yum install epel-release           # (未検証)
 ```
 
 ## 環境調査  
 ```
-$ cat /etc/os-release                   # os確認  
-$ cat /etc/passwd | grep -v nologin     # user確認  
-$ sudo lsof -P -i | grep -v sshd        # process確認
-$ sudo ss -tlp | grep hoge              # process確認
-$ sudo ss -tlpn | grep hoge             # process確認
-$ service --status-all                  # serviceリスト確認
-$ systemctl status hoge                 # service確認
-$ file hoge                             # file素性確認
+$ cat /etc/os-release                     # os確認  
+$ cat /etc/passwd | grep -v nologin       # user確認  
+$ sudo lsof -P -i | grep -v sshd          # process確認
+$ sudo ss -tlp | grep <hoge>              # process確認
+$ sudo ss -tlpn | grep <hoge>             # process確認
+$ service --status-all                    # serviceリスト確認
+$ systemctl status <hoge>                 # service確認
+$ file <hoge>                             # file素性確認
 ```
 
 ## 負荷試験関係 
 ```
-$ stress -c 1                           # 並列度1で負荷試験
-$ ab -c 1 -n 10 https://localhost/      # 並列度1で10回アクセス試験
-$ alp json --file access.log            # アクセスログ解析
-$ sudo logrotate -f /etc/logrotate.conf # logrotate
+$ stress -c 1                             # 並列度1で負荷試験
+$ ab -c 1 -n 10 https://localhost/        # 並列度1で10回アクセス試験
+$ alp json --file access.log              # アクセスログ解析
+$ sudo logrotate -f /etc/logrotate.conf   # logrotate
 $ cd ~/banch
-$ ./bench -target-addr 127.0.0.1:443    # isucon12qベンチマーク
+$ ./bench -target-addr 127.0.0.1:443      # isucon12qベンチマーク
 ```
 ## 負荷確認  
 ブラウザで`http://{IPアドレス}:9090/`を開くと、GUIが表示される。
@@ -56,17 +56,20 @@ $ curl -kv https://localhost
 
 ## Docker
 ```
-$ docker ps -a                      # コンテナの確認
-$ docker exec -it hoge bash         # コンテナへの接続（bashなければsh）
+$ docker ps -a                            # コンテナの確認
+$ docker start <hoge>
+$ docker stop <hoge>
+$ docker restart <hoge>
+$ docker exec -it <hoge> bash             # コンテナへの接続（bashなければsh）
 ```
 
 ## nginx  
 ```
-$ sudo systemctl status nginx        # ステータス
-$ sudo systemctl reload nginx        # 設定ファイルのリロード（無切断）
-$ sudo nginx -t                      # 設定ファイル確認
-$ sudo systemctl restart nginx       # 再起動
-$ /usr/sbin/nginx -s reopen          # ログローテート
+$ sudo systemctl status nginx             # ステータス
+$ sudo systemctl reload nginx             # 設定ファイルのリロード（無切断）
+$ sudo nginx -t                           # 設定ファイル確認
+$ sudo systemctl restart nginx            # 再起動
+$ /usr/sbin/nginx -s reopen               # ログローテートの直接指示
 ```
 
 ## mysql  
