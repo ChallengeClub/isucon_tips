@@ -77,6 +77,10 @@ $ tar xvzf alp_linux_amd64.tar.gz
 $ mv alp /usr/local/bin/alp
 $ sudo apt -y install apache2-utils     # ab
 ```
+#### ポートの開け方
+EC2→セキュリティグループ->インバウンドルールの追加で変更できます。
+![image](https://github.com/ChallengeClub/isucon_tips/assets/62125060/4994645e-b4a2-4692-8456-817a880e4c6f)
+
 #### nginxのlogのjson化設定
 [ここ](20230926_nginx_jsonLog.md)などを参考に作業。
 
