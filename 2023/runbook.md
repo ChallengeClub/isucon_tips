@@ -22,9 +22,16 @@
 ### ■接続
 同一インスタンスx3が作成される前提で各自の作業用に１インスタンスを使う想定にしましょう。  
 （.ssh/configへ全インスタンス(isucon13fxとか)のIPアドレス追記するのがお薦め。）  
-- [ ] 出来たインスタンスに各自ssh接続する。成功したらsudo su - isuconまで実施。  
-- [ ] ~/webapp/binを作成しisucon_toolsをgit cloneする。  
+- [ ] 出来たインスタンスに各自ssh接続する。userはisuconで接続するはず。  
+- [ ] ~/binを作成しisucon_toolsをgit cloneする。
 - [ ] 04_setupSSH.shを実行してssh keepalive設定を行う。  
+```
+$ mkdir bin
+$ cd bin
+$ git clone https://github.com/ChallengeClub/isucon_tools.git
+$ cd isucon_tools/
+$ ./04_setupSSH.sh
+```  
 - [ ] 必要なメンバーはVSCodeRemoteDevelopの接続等を設定（autoscanはoffで）  
 
 ### ■サーバ内部調査
@@ -50,6 +57,10 @@ isucon13f1を代表としてgithubのプライベートリポジトリへpushし
 - [ ] /etcから主要なアプリ設定を~/webapp/etcにコピー。（nginx,mysqlなど。systemdあたりも？）
 - [ ] リモートリポジトリ登録して初回push。05_add_webapp_to_github.shを改変して実行、または[ここ](20231019_webapp_to_github.md)を参考に手動で設定する。
 - [ ] 他のインスタンスでpullしてコンフリクトがないことを確認する。★
+
+```
+du -sh ~/webapp
+```
 
 ### ■サーバ環境設定
 以後の作業のため環境設定を行う。
