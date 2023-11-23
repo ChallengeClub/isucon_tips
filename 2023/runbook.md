@@ -3,8 +3,9 @@
 ## 【前日準備】
 - [x] Team登録/githubにssh公開鍵登録/AWS起動試験  
 - [x] 当日用のDiscordPrivateChannel/VoiceChannel用意
+- [x] github Token発行（by kiws）
 - [ ] 当日用の空のPrivareリポジトリ用意
-- [ ] 各自github PAT発行とPrivareリポジトリ接続確認  
+- [ ] Privareリポジトリ接続確認  
 - [ ] Team代表はAWSクーポン入手  
 - [ ] お昼ごはん、おやつ、ドリンク、睡眠  
 
@@ -59,7 +60,7 @@ isucon13f1を代表としてgithubのプライベートリポジトリへpushし
 - [ ] 他のインスタンスでpullしてコンフリクトがないことを確認する。★
 
 ```
-du -sh ~/webapp
+$ du -h --max-depth=1
 ```
 
 ### ■サーバ環境設定
@@ -102,7 +103,10 @@ sudo logrotate -f /etc/logrotate.confしてからベンチマーク実施。
 - [ここ](20231005_mysql_slowlog.md)を参考にslowlogをオン（競技終了時にはoff）
 ### ■WebApp攻略
 - alpの実行
-- アプリログの場所の確認、内容の確認
+- アプリログの場所の確認、内容の確認（journaldで集めている場合下記で確認できる）
+```
+journalctl -xef -u <サービス名:isuportsなど>
+```
 - WebAPIのリストアップ
 - N+1の特定と対策
 - その他の重くて不要な処理の確認
