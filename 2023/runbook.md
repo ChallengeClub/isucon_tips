@@ -3,16 +3,16 @@
 ## 【前日準備】
 - [x] Team登録/githubにssh公開鍵登録/AWS起動試験  
 - [x] 当日用のDiscordPrivateChannel/VoiceChannel用意
-- [x] github Token発行（by kiws）
-- [ ] 当日用の空のPrivareリポジトリ用意
+- [x] Team代表はAWSクーポン入手 
+- [x] github Token発行（by kiws） 
 - [ ] Privareリポジトリ接続確認  
-- [ ] Team代表はAWSクーポン入手  
+- [ ] 当日用の空のPrivareリポジトリ用意
 - [ ] お昼ごはん、おやつ、ドリンク、睡眠  
 
 ## 【当日競技開始】
 > **Info:**  競技時間: 11月25日(土) 10:00〜18:00(JST) 10:00 競技開始。
   
-[競技当日の流れ](20231125_README.md)を事前読んでおいて、当日は当日発表されるisucon13本戦当日マニュアルを読む。  
+[競技当日の流れ](20231125_README.md)を読んでおき、当日発表されるisucon13本戦当日マニュアルを読む。  
 内容に応じてRUNBOOKは読み替える。isucon13 Discordは都度確認する。  
 
 ### ■起動
@@ -27,6 +27,7 @@
 - [ ] ~/binを作成しisucon_toolsをgit cloneする。
 - [ ] 04_setupSSH.shを実行してssh keepalive設定を行う。  
 ```
+$ cd ~
 $ mkdir bin
 $ cd bin
 $ git clone https://github.com/ChallengeClub/isucon_tools.git
@@ -55,12 +56,17 @@ memcahedやRedisも居るかも。結果や不明点を適度にログる。
 
 ### ■環境保全とCICD準備
 isucon13f1を代表としてgithubのプライベートリポジトリへpushし環境保全する。
-- [ ] /etcから主要なアプリ設定を~/webapp/etcにコピー。（nginx,mysqlなど。systemdあたりも？）
+- [ ] /etcから主要な設定を~/webapp/etcにコピー。（nginx,mysql, systemdなど）
+- [ ] webappでgit initして空commit、.gitignoreを作成しgit add,commit
 - [ ] リモートリポジトリ登録して初回push。05_add_webapp_to_github.shを改変して実行、または[ここ](20231019_webapp_to_github.md)を参考に手動で設定する。
 - [ ] 他のインスタンスでpullしてコンフリクトがないことを確認する。★
 
 ```
+$ cd ~/webapp
 $ du -h --max-depth=1
+$ vi .gitignore
+$ git init
+ ...
 ```
 
 ### ■サーバ環境設定
@@ -76,6 +82,9 @@ $ wget https://github.com/tkuchiki/alp/releases/download/v1.0.18/alp_linux_amd64
 $ tar xvzf alp_linux_amd64.tar.gz
 $ mv alp /usr/local/bin/alp
 $ sudo apt -y install apache2-utils     # ab
+# ログ置場準備(ベンチマーク結果等github回収用)
+$ cd ~/webapp
+$ mkdir log
 ```
 #### ポートの開け方
 EC2→セキュリティグループ->インバウンドルールの追加で変更できます。
