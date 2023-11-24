@@ -13,6 +13,7 @@ $ sudo lsof -P -i | grep -v sshd          # process確認
 $ sudo ss -tlp | grep <hoge>              # process確認（Well-known portで確認）
 $ sudo ss -tlpn | grep <hoge>             # process確認（port番号確認）
 $ service --status-all                    # serviceリスト確認
+$ systemctl list-unit-files --type=service
 $ systemctl status <hoge>                 # service確認
 $ du -h --max-depth=1                     # フォルダ容量の確認
 $ file <hoge>                             # file素性確認
