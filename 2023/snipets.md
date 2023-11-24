@@ -1,8 +1,21 @@
-# User Snipets (hidetake)
+# User Snipets
 
 ## ユーザ切替  
 ```
 $ sudo su - isucon
+```
+
+## 環境調査  
+```
+$ cat /etc/os-release                     # os確認  
+$ grep -v nologin /etc/passwd             # user確認
+$ sudo lsof -P -i | grep -v sshd          # process確認
+$ sudo ss -tlp | grep <hoge>              # process確認（Well-known portで確認）
+$ sudo ss -tlpn | grep <hoge>             # process確認（port番号確認）
+$ service --status-all                    # serviceリスト確認
+$ systemctl status <hoge>                 # service確認
+$ du -h --max-depth=1                     # フォルダ容量の確認
+$ file <hoge>                             # file素性確認
 ```
 
 ## インストール  
@@ -19,17 +32,36 @@ $ sudo apt -y install apache2-utils       # ab
 $ sudo yum install epel-release           # (未検証)
 ```
 
-## 環境調査  
+## ssh Timeout設定  
+ssh設定を編集ミスすると２度とインスタンスに入れない場合が有ります。  
+`isucon_tools/04_setupSSH.sh`を使うか下記の切戻し可能手順がお薦め。  
 ```
-$ cat /etc/os-release                     # os確認  
-$ cat /etc/passwd | grep -v nologin       # user確認  
-$ sudo lsof -P -i | grep -v sshd          # process確認
-$ sudo ss -tlp | grep <hoge>              # process確認
-$ sudo ss -tlpn | grep <hoge>             # process確認
-$ service --status-all                    # serviceリスト確認
-$ systemctl status <hoge>                 # service確認
-$ file <hoge>                             # file素性確認
+$ cd /etc/ssh
+$ cp sshd_config sshd_config.old          # sshdサーバ設定バックアップ(sshクライアント設定とは別です)
+$ vi sshd_config
+ClientAliveInterval 30                    # コメントアウトを外してkeepalive秒数を設定
+$ sudo service ssh restart                # 再起動で有効化（現在のssh接続は維持されるので切らないこと）  
+# 別ターミナルから正常にssh接続出来れば完了
 ```
+
+## 環境設定  
+```
+$ host                                    # 確認
+$ host <hoge>                             # 設定(isucon13f1等)
+# 以下はお好みで（プロンプト色変更）
+$ vi ~/.bashrc
+export PS1="[\e[1;34m\]\u\[\e[m\]@\[\e[1;36m\]\h\[\e[m\] \[\e[0;32m\]\W\[\e[m\]]\$ "
+```
+
+## git登録作業
+```
+$ ~/webapp$ du -h --max-depth=1          # フォルダ容量確認
+$ vi .gitignore                          # 必要ないフォルダを除外
+$ git init
+$ git commit --allow-empty -m "initial commit"   # 空commit（おまじない）
+```
+各言語のフォルダに下記.gitignoreを置くと一時ファイルを除外できる。  
+[Go用](https://github.com/github/gitignore/blob/main/Go.gitignore) [Rust用](https://github.com/github/gitignore/blob/main/Rust.gitignore) [その他](https://github.com/github/gitignore/tree/main)
 
 ## 負荷試験関係 
 ```
@@ -37,15 +69,24 @@ $ stress -c 1                             # 並列度1で負荷試験
 $ ab -c 1 -n 10 https://localhost/        # 並列度1で10回アクセス試験
 $ alp json --file access.log              # アクセスログ解析
 $ sudo logrotate -f /etc/logrotate.conf   # logrotate
-$ cd ~/banch
+$ cd ~/bench
 $ ./bench -target-addr 127.0.0.1:443      # isucon12qベンチマーク
+# 画面表示しながらログを残したい場合は下記など。（githubにbench_202311212211.txtとかのファイルを残せる。）
+$ ./bench -target-addr 127.0.0.1:443 | tee ~/webapp/log/bench_$(date +%Y%m%d%H%M).txt   
 ```
+
 ## 負荷確認  
 ブラウザで`http://{IPアドレス}:9090/`を開くと、GUIが表示される。
 ここで、GUI上部のコンソールに以下を入力し、Excecuteするとグラフが表示される。
 以下は、CPUの利用時間を1分ごとに出力するクエリ。
 ```
 avg without(cpu) (rate(node_cpu_seconds_total{mode!="idle"}[1m]))
+```
+
+## journalログ確認
+```
+$ journalctl -xef -u <unit_name>                         # -fで継続表示(follow)  isuportsとか指定してログ確認
+$ SYSTEMD_LESS=FRXMK journalctl -eu <unit_name>          # 右端折り返しで表示
 ```
 
 ## 接続確認
@@ -74,14 +115,15 @@ $ /usr/sbin/nginx -s reopen               # ログローテートの直接指示
 
 ## mysql  
 ```
-$ mysql -u isucon -p
-mysql> show databases;
-mysql> use hoge_db;
-mysql> show tables;
-mysql> describe hoge_table;
+$ mysql -u isucon -p                     # 接続
+mysql> show databases;                   # DB一覧
+mysql> use hoge_db;                      # DB接続
+mysql> show tables;                      # TABLE一覧
+mysql> describe hoge_table;              # TABLE概要
+mysql> SHOW FULL PROCESSLIST;            # ベンチ中等に実行中の処理の確認
 ```
 
 ## その他一般
 ```
-echo 'eHh4Cg==' | openssl enc -d -base64
+echo 'eHh4Cg==' | openssl enc -d -base64     # base64 decode. POSTデータ/フォーム/画像の中身を確認したいときなど。
 ```
