@@ -67,7 +67,7 @@ $ git commit --allow-empty -m "initial commit"   # 空commit（おまじない�
 ```
 $ stress -c 1                             # 並列度1で負荷試験
 $ ab -c 1 -n 10 https://localhost/        # 並列度1で10回アクセス試験
-$ alp json --file access.log              # アクセスログ解析
+$ alp json --file /var/log/nginx/access.log  # アクセスログ解析 
 $ sudo logrotate -f /etc/logrotate.conf   # logrotate
 $ cd ~/bench
 $ ./bench -target-addr 127.0.0.1:443      # isucon12qベンチマーク
@@ -115,7 +115,7 @@ $ /usr/sbin/nginx -s reopen               # ログローテートの直接指示
 
 ### nginxログのjson化
 
-/etc/nginx/nginx.confを編集する。元からあったaccess_log指定はコメントアウト。  
+alpで解析可能にするために/etc/nginx/nginx.confを編集する。元からあったaccess_log指定はコメントアウト。 
 ```
 $ vi /etc/nginx/nginx.conf
     :
@@ -143,6 +143,7 @@ http {
 $ sudo nginx -t                           # 設定ファイル確認
 $ sudo systemctl restart nginx            # 再起動
 $ /usr/sbin/nginx -s reopen               # ログローテート
+$ alp json --file /var/log/nginx/access.log
 ```
 
 ## mysql  
