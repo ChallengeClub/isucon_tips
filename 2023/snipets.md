@@ -113,6 +113,38 @@ $ sudo systemctl restart nginx            # 再起動
 $ /usr/sbin/nginx -s reopen               # ログローテートの直接指示
 ```
 
+### nginxログのjson化
+
+/etc/nginx/nginx.confを編集する。元からあったaccess_log指定はコメントアウト。  
+```
+$ vi /etc/nginx/nginx.conf
+    :
+http {
+
+   log_format json escape=json '{"time":"$time_local",'
+                                '"host":"$remote_addr",'
+                                '"forwardedfor":"$http_x_forwarded_for",'
+                                '"req":"$request",'
+                                '"status":"$status",'
+                                '"method":"$request_method",'
+                                '"uri":"$request_uri",'
+                                '"body_bytes":$body_bytes_sent,'
+                                '"referer":"$http_referer",'
+                                '"ua":"$http_user_agent",'
+                                '"request_time":$request_time,'
+                                '"cache":"$upstream_http_x_cache",'
+                                '"runtime":"$upstream_http_x_runtime",'
+                                '"response_time":"$upstream_response_time",'
+                                '"vhost":"$host"}';
+
+        access_log /var/log/nginx/access.log json;
+中略
+       # access_log /var/log/nginx/access.log;
+$ sudo nginx -t                           # 設定ファイル確認
+$ sudo systemctl restart nginx            # 再起動
+$ /usr/sbin/nginx -s reopen               # ログローテート
+```
+
 ## mysql  
 ```
 $ mysql -u isucon -p                     # 接続
