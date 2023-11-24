@@ -71,8 +71,8 @@ $ alp json --file access.log              # アクセスログ解析
 $ sudo logrotate -f /etc/logrotate.conf   # logrotate
 $ cd ~/bench
 $ ./bench -target-addr 127.0.0.1:443      # isucon12qベンチマーク
-# 画面表示しながらログを残したい場合は下記など。（githubにbench_202311212211.txtとかのファイルを残せる。）
-$ ./bench -target-addr 127.0.0.1:443 | tee ~/webapp/log/bench_$(date +%Y%m%d%H%M).txt   
+# 画面表示しながらログを残したい場合は下記。（githubにbench_2023-11-21-2211.txtとかのファイルを残せる。）
+$ ./bench -target-addr 127.0.0.1:443 | tee ~/webapp/log/bench_$(date +%Y-%m-%d-%H%M).txt   
 ```
 
 ## 負荷確認  
