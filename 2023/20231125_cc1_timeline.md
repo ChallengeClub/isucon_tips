@@ -1,7 +1,7 @@
-# ISUCON13 作業ログ
-> **Info:** CC1（Challenge Club）
+# ISUCON13 CC1 時系列作業ログ
+> **Info:** CC1 = Challenge Club
 
-## 当日進行
+## 当日スケジュール
 - 9:30 ライブ配信開始
 - 9:40-10:00 オープニング / 問題説明
 - 10:00-18:00 競技
@@ -12,7 +12,7 @@
 - 18:00-18:20 振り返り/スポンサー紹介など案内
 - 19:30 結果発表
 
-## 開始前
+## 競技前
 - 9:30 ライブ配信開始
   - Youtube画面にぐるぐるマーク（演出!）
 - 9:40-10:00 オープニング / 問題説明 
@@ -44,7 +44,7 @@
 - T01:17-       WebApp内容確認。（sql,pdnsなど）改変しそうなもののみ再addしフォースプッシュ（git push -f）
 - T01:25-       github actions設定(maleicacid) 
 - T01:30-       kiwsさんのプライベートリポジトリをmaleicacidさんへのtransferを試すが難しそう
-- T01:37-       新プライベートリポ作成(maleicacid) コラボレータ招待（->hidetake）github selfhost runner設定(maleicacid) 
+- T01:37-       新Private Repository作成(maleicacid) コラボレータ招待（->hidetake）github selfhost runner設定(maleicacid) 
 - T01:46-       etc/nginx,mysql,systemdをバックアップしてnginxのjsonログ化(hidetake)
 - T01:49-       rustのサービス停止の解析(maleicacid) 
 - T01:56-       git remote urlを新プライベートリポジトリに更新。urlをhttps接続に更新。
@@ -54,8 +54,22 @@
 - T02:30-       アプリ動作調査。多数のサブドメイン確認(hidetake)。
 - T02:40-       昼休憩兼インタビュー(by Tomo) DNS攻略についての会話。DNS水責め攻撃宣言について。
 - T02:50-       host設定してアプリ動作確認。マニュアルの確認。HLSは対象外。
-
-
+- T03:02-       nginxのjson設定、mysqlのスロークエリon、DB table調査
+- T03:40-       isucon3のBench実施。スロークエリログ確認。
+- T04:10-       PowerDNS調査(maleicacid) 
+- T04:29-       1) BenchmarkがFailしている 2) slow-logで遅いクエリのソース、を手分けして調査
+- T04:50-　　　　チケットからBenchmarkが滞留してコケていると判断。1)RDBのIndex調査 2)imageのgithub登録(maleicacid)
+- T05:13-       isucon3のBench実施。
+- T05:19-       isucon3のBench正常完了（スコア2792）。isucon1の復旧不調。
+- T05:23-       MySQLのLivestream関係の3tableにindex追加処置。
+- T05:35-       isucon3のBench正常完了（スコア3500）（初回の4053よりダウン）
+- T05:37-       isucon1用のcloudformationを作成。
+- T05:55-       isucon1用のcloudformationを適用。住処談義。
+- T06:04-       cloudformation失敗。割り切ってフルスタック作り直しに切り替え。まず削除開始。
+- T06:11-       スタック再作成。06:13成功。クラウドとLAMP/wordpress談義。
+- T06:20-       ポータルで失格通告。DMは来てない。マニュアルを確認。競技中の再構築はOK。  
+- T06:25-       午後、isucon_tipsにインスタンス情報をhidetakeがcommitしていたことを発見。
+- T06:28-       isucon_tipsをgit resetして巻き戻す作業。（一応） 
 ```
 
 > サーバからgitに安全に繋ぐ方法として以下が有りそう。
@@ -64,6 +78,6 @@
 `$ git config --global credential.helper 'cache --timeout=2592000'`
 1. PersonalAccessTokenを発行してサーバに設定する。（PAT扱いが難。事前にgitで共有し難い。）
 `$ git remote add origin https://<user>:<password>@github.com/<user>/<repository>.git`
-1. ssh agentを使ってsshでgithubへ繋ぐ。(下記と思いますが未検証。user指定が固定になるのが難かも。)    
+1. ssh agentを使ってsshでgithubへ繋ぐ。(下記と思いますが未検証。user指定が固定になるのが難。)    
 `$ git remote add origin git@github.com/<user>/<repository>.git`
 `$ ssh -A isucon13f1`  
