@@ -1,6 +1,9 @@
 # 2024 ISUCON14攻略
-
-[ISUCON14 開催概要(公式)](https://isucon.net/archives/58593190.html)
+- [ISUCON14 開催概要(公式)](https://isucon.net/archives/58593190.html)
+- [ISUCON公式Github](https://github.com/isucon)
+- [ISUCON公式ブログ](https://isucon.net/)
+- [AWS過去問環境構築Github](https://github.com/matsuu/aws-isucon)
+- [ISUCON公式X](https://twitter.com/isucon_official?ref_src=twsrc%5Etfw%7Ctwcamp%5Eembeddedtimeline%7Ctwterm%5Escreen-name%3Aisucon_official%7Ctwcon%5Es1_c1)
 
 ## ■イベント記録  
 - 9/24 ０次予選（１期）⇒チーム登録２枠確保(cc1,cc2)
