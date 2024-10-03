@@ -1,5 +1,10 @@
 # User Snipets
 
+## ssh接続  
+```
+$ ssh -l ubuntu -i /c/Users/user/.ssh/aws_secret_key.pem public_ip_address
+```
+
 ## ユーザ切替  
 ```
 $ sudo su - isucon
