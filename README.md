@@ -4,7 +4,7 @@ by 技術チャレンジ部
 ## 注意事項：Publicリポジトリです。
 - 秘密情報を置かないでください。（パスワード/秘密鍵等）
 - 競技中に攻略情報をおかないでください。（レギュレーションに違反します。）
-- 演習／本戦参加のメンバーをwrite権限付きのcollaboratorに招待します。
+- 演習参加／本戦参加メンバーをcollaboratorに招待します。
 
 ## 攻略の起点
 - [isucon_tools](https://github.com/ChallengeClub/isucon_tools) 素振用/本戦用スクリプト
