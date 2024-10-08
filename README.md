@@ -6,7 +6,7 @@ by 技術チャレンジ部
 - 競技中に攻略情報をおかないでください。（レギュレーションに違反します。）
 
 ## 攻略の起点
-- [isucon_tools](https://github.com/ChallengeClub/isucon_tools) 本戦用スクリプト
+- [isucon_tools](https://github.com/ChallengeClub/isucon_tools) 素振用/本戦用スクリプト
 - [2024 Readme](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/Readme.md)
 - 2024 Runbook
 
