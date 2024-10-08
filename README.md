@@ -7,8 +7,8 @@ by 技術チャレンジ部
 - 演習参加／本戦参加メンバーをcollaboratorに招待します。
 
 ## 攻略の起点
-- [isucon_tools](https://github.com/ChallengeClub/isucon_tools) 素振用/本戦用スクリプト
 - [2024 Readme](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/Readme.md)
+- [isucon_tools](https://github.com/ChallengeClub/isucon_tools) 素振用/本戦用スクリプト
 - 2024 Runbook
 
 ## 公式サイトリンク
