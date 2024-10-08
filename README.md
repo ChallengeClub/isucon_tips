@@ -16,3 +16,7 @@ by 技術チャレンジ部
 - [ISUCON公式ブログ](https://isucon.net/)
 - [AWS過去問環境構築Github](https://github.com/matsuu/aws-isucon)
 - [ISUCON公式X](https://twitter.com/isucon_official?ref_src=twsrc%5Etfw%7Ctwcamp%5Eembeddedtimeline%7Ctwterm%5Escreen-name%3Aisucon_official%7Ctwcon%5Es1_c1)
+
+## 書き方
+- [Markdown記法 チートシート](https://gist.github.com/mignonstyle/083c9e1651d7734f84c99b8cf49d57fa)
+- 画像はimagesフォルダにUploadして参照。  例：<img src="./2024/images/ChallengeClubIcon.png" width="10%">
