@@ -67,7 +67,7 @@ $ cat /proc/sys/fs/inotify/max_user_watches
 
 複数人でVSCodeのRemote SSHで接続していたサーバーの反応が異常に遅くなることがあった。
 
-(【VSCode使用者注意】サーバーリソース食い散らかすﾏﾝから解放される唯一の方法)[https://blog.masuyoshi.com/%E3%80%90vscode%E4%BD%BF%E7%94%A8%E8%80%85%E6%B3%A8%E6%84%8F%E3%80%91%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E9%A3%9F%E3%81%84%E6%95%A3%E3%82%89%E3%81%8B%E3%81%99/]
+[【VSCode使用者注意】サーバーリソース食い散らかすﾏﾝから解放される唯一の方法](https://blog.masuyoshi.com/%E3%80%90vscode%E4%BD%BF%E7%94%A8%E8%80%85%E6%B3%A8%E6%84%8F%E3%80%91%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E9%A3%9F%E3%81%84%E6%95%A3%E3%82%89%E3%81%8B%E3%81%99/)
 
 記事によると、VSCodeでSSH接続する際にサーバーに負荷をかけてしまうことがあるらしい。
 
