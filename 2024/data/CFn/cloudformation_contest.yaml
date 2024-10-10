@@ -1,0 +1,260 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS CloudFormation for ISUCON13 Final
+Resources:
+  GetAvailabilityZoneFunctionExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: GetAvailabilityZoneFunctionPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeAvailabilityZones
+                Resource: "*"
+  GetAvailabilityZoneFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: |
+          import cfnresponse
+          import boto3
+          def handler(event, context):
+            if event['RequestType'] == "Create":
+              ec2 = boto3.client('ec2')
+              response = ec2.describe_availability_zones(
+                ZoneIds = ['apne1-az2']
+              )
+              ZoneName = response['AvailabilityZones'][0]['ZoneName']
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, {"ZoneName" : ZoneName})
+            elif event['RequestType'] == "Update":
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
+            elif event['RequestType'] == "Delete":
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
+      Handler: index.handler
+      Runtime: python3.9
+      Timeout: 30
+      Role: !GetAtt GetAvailabilityZoneFunctionExecutionRole.Arn
+  GetAvailabilityZone:
+    Type: Custom::PythonLambdaExecution
+    Properties:
+      ServiceToken: !GetAtt GetAvailabilityZoneFunction.Arn
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: "192.168.0.0/16"
+      EnableDnsSupport: "true"
+      EnableDnsHostnames: "true"
+      InstanceTenancy: default
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !GetAtt GetAvailabilityZone.ZoneName
+      CidrBlock: "192.168.0.0/24"
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: False
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+  Route:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref InternetGateway
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet
+      RouteTableId: !Ref RouteTable
+    DependsOn:
+      - Subnet
+      - RouteTable
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VPC
+      GroupDescription: Security Group for ISUCON13 Final
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: "443"
+          ToPort: "443"
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: udp
+          FromPort: "53"
+          ToPort: "53"
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: -1
+          CidrIp: "192.168.0.0/24"
+
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Policies:
+        - PolicyName: IsuconEC2InstancePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeInstances
+                  - ec2:DescribeVolumes
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:DescribeSecurityGroups
+                  - ec2:DescribeAvailabilityZones
+                Resource: "*"
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref InstanceRole
+
+  FinalInstance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-06c947ddf8c38c43c"
+      InstanceType: c5.large
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      SubnetId: !Ref Subnet
+      PrivateIpAddress: "192.168.0.11"
+      IamInstanceProfile: !Ref InstanceProfile
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 40
+            VolumeType: gp3
+      Tags:
+        - Key: Name
+          Value: isucon13-final-1
+      UserData:
+        Fn::Base64: |
+          #cloud-config
+          write_files:
+          - path: /home/isucon/.ssh/authorized_keys
+            owner: isucon:isucon
+            permissions: '0600'
+            encoding: b64
+            content: "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFENGNXRFVYV0xDaHZqOUNJQUEwV2lWaDJ6TkNxdzdZOHZBeHU1MWpMTlE4NXJ2VDBHbnplMjk3YW5XSThNRGJJM1hwZHpDdjYxdDU0eXV2WjBDTlVLaTZUdFZTSm9tTGd4Z3lWM3pRUjdyR2Z5L3BXR2M2UElUQlFObDFuM3lidjBRK0ZmT1JiSDZyWWpvMU9FbTZ4a1FiSkthMkFhZ1VFTGtuT2ZBTHRDMk91aHcwbGxFbms4b1doK3pGeUEyRmJvZC9nYUI0TU53MnB1TnEyMVluQmFheklDeWFTY2x2R3VvZFFxYVJqckd3UklJNGxyL1VRUHk1MzNtaHZKMDVlZUhkd2hZV2hGOE5UQXhjUWF0Tk5BeERabG9BMjUrY0dZdGRBR0ZaMnN5Qm5YTTZDNmpRdW5Qb3VqUWNaV29FVk5MQkh2ZHlVcklod3dxSVltODhYb2YKCnNzaC1yc2EgQUFBQUIzTnphQzF5YzJFQUFBQURBUUFCQUFBQkFRRGs4NWI4Tmd6TndER2lhQTE3NFEyUDdMaHFoSUVvM2FPVHI1L2ZIdTRza1Z1Z2dPSnl6a1hsNzIzNW51UkhUaS80NG1kaC9NQkFCK2VBeGRyWWZ3R2NmMFpJbWE2Yksydm1YNmlyWkdMNlptVmxad09hMmZwOVA3d0I0SXQrdElPUzVmcjFJQ0hxbWFVck9JL2NNSVRPanhIVzlCS1FzSisvemYrdDNBQklIMDA3Qkg1LytPVmt5OFFEZWlVbis5K3NNQkFwZGgvM0gwSWpxUHJsNUVndDYzVnc0cEVTSmVkM0RTUHd2QlppY3U4ZGtQbWNxQy9FenpxcW1xTWxWejRlRGlQWjR2ejhaRUw2YkIyRkRtZWJNbHg5UFFVM3ZkY0I3RDRkV3U5QnJLZEtvQWFhRFE4NXRjTzBUaGFwOUpzVTd6WWZCSzRhQlpsMnJrT045eDRKCgpzc2gtZWQyNTUxOSBBQUFBQzNOemFDMWxaREkxTlRFNUFBQUFJR2VoRjk2eVMxZlZXNTBCOWpKTlBwM1hYYlp0MnVybXpjTndObkpJVWl0Wgpzc2gtZWQyNTUxOSBBQUFBQzNOemFDMWxaREkxTlRFNUFBQUFJTGZOd3FESU51S3lZcjh0TlJ5MWVhczMwT3AxZkRsMnhNTHZqUVZ0K1NIVQpzay1zc2gtZWQyNTUxOUBvcGVuc3NoLmNvbSBBQUFBR25OckxYTnphQzFsWkRJMU5URTVRRzl3Wlc1emMyZ3VZMjl0QUFBQUlHcStRUVlGZ0NIcTA3MlkxN29CczdEZFR1eDZxQjlsYzFXaXVYN1h5aEgvQUFBQUJITnphRG89Cg=="
+          - path: /opt/isucon-env-checker/portal_credentials.json
+            owner: root:root
+            permissions: '0644'
+            encoding: b64
+            content: "eyJkZXYiOiBmYWxzZSwgInRva2VuIjogIlhSaWZrJiVHJmFpUlpWM1ZDcyRMJDVxQGVUIWsqMUZ3cDg1WEpeaFpzXiFZYzNvZWo2VFY3SkZwcTlVMTlTbTIiLCAiaG9zdCI6ICJwb3J0YWwuaXN1Y29uLm5ldCJ9"
+  FinalInstanceIP1:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref FinalInstance1
+  FinalInstance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-06c947ddf8c38c43c"
+      InstanceType: c5.large
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      SubnetId: !Ref Subnet
+      PrivateIpAddress: "192.168.0.12"
+      IamInstanceProfile: !Ref InstanceProfile
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 40
+            VolumeType: gp3
+      Tags:
+        - Key: Name
+          Value: isucon13-final-2
+      UserData:
+        Fn::Base64: |
+          #cloud-config
+          write_files:
+          - path: /home/isucon/.ssh/authorized_keys
+            owner: isucon:isucon
+            permissions: '0600'
+            encoding: b64
+            content: "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFENGNXRFVYV0xDaHZqOUNJQUEwV2lWaDJ6TkNxdzdZOHZBeHU1MWpMTlE4NXJ2VDBHbnplMjk3YW5XSThNRGJJM1hwZHpDdjYxdDU0eXV2WjBDTlVLaTZUdFZTSm9tTGd4Z3lWM3pRUjdyR2Z5L3BXR2M2UElUQlFObDFuM3lidjBRK0ZmT1JiSDZyWWpvMU9FbTZ4a1FiSkthMkFhZ1VFTGtuT2ZBTHRDMk91aHcwbGxFbms4b1doK3pGeUEyRmJvZC9nYUI0TU53MnB1TnEyMVluQmFheklDeWFTY2x2R3VvZFFxYVJqckd3UklJNGxyL1VRUHk1MzNtaHZKMDVlZUhkd2hZV2hGOE5UQXhjUWF0Tk5BeERabG9BMjUrY0dZdGRBR0ZaMnN5Qm5YTTZDNmpRdW5Qb3VqUWNaV29FVk5MQkh2ZHlVcklod3dxSVltODhYb2YKCnNzaC1yc2EgQUFBQUIzTnphQzF5YzJFQUFBQURBUUFCQUFBQkFRRGs4NWI4Tmd6TndER2lhQTE3NFEyUDdMaHFoSUVvM2FPVHI1L2ZIdTRza1Z1Z2dPSnl6a1hsNzIzNW51UkhUaS80NG1kaC9NQkFCK2VBeGRyWWZ3R2NmMFpJbWE2Yksydm1YNmlyWkdMNlptVmxad09hMmZwOVA3d0I0SXQrdElPUzVmcjFJQ0hxbWFVck9JL2NNSVRPanhIVzlCS1FzSisvemYrdDNBQklIMDA3Qkg1LytPVmt5OFFEZWlVbis5K3NNQkFwZGgvM0gwSWpxUHJsNUVndDYzVnc0cEVTSmVkM0RTUHd2QlppY3U4ZGtQbWNxQy9FenpxcW1xTWxWejRlRGlQWjR2ejhaRUw2YkIyRkRtZWJNbHg5UFFVM3ZkY0I3RDRkV3U5QnJLZEtvQWFhRFE4NXRjTzBUaGFwOUpzVTd6WWZCSzRhQlpsMnJrT045eDRKCgpzc2gtZWQyNTUxOSBBQUFBQzNOemFDMWxaREkxTlRFNUFBQUFJR2VoRjk2eVMxZlZXNTBCOWpKTlBwM1hYYlp0MnVybXpjTndObkpJVWl0Wgpzc2gtZWQyNTUxOSBBQUFBQzNOemFDMWxaREkxTlRFNUFBQUFJTGZOd3FESU51S3lZcjh0TlJ5MWVhczMwT3AxZkRsMnhNTHZqUVZ0K1NIVQpzay1zc2gtZWQyNTUxOUBvcGVuc3NoLmNvbSBBQUFBR25OckxYTnphQzFsWkRJMU5URTVRRzl3Wlc1emMyZ3VZMjl0QUFBQUlHcStRUVlGZ0NIcTA3MlkxN29CczdEZFR1eDZxQjlsYzFXaXVYN1h5aEgvQUFBQUJITnphRG89Cg=="
+          - path: /opt/isucon-env-checker/portal_credentials.json
+            owner: root:root
+            permissions: '0644'
+            encoding: b64
+            content: "eyJkZXYiOiBmYWxzZSwgInRva2VuIjogIlhSaWZrJiVHJmFpUlpWM1ZDcyRMJDVxQGVUIWsqMUZ3cDg1WEpeaFpzXiFZYzNvZWo2VFY3SkZwcTlVMTlTbTIiLCAiaG9zdCI6ICJwb3J0YWwuaXN1Y29uLm5ldCJ9"
+  FinalInstanceIP2:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref FinalInstance2
+  FinalInstance3:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-06c947ddf8c38c43c"
+      InstanceType: c5.large
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      SubnetId: !Ref Subnet
+      PrivateIpAddress: "192.168.0.13"
+      IamInstanceProfile: !Ref InstanceProfile
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 40
+            VolumeType: gp3
+      Tags:
+        - Key: Name
+          Value: isucon13-final-3
+      UserData:
+        Fn::Base64: |
+          #cloud-config
+          write_files:
+          - path: /home/isucon/.ssh/authorized_keys
+            owner: isucon:isucon
+            permissions: '0600'
+            encoding: b64
+            content: "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFENGNXRFVYV0xDaHZqOUNJQUEwV2lWaDJ6TkNxdzdZOHZBeHU1MWpMTlE4NXJ2VDBHbnplMjk3YW5XSThNRGJJM1hwZHpDdjYxdDU0eXV2WjBDTlVLaTZUdFZTSm9tTGd4Z3lWM3pRUjdyR2Z5L3BXR2M2UElUQlFObDFuM3lidjBRK0ZmT1JiSDZyWWpvMU9FbTZ4a1FiSkthMkFhZ1VFTGtuT2ZBTHRDMk91aHcwbGxFbms4b1doK3pGeUEyRmJvZC9nYUI0TU53MnB1TnEyMVluQmFheklDeWFTY2x2R3VvZFFxYVJqckd3UklJNGxyL1VRUHk1MzNtaHZKMDVlZUhkd2hZV2hGOE5UQXhjUWF0Tk5BeERabG9BMjUrY0dZdGRBR0ZaMnN5Qm5YTTZDNmpRdW5Qb3VqUWNaV29FVk5MQkh2ZHlVcklod3dxSVltODhYb2YKCnNzaC1yc2EgQUFBQUIzTnphQzF5YzJFQUFBQURBUUFCQUFBQkFRRGs4NWI4Tmd6TndER2lhQTE3NFEyUDdMaHFoSUVvM2FPVHI1L2ZIdTRza1Z1Z2dPSnl6a1hsNzIzNW51UkhUaS80NG1kaC9NQkFCK2VBeGRyWWZ3R2NmMFpJbWE2Yksydm1YNmlyWkdMNlptVmxad09hMmZwOVA3d0I0SXQrdElPUzVmcjFJQ0hxbWFVck9JL2NNSVRPanhIVzlCS1FzSisvemYrdDNBQklIMDA3Qkg1LytPVmt5OFFEZWlVbis5K3NNQkFwZGgvM0gwSWpxUHJsNUVndDYzVnc0cEVTSmVkM0RTUHd2QlppY3U4ZGtQbWNxQy9FenpxcW1xTWxWejRlRGlQWjR2ejhaRUw2YkIyRkRtZWJNbHg5UFFVM3ZkY0I3RDRkV3U5QnJLZEtvQWFhRFE4NXRjTzBUaGFwOUpzVTd6WWZCSzRhQlpsMnJrT045eDRKCgpzc2gtZWQyNTUxOSBBQUFBQzNOemFDMWxaREkxTlRFNUFBQUFJR2VoRjk2eVMxZlZXNTBCOWpKTlBwM1hYYlp0MnVybXpjTndObkpJVWl0Wgpzc2gtZWQyNTUxOSBBQUFBQzNOemFDMWxaREkxTlRFNUFBQUFJTGZOd3FESU51S3lZcjh0TlJ5MWVhczMwT3AxZkRsMnhNTHZqUVZ0K1NIVQpzay1zc2gtZWQyNTUxOUBvcGVuc3NoLmNvbSBBQUFBR25OckxYTnphQzFsWkRJMU5URTVRRzl3Wlc1emMyZ3VZMjl0QUFBQUlHcStRUVlGZ0NIcTA3MlkxN29CczdEZFR1eDZxQjlsYzFXaXVYN1h5aEgvQUFBQUJITnphRG89Cg=="
+          - path: /opt/isucon-env-checker/portal_credentials.json
+            owner: root:root
+            permissions: '0644'
+            encoding: b64
+            content: "eyJkZXYiOiBmYWxzZSwgInRva2VuIjogIlhSaWZrJiVHJmFpUlpWM1ZDcyRMJDVxQGVUIWsqMUZ3cDg1WEpeaFpzXiFZYzNvZWo2VFY3SkZwcTlVMTlTbTIiLCAiaG9zdCI6ICJwb3J0YWwuaXN1Y29uLm5ldCJ9"
+  FinalInstanceIP3:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref FinalInstance3
