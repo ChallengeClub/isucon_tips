@@ -18,4 +18,5 @@ by 技術チャレンジ部
 - [ISUCON公式X](https://twitter.com/isucon_official?ref_src=twsrc%5Etfw%7Ctwcamp%5Eembeddedtimeline%7Ctwterm%5Escreen-name%3Aisucon_official%7Ctwcon%5Es1_c1)
 
 ## 書き方
-- [Markdown記法 チートシート](https://gist.github.com/mignonstyle/083c9e1651d7734f84c99b8cf49d57fa)
+- [Markdown記法チートシート](https://gist.github.com/mignonstyle/083c9e1651d7734f84c99b8cf49d57fa)
+- [Markdown絵文字チートシート](https://www.folklore.place/webtools/markdown/emoji)
