@@ -78,4 +78,4 @@ $ cd isucon_tools
 $ ./04_setupSSH.sh  # ssh keepaliveでタイムアウト抑止、sshパスワードログイン禁止 
 ```
 - WindowsのC:\Windows\System32\drivers\etc\host編集には管理者権限が要るのでメモ帳でない方が書き込みやすい。
-- VSCodeRemote接続した際に無応答になって再起動しました。この場合[VSCodeリモート留意点](../2023/20231010_VSCode_RemoteSSH.md#vscode%E3%81%8C%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E9%A3%9F%E3%81%84%E6%95%A3%E3%82%89%E3%81%8B%E3%81%99)のファイル監視無効化対応が必要です。
+- VSCodeRemote接続した際に無応答になりEC2再起動しました。この場合[VSCodeリモート留意点](../2023/20231010_VSCode_RemoteSSH.md#vscode%E3%81%8C%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E9%A3%9F%E3%81%84%E6%95%A3%E3%82%89%E3%81%8B%E3%81%99)のファイル監視無効化が必要です。
