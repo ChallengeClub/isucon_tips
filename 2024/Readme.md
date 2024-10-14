@@ -1,9 +1,9 @@
 # 2024 ISUCON14攻略
 - [ISUCON14 開催概要(公式)](https://isucon.net/archives/58593190.html)
-- [ISUCON公式Github](https://github.com/isucon)
 - [ISUCON公式ブログ](https://isucon.net/)
-- [AWS過去問環境構築Github](https://github.com/matsuu/aws-isucon)
+- [ISUCON公式Github](https://github.com/isucon)
 - [ISUCON公式X](https://twitter.com/isucon_official?ref_src=twsrc%5Etfw%7Ctwcamp%5Eembeddedtimeline%7Ctwterm%5Escreen-name%3Aisucon_official%7Ctwcon%5Es1_c1)
+- [AWS過去問環境構築Github](https://github.com/matsuu/aws-isucon)
 
 ## ■イベント記録  
 - 9/24 ０次予選（１期）⇒チーム登録２枠確保(cc1,cc2)、ともたけ
@@ -12,7 +12,7 @@
 - [10/3](./20241003_ISUCON13過去問環境.md) 初回もくもく回（いわさたけ）、ISUCON13のEC2起動と接続まで
 - [10/7](./20241007_ISUCON説明会.md) 社内説明会、ゆーこもじゃなり参加、チーム登録１枠追加(cc5)
 - [10/8](./20241008_OnBoarding.md) 最初のOnBord顔合わせ、初期環境準備
-- [10/11](./2024/20241010_AWS_EC2_connect.md) もくもく会、EC2起動して接続
+- [10/11](./20241010_AWS_EC2_connect.md) もくもく会、EC2起動して接続
  
 ## ■予定表
 - [x] キックオフ作戦会議：10/1(火)21:00～
@@ -26,9 +26,12 @@
     - [x] 基本は自由ですが、AWS過去問EC2作成練習(モブプロ) 、ISUCON13インスタンス攻略、攻略リポジトリ構成の相談、など？
 - [ ] 素振会：10/15(火)21:00～
     - [ ] 開発されたサービスの構成紹介が可能でしたら知りたいです :eyes:
-- [ ] 10月中 確定メンバーのチーム登録・Discord登録・ssh鍵登録
-    - 「GitHubにSSH鍵が登録されていません」「Discordサーバーに参加していません」のアラートを別途〆切までに対応作業をする。
-    - 招待URLを使って他のメンバー（１チーム計３名まで）を11月7日までに追加する。
+    - [ ] ISUCON13インスタンス攻略（ベンチマーク、モブプロ）
+- [ ] 素振会：10/22(火)21:00～
+    - [ ] 固められるとこからチーム編成を相談
+- [ ] 10月中くらい 確定メンバーのチーム登録・Discord登録・ssh鍵登録
+    - [ ] 「GitHubにSSH鍵が登録されていません」「Discordサーバーに参加していません」のアラートを別途〆切までに対応作業をする。
+    - [ ] 招待URLを使って他のメンバー（１チーム計３名まで）を11月7日までに追加する。
 
 ## ■ToDo
 - [ ] ISUCON13インスタンス攻略（案）
@@ -39,5 +42,10 @@
     - [ ] ベンチマーク(bench)実行、結果確認
     - [ ] ISUCON本2章モニタリングあたり
     - [ ] 高速化着手
-- [ ]　各自の環境や操作の確認など
+- [ ] ISUCON14 SRE Works
+    - [ ] CICD構成 (.gitignore,ansible,docker,ほか)
+    - [ ] newRelic, node-exporterなど
+- [ ]　各自の環境整備や操作の確認など
     - [ ] github clone/pull/push
+    - [ ] 情報交換ツール(discode,outline,ほか)
+    - [ ] AI支援Tool（gitauto,warp,cursor,ほか）
