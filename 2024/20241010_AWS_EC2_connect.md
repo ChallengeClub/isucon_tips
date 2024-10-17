@@ -66,13 +66,13 @@ $ ssh -l isucon -i ~/.ssh/$USER.pem 18.181.182.129
 
 ## 本戦の様子やツールの話
 - AWSアカウントはチームに１人分は必要。（昨年はチーム毎にAWSクーポンが貰えた）
-- 最初にAWSでCloudFormation(CFn)のファイルを適用するとEC2インスタンスx３作成される。（昨年の本戦CFnファイルは[ここ](./data/CFn/cloudformation_contest.yaml)）
+- 最初にポータルからAWSにCloudFormation(CFn)ファイルを適用するとEC2が３個作成される。（昨年の本戦CFnファイルは[ここ](./data/CFn/cloudformation_contest.yaml)）
 - 以降のチューニングはEC2内作業が殆どになる。（ほぼリソースに手を加えられないのでAWSアカウントはあまり使わない。）
-- 最初にEC2内のソース構成管理をどう始めるか割と面倒なので事前準備必要。(.gitignoreを書くとか。github repoは意外に大サイズOK。) 
+- EC2内のソース構成管理をどう始めるか割と面倒なので事前準備が必要。(.gitignoreを書くとか。github repoは意外に大サイズOK。) 
 <br/>
 <img src="./images/2024-10-11-CFn-ISUCON13-Stack.png" width="100%">
 
-- /home/isuconの様子。~/webapp以下に各言語のバックエンドのソース有り。主にここをチューニングする。 
+- /home/isuconの様子。（~/webapp以下に各言語のバックエンドのソース有り。ここを中心にチューニングする。） 
 <img src="./images/2024-10-10 isucon_user_home.png">
 
 - Go(go modules)/Rust(Cargo)のPackage管理は使いやすい。Pythonはpipもpipenvも管理が面倒なので今後はPoetryとかuvとかが有望。
