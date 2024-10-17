@@ -20,9 +20,12 @@
 18.181.182.129 test001.u.isucon.local
 ```
 - ブラウザで`https://pipe.u.isucon.local`にアクセスするとIsupipeのページが表示される。
-- test001ユーザは未設定なので一旦ここまで。
+- test001ユーザは未設定なので本日は一旦ここまで。
 <br/>
 <img src="./images/2024-10-03-isupipe.png" width="30%">
+- 追記：一度ベンチマークを実行すると、ユーザtest001/パスワードtestなどでログインできます。ログイン後のisupipeページ。
+<br/>
+<img src="./images/2024-10-17_isupipe_screenshot.png" width="40%">
 
 ## 最初にEC2作成者がssh接続
 ```bash
