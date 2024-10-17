@@ -45,7 +45,7 @@
     - [x] ISUCON本2章モニタリングあたり（prometheus/node-exporter）
     - [ ] ソースコード構成確認、（言語談義・フレームワーク確認）
     - [ ] サービスプロセス確認
-    - [ ] 高速化着手
+- [ ] 高速化 [IUSCON13予選解説](https://isucon.net/archives/58001272.html)に沿った攻略 
 - [ ] ISUCON14 SRE Works
     - [x] 負荷測定（prometheus/node-exporter)
     - [ ] ログ保存設定（nginx,alp,sql-sloq-logなど、ISUCON本3章。pprotain導入。）
@@ -55,3 +55,32 @@
     - [ ] github clone/pull/push
     - [ ] 情報交換ツール(discode,outline,ほか)
     - [ ] AI支援Tool（gitauto,warp,cursor,ほか）
+ 
+ ## ■ISUCON本攻略チェクリスト
+```
+	✔ １章　基礎
+		✔ top
+		✔ ベンチマーク
+	□２章　モニタリング
+		□ stress -c 1
+		✔ node_expoter(prometeus)
+	□３章　負荷試験
+		□ nginxのjsonログ
+		□ alp
+		□ ab
+  		□ log rotate
+		□ slow queryログ(mysqldumpslow)
+		□ mysql接続, EXPLAIN, ADD INDEX
+		□ dstat
+	□４章　シナリオ試験
+		□ k6
+	□５章　データベース
+    		□ SHOW PLOCESSLIST
+     		□ pt-query-digest
+     		□ query-digester
+      　	□ ADD FULLTEXT INDEX
+      　	□ N+1問題
+    　　	□ memcached
+	□６章　リバースプロキシ
+		□ 静的ファイル配信
+``` 
