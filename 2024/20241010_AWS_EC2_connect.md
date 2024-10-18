@@ -82,7 +82,8 @@ $ ssh -l isucon -i ~/.ssh/$USER.pem 18.181.182.129
 ## 振り返り
 - 全員素早く各自の環境から過去問題環境にオンボード出来ました 🎉  
 - 全員分の公開鍵を用意しておけばEC2の作成直後から皆自分の鍵でssh接続できるはず。
-  - 全員分の[autorized_keys](https://github.com/ChallengeClub/isucon_tools/blob/680097f80876da33d72f9b3e6bdc98a0e4485a5d/authorized_keys)を用意したがAWSコンソールに直接貼るには長すぎた。[ここ](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/20241015_ISUCON13%E6%94%BB%E7%95%A5.md)の参考。EC2起動script等の方法使いましょう。
+  - 全員分の[autorized_keys](https://github.com/ChallengeClub/isucon_tools/blob/680097f80876da33d72f9b3e6bdc98a0e4485a5d/authorized_keys)を用意したがAWSコンソールに直接貼るには長すぎた。[ここ](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/20241015_ISUCON13%E6%94%BB%E7%95%A5.md)のキーペアの「インポート」参照。
+  - EC2起動script等の別の方法もあるはず。また調べて使いましょう。
   - [GitHubに登録してある公開鍵をauthorized_keysに追加する方法](https://qiita.com/itiut@github/items/94b248ba93efee8960d3)も便利。
 - 作成したばかりのユーザはシェルの各種設定が無いので使いにくいかも。[ここ](https://qiita.com/iodoform/items/1e79b44b7c7ca342c890)など参考。/bin/bashとかすると吉かも。
 - sshのセッションタイムアウトが頻発しました。早々に下記を行うのが吉。
