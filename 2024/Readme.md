@@ -15,7 +15,8 @@
 - [10/11](./20241010_AWS_EC2_connect.md) もくもく会。EC2起動して接続
 - [10/15](./20241015_ISUCON13攻略.md) 素振会。メンバー開発サービスの紹介。ISUCON13攻略(prometheus導入,ベンチマーク)
 - [10/17](./20241017_SUCON13でもくもく会.md) もくもく会。昨年度の本戦当日振り返りをしました。moさんのpprootainはもう少し整備後教えてもらいます。
- 
+- [10/22](./2024/20241022_ISUCON13Try.md) 素振り会。チーム編成(outline)。moさんの環境(ansible,pproptain)の解説Q&A。
+
 ## ■予定表
 - [x] キックオフ作戦会議：10/1(火)21:00～
 - [x] 初回もくもく会：10/3(木)21:00～
@@ -30,9 +31,11 @@
     - [x] 開発されたサービスの構成紹介が可能でしたら知りたいです :eyes:
     - [x] ISUCON13インスタンス攻略（ベンチマーク、モブプロ）
 - [x] もくもく会：10/17(木)21:00～
-    - [x] 基本は自由ですが、そろそろ各自のやってみたいことから何か？（高速化？）⇒昨年度の本戦当日振り返りをしました。
-- [ ] 素振会：10/22(火)21:00～
-    - [ ] 固められるとこからチーム編成を相談
+    - [x] 基本は自由ですが、そろそろ各自のやってみたいことから何か⇒昨年度の本戦当日振り返りをしました。
+- [x] 素振会：10/22(火)21:00～
+    - [x] 固められるとこからチーム編成を相談
+- [ ] もくもく会：10/24(木)21:00～
+    - [ ] 基本は自由ですが、組んでモブプロ、ISUCON13インスタンス点数アップ、Ansible/pptotain構成準備など。
 - [ ] 10月中くらい 確定メンバーのチーム登録・Discord登録・ssh鍵登録
     - [ ] 「GitHubにSSH鍵が登録されていません」「Discordサーバーに参加していません」のアラートを別途〆切までに対応作業をする。
     - [ ] 招待URLを使って他のメンバー（１チーム計３名まで）を11月7日までに追加する。
@@ -48,13 +51,17 @@
 - [ ] 高速化 [IUSCON13予選解説](https://isucon.net/archives/58001272.html)に沿った攻略 
 - [ ] ISUCON14 SRE Works
     - [x] 負荷測定（prometheus/node-exporter)
-    - [ ] ログ保存設定（nginx,alp,sql-sloq-logなど、ISUCON本3章。pprotain導入。）
-    - [ ] CICD構成 (.gitignore,ansible,docker,ほか)
+    - [x] ログ保存設定（nginx,alp,sql-sloq-logなどのISUCON本3章。)
+    - [x] pprotain導入
+    - [x] CICD構成 (.gitignore,ansible,docker,ほか)
     - [ ] 負荷分析（newRelic,pprotainなど）
+    - [ ] githubcodespacesか攻略用EC2など（各チームで）  
 - [ ]　各自の環境整備や操作の確認など
-    - [ ] github clone/pull/push
-    - [ ] 情報交換ツール(discode,outline,ほか)
+    - [x] github clone/pull/push
+    - [x] 情報交換ツール(discode,outline,ほか)
     - [ ] AI支援Tool（gitauto,warp,cursor,ほか）
+
+_誰かが試行済みで聞けば判る状態で✔にしています。_
  
  ## ■ISUCON本攻略チェクリスト
 ```
