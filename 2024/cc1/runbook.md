@@ -4,29 +4,30 @@
 [レギュレーション](https://isucon.net/archives/58657116.html)   
 
 ## 【準備】
-- [x] cc1チーム登録
-- [x] 競技環境確認（ポータルからテストCloudFormation実施/ssh接続）  
-- [ ] メンバ全員の登録、Discord参加、githubのssh公開鍵登録
+- [x] cc1チーム登録（ひでたけ）
+- [x] 競技環境確認（ポータルから試験用のCloudFormation実施/試験ssh接続）  
+- [ ] メンバ全員の登録（よーこさとう）、Discord参加、githubのssh公開鍵登録
 - [ ] AWSクーポン入手
 - [ ] Discordグループ作成
-- [ ] Privareリポジトリ用意
-- [ ] 攻略環境用意（pprotein可視化環境／CICD環境）
+- [ ] 攻略用のPrivareリポジトリ用意
+- [ ] 各自の攻略環境用意（pprotein可視化環境／CICD環境。ssh秘密鍵登録。github codespaces推奨。）
 - [ ] お昼ごはん、おやつ、ドリンク、睡眠  
 
 ## 【当日競技開始】
 > **Info:** 競技日程: 2024年12月8日（日）　競技時間: 10:00 - 18:00（JST）  
-[競技当日の流れ](20231125_README.md)を読んでおき、当日発表されるisucon14本戦当日マニュアルを読む。  
-isucon13 Discordは都度確認する。    
+運営が事前発表する競技当日の流れを読んでおき、当日に発表する本戦当日マニュアルを読む。  
+isucon14 Discordは都度確認する。    
 
 ### ■起動
-[ここ](./20231003_cloudFormation.md)を参考に以下の作業を行う。
-- [ ] [ISUCON13 Portal](https://portal.isucon.net/auth/settings/team/)からCloudFormationのテンプレートをダウンロード。  
-- [ ] ダウンロードしたテンプレートファイルを元にAWSでスタックを作成しCREATE_COMPLETEを待つ。  
+以下の作業を行う。
+- [ ] [ISUCON14 Portal](https://portal.isucon.net)からCloudFormationのテンプレートをダウンロード。  
+- [ ] ダウンロードしたテンプレートファイルを元にAWSでスタックを作成しCREATE_COMPLETEを待つ。(EIPの上限5に注意)  
 
 ### ■接続
-同一インスタンスx3が作成される前提で各自の作業用に１インスタンスを使う想定にしましょう。  
-（.ssh/configへ全インスタンス(isucon13fxとか)のIPアドレス追記するのがお薦め。）  
-- [ ] 出来たインスタンスに各自ssh接続する。userはisuconで接続するはず。  
+同一インスタンスが３インスタンス作成される前提で各自の作業用に１インスタンスを使う想定にしましょう。  
+- [ ] ansibleのinventory.yamlに全インスタンスのIPアドレス追記する。
+- [ ] .ssh/configへ全インスタンスのIPアドレス追記するのがお薦め。(ForwardAgent=yesでssh-agentもONにしよう)　
+- [ ] 出来たインスタンスに各自の攻略環境からssh接続する。user=isuconで接続できるはず。  
 - [ ] ~/binを作成しisucon_toolsをgit cloneする。
 - [ ] 04_setupSSH.shを実行してssh keepalive設定を行う。  
 ```
@@ -36,8 +37,16 @@ $ cd bin
 $ git clone https://github.com/ChallengeClub/isucon_tools.git
 $ cd isucon_tools/
 $ ./04_setupSSH.sh
-```  
-- [ ] 必要なメンバーはVSCodeRemoteDevelopの接続等を設定（autoscanはoffで）  
+```
+```
+Host isucon13f1
+    User isucon
+    HostName <ip-address>
+    Port 22
+    IdentityFile ~/.ssh/isucon14.pem
+    ForwardAgent yes
+```
+- [ ] 必要なメンバーはVSCodeRemoteDevelopの接続等を設定（autoscanは必ずoffで）  
 
 ### ■サーバ内部調査
 下記などでインスタンスの概要調査を行う。  
@@ -54,15 +63,17 @@ $ file hoge                             # file素性確認
 $ cat /etc/hosts                        # サイト情報が何か有るかも
 ```
 想定ではWebサーバ(nginx)やRDB（MySQL）やWebアプリがportをLISTENしているはず。  
-memcahedやRedisも居るかも。結果や不明点を適度にログる。  
-~/webappのディレクトリ構成を調べ必要に応じ/etc, var/logの様子も確認。
+memcahedやRedisも居るかも。調査結果や不明点を適度にログる。（ログ先は必ずprivateに！isucon_tipsにあげちゃダメ！）  
+~/webappのディレクトリ構成を調べ必要に応じ/etc, var/logの様子も確認。  
+goのサービス名やファイル構成がisucon13(isupipe)どの程度違うか調べてAnsibleに反映/錬成する。  
 
 ### ■環境保全とCICD準備
-isucon13f1を代表としてgithubのプライベートリポジトリへpushし環境保全する。
+isucon14f1を代表としてソースや設定をgithubのプライベートリポジトリへpushし環境保全する。  
+※やりかたは色々ありますのでこれから詳細錬成予定。scriptやsnipetで補助しつつ基本手動で。  
 - [ ] /etcから主要な設定を~/webapp/etcにコピー。（nginx,mysql, systemdなど）
 - [ ] webappでgit initして空commit、.gitignoreを作成しgit add,commit
-- [ ] リモートリポジトリ登録して初回push。05_add_webapp_to_github.shを改変して実行、または[ここ](20231019_webapp_to_github.md)を参考に手動で設定する。
-- [ ] 他のインスタンスでpullしてコンフリクトがないことを確認する。★
+- [ ] リモートリポジトリ登録して初回push。05_add_webapp_to_github.shを改変して実行。または[ここ](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20231019_webapp_to_github.md)を参考に手動で設定。
+- [ ] 他のインスタンスでpullしてコンフリクトがないことを確認する。(手順未確認)
 
 ```
 $ cd ~/webapp
@@ -72,8 +83,11 @@ $ git init
  ...
 ```
 
+-----
+### 以下2023年版。2024年はcodespacesから作業するので概ね再錬成になるはず。
+
 ### ■サーバ環境設定
-以後の作業のため環境設定を行う。
+以後の作業のため環境設定。
 ```
 $ sudo apt -y install dstat             # dstat
 $ sudo apt -y install jq                # jq
