@@ -2,7 +2,9 @@
 
 ## ssh接続  
 ```
-$ ssh -l ubuntu -i /c/Users/user/.ssh/aws_secret_key.pem public_ip_address
+$ ssh -l ubuntu -i ~/.ssh/aws_secret_key.pem public_ip_address
+$ ssh -l isucon -i ~/.ssh/aws_secret_key.pem public_ip_address
+$ ssh -l isucon -A -i ~/.ssh/aws_secret_key.pem public_ip_address  # ssh agent on
 ```
 
 ## ユーザ切替  
