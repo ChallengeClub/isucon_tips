@@ -28,6 +28,7 @@
 
 # ディレクトリ容量の確認
 - `du -sh *`
+- `du -h --max-depth=1`
 
 # 共同作業時の掛け声
 - 飛行機のパイロット方式: "I have control!" "You have Control!"
