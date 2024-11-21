@@ -72,5 +72,8 @@
 - [isucon13-try:isucon13を構成管理をものすごい勢いでやるトライアル](https://github.com/mo124121/isucon13-try/tree/main)
 
 ## ■ToDo
-- [ ] isucon13-tryをcodespacesに持って来て新EC2インスタンスに適用してCICDベンチ実施。（isucon14用鍵ペア作成）
+- [x] isucon14用鍵ペア作成し、github登録（本番用）、AWS登録（練習インスタンスのubuntu用）
+- [ ] isucon13-o11yをベースcodespaces作成。
+- [ ] 新EC2インスタンス接続試験。
+- [ ] ベンチ実施。pprofの表示。
 - [ ] isucon-o11y/isucon13-try/ISUCON13のwebappで自分版CICDベンチ環境構築。ansible読み/スニペットisucon-tools反映。
