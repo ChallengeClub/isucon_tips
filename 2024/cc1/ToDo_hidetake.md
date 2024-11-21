@@ -1,9 +1,9 @@
 # ISUCON14攻略ToDo
 
 ## 【スケジュール】
-- [ ] 11/21 もくもく会、環境構築（Ansible/pprof/webappで動くもの。nginx/mysqlはオプション。構築手順は確立不要。）
+- [x] 11/21 もくもく会、環境構築（AnsibleでAWS EC2に接続して動かす。）
 - [ ] 11/26 素振り会、環境を使ってチームで点数アップ演習（環境は触らない。３人で最低１個加点要素を試す。）
-- [ ] 11/28 もくもく会、環境整備（Ansible/pprof/webapp/nginx/mysqlで動くもの。構築手順も確立。）
+- [ ] 11/28 もくもく会、環境整備（Ansible/pprof/webapp/nginx/mysqlで動くもの。構築手順確立。）
 - [ ] 12/3  素振り会、環境を使ってチームで点数アップ演習（github経由でマージ）
 - [ ] 12/5  もくもく会、環境整備（フル動作済み。構築手順整備。出来たらnginx/SQL設定替えなどの加点要素。）
 - [ ] 12/7　前日演習戦(模擬演習(3h)、必須加点要素クリア確認(SQL/N+1) )
@@ -97,14 +97,15 @@ $ sudo su isucon -
 $ cd
 $ mkdir bin
 $ cd bin
-$ git clone git@github.com:ChallengeClub/isucon_tools.git
+$ git clone https://github.com/ChallengeClub/isucon_tools.git
+$ git remote set-url origin git@github.com:ChallengeClub/isucon_tools.git
 $ cd isucon_tools/
 $ ./07_add_github_keys.sh HideakiTakechi
 ``` 
-- [ ] codeapacesのinventory.yml設定。(ansible_host: ip_addressを記載)
-- [ ] ansible playbookの試験
+- [x] codeapacesのinventory.yaml設定。(ansible_host: ip_addressを記載)
+- [x] ansible playbookの試験(test_connection.yamlでwebservers(web1,web2)にpingを行う。)
 ```
-$ ansible-playbook -i inventory.yml -u isucon test.yml
+$ ansible-playbook -i inventory.yaml test_connection.yaml
 ``` 
 - [ ] ベンチ実施。pprofの表示。
 - [ ] isucon-o11y/isucon13-try/ISUCON13のwebappで自分版CICDベンチ環境構築。ansible読み/スニペットisucon-tools反映。
