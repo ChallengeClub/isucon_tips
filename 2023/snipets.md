@@ -2,8 +2,11 @@
 
 ## ssh接続  
 ```
-$ ssh -l ubuntu -i ~/.ssh/aws_secret_key.pem public_ip_address
-$ ssh -l isucon -i ~/.ssh/aws_secret_key.pem public_ip_address
+$ eval "$(ssh-agent -s)"                                           # ssh agent 起動
+$ ssh-add ~/.ssh/aws_secret_key.pem                                # ssh agent 鍵追加
+$ ssh-add -l                                                       # ssh agent 確認
+$ ssh -l ubuntu -i ~/.ssh/aws_secret_key.pem public_ip_address     # ssh 接続
+$ ssh -l isucon -i ~/.ssh/aws_secret_key.pem public_ip_address     # ssh 接続
 $ ssh -l isucon -A -i ~/.ssh/aws_secret_key.pem public_ip_address  # ssh agent on
 ```
 
