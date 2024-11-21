@@ -72,12 +72,13 @@
 - [isucon13-try:isucon13を構成管理をものすごい勢いでやるトライアル](https://github.com/mo124121/isucon13-try/tree/main)
 
 ## ■足掛かりリポジトリ
-- [isucon-o11yのcc1用のhidetake fork](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1)
-- [10/22にAkijinさんが演習構築したもののfork](https://github.com/HideakiTakechi/isucon13)
+- [isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1) isucon-o11yのfork(cc1起点の予定)
+- [isucon13](https://github.com/HideakiTakechi/isucon13) 10/22にAkijinさんが演習構築したもののfork（使わない予定）
+- [isucon13f3](https://github.com/HideakiTakechi/isucon13f3) 11/19にスクラッチで作成したisucon13 webappリポジトリ（使わない予定）
 
 ## ■ToDo
 - [x] isucon14用鍵ペア作成し、github登録（本番用）、AWS登録（練習インスタンスのubuntu用）
-- [ ] isucon13-o11yをベースcodespaces作成。
+- [x] isucon13-o11yをフォークしcodespaces作成　⇒　[cc1-isucon13-try](https://fantastic-couscous-4jwj7vvwpjghj445.github.dev/)
 - [ ] 新EC2インスタンス接続試験。
 - [ ] ベンチ実施。pprofの表示。
 - [ ] isucon-o11y/isucon13-try/ISUCON13のwebappで自分版CICDベンチ環境構築。ansible読み/スニペットisucon-tools反映。
