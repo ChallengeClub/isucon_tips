@@ -66,10 +66,14 @@
 	□ visit_historyへのindex追加
 	□ visit_historyの不要行の削減(300万→20万行)
 ```
-## ■moさん足跡追跡
+## ■moさん足跡起点
 - [ISUCON過去問関連の計装に関するメモ書き](https://qiita.com/mo124121/items/d99ca8fb39ed54237e9b)
 - [isucon-o11y:OvservabilityRepo](https://github.com/mo124121/isucon-o11y/tree/main)
 - [isucon13-try:isucon13を構成管理をものすごい勢いでやるトライアル](https://github.com/mo124121/isucon13-try/tree/main)
+
+## ■足掛かりリポジトリ
+- [isucon-o11yのcc1用のhidetake fork](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1)
+- [10/22にAkijinさんが演習構築したもののfork](https://github.com/HideakiTakechi/isucon13)
 
 ## ■ToDo
 - [x] isucon14用鍵ペア作成し、github登録（本番用）、AWS登録（練習インスタンスのubuntu用）
