@@ -79,6 +79,32 @@
 ## ■ToDo
 - [x] isucon14用鍵ペア作成し、github登録（本番用）、AWS登録（練習インスタンスのubuntu用）
 - [x] isucon13-o11yをフォークしcodespaces作成　⇒　[cc1-isucon13-try](https://fantastic-couscous-4jwj7vvwpjghj445.github.dev/)
-- [ ] 新EC2インスタンス接続試験。
+- [x] codespacesに鍵ペアを登録し、新EC2インスタンス接続試験。(本戦はuserはisuconで接続するはず。練習はubuntu)
+- [x] codeapacesの~/.ssh/configへ全インスタンス(isucon13fxとか)のIPアドレス追記するのがお薦め。
+- [x] ~/binを作成しisucon_toolsをgit cloneする。
+- [x] ./04_setupSSH.shを実行してssh keepalive設定を行う。
+- [x] ./07_add_github_keys.shを実行してisucon userでssh接続できるようにする。   
+```
+$ mkdir ~/.ssh
+$ vim ~/.ssh/id_ed25519.pub
+$ vim ~/.ssh/id_ed25519
+$ chmod 600 ~/.ssh/id_ed25519
+$ stat -c "%n %a" ~/.ssh/*
+/home/codespace/.ssh/id_ed25519 600
+/home/codespace/.ssh/id_ed25519.pub 644
+$ ssh -l ubuntu -i ~/.ssh/id_ed25519 ip_address
+$ sudo su isucon -
+$ cd
+$ mkdir bin
+$ cd bin
+$ git clone git@github.com:ChallengeClub/isucon_tools.git
+$ cd isucon_tools/
+$ ./07_add_github_keys.sh HideakiTakechi
+``` 
+- [ ] codeapacesのinventory.yml設定。(ansible_host: ip_addressを記載)
+- [ ] ansible playbookの試験
+```
+$ ansible-playbook -i inventory.yml -u isucon test.yml
+``` 
 - [ ] ベンチ実施。pprofの表示。
 - [ ] isucon-o11y/isucon13-try/ISUCON13のwebappで自分版CICDベンチ環境構築。ansible読み/スニペットisucon-tools反映。
