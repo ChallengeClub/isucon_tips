@@ -127,10 +127,14 @@ $ ansible-playbook -i inventory.yaml test_connection.yaml # ssh接続を試す
 $ ansible-playbook -i inventory.yaml setup_targets.yaml --tags deploy_agents # agent設定のみ個別適用する場合
 $ ansible-playbook -i inventory.yaml setup_targets.yaml # 全部のタスクを適用する場合
 ``` 
-- [ ] ISUCON13のwebapp登録。
-- [ ] ISUCON13のwebappにpprofの計装を追加。
-- [ ] Webapp Deployスクリプトの動作確認。
-- [ ] ベンチ実施。pprofの表示。
+- [x] ISUCON13のwebapp登録。[HideakiTakechi/isucon13f3](https://github.com/HideakiTakechi/isucon13f3)
+- [x] codespaceにclone。`$ git clone git@github.com:HideakiTakechi/isucon13f3.git` `$ mv isucon13f3 webapp`
+- [x] ISUCON13のwebappにpprofの計装を追加。
+- [x] goのモジュール導入。---> `$ cd webapp/go` `$ go mod tidy`
+- [x] Webapp Deployスクリプトの動作確認。
+	- `$ ansible-playbook -i inventory.yaml -u isucon build_and_deploy.yaml`
+	- `$ systemctl status isupipe-go` 
+- [ ] ベンチ実施。`./bench run --enable-ssl` pprofの表示。
 - [ ] cc1版CICDベンチ環境の動作確認。
 - [ ] 必要に応じプルリクを送る。
 - [ ] isucon13版のcloudformationのyamlを作成。
