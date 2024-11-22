@@ -77,13 +77,12 @@
 - [isucon13f3](https://github.com/HideakiTakechi/isucon13f3) 11/19にスクラッチで作成したisucon13 webappリポジトリ（使わない予定）
 
 ## ■ToDo
-- [x] isucon14用鍵ペア作成し、github登録（本番用）、AWS登録（練習インスタンスのubuntu用）
-- [x] isucon13-o11yをフォークしcodespaces作成　⇒　[cc1-isucon13-try](https://fantastic-couscous-4jwj7vvwpjghj445.github.dev/)
-- [x] codespacesに鍵ペアを登録し、新EC2インスタンス接続試験。(本戦はuserはisuconで接続するはず。練習はubuntu)
-- [x] codeapacesの~/.ssh/configへ全インスタンス(isucon13fxとか)のIPアドレス追記するのがお薦め。
-- [x] ~/binを作成しisucon_toolsをgit cloneする。
-- [x] ./04_setupSSH.shを実行してssh keepalive設定を行う。
-- [x] ./07_add_github_keys.shを実行してisucon userでssh接続できるようにする。   
+- 事前準備
+- [x] isucon14用の鍵ペア作成、githubへ登録（本番用/git push用）、AWSへ登録（練習時のubuntu用）
+- Codespaces作業
+- [x] isucon13-o11yをフォーク　⇒　[isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1)
+- [x] isucon13-o11yからcodespaces作成　⇒　[cc1-isucon13-try](https://fantastic-couscous-4jwj7vvwpjghj445.github.dev/)
+- [x] codespacesに鍵ペアを配置。(ssh-agentを起動してssh-addしておくのがお薦め。)
 ```
 $ mkdir ~/.ssh
 $ vim ~/.ssh/id_ed25519.pub
@@ -92,7 +91,17 @@ $ chmod 600 ~/.ssh/id_ed25519
 $ stat -c "%n %a" ~/.ssh/*
 /home/codespace/.ssh/id_ed25519 600
 /home/codespace/.ssh/id_ed25519.pub 644
-$ ssh -l ubuntu -i ~/.ssh/id_ed25519 ip_address
+$ eval "$(ssh-agent -s)
+$ ssh-add ~/.ssh/id_ed25519
+```
+- EC2インスタンス作業
+- [x] codeapacesの~/.ssh/configにEC2全インスタンス(isucon13f1とか)のIPアドレス追記するのがお薦め。
+- [x] EC2インスタンスに接続。(本戦はuser=isuconで接続できる。練習時はuser=ubuntuで接続する必要がある。)
+- [x] ~/binを作成しisucon_toolsをgit cloneする。
+- [x] ./04_setupSSH.shを実行してssh keepalive設定を行う。
+- [x] ./07_add_github_keys.shを実行してuser=isuconでssh接続できるようにする。   
+```
+$ ssh -l ubuntu -i ip_address
 $ sudo su isucon -
 $ cd
 $ mkdir bin
@@ -100,12 +109,25 @@ $ cd bin
 $ git clone https://github.com/ChallengeClub/isucon_tools.git
 $ git remote set-url origin git@github.com:ChallengeClub/isucon_tools.git
 $ cd isucon_tools/
+$ ./04_setupSSH.sh
 $ ./07_add_github_keys.sh HideakiTakechi
 ``` 
-- [x] codeapacesのinventory.yaml設定。(ansible_host: ip_addressを記載)
+- Codespaces作業
+- [x] codeapacesのinventory.yamlを修正。(ansible_host: ip_addressを記載)
 - [x] ansible playbookの試験(test_connection.yamlでwebservers(web1,web2)にpingを行う。)
+- [x] EC2にagentサービスをインストール(pprotein,node-exporter,process-exporter)
+- [ ] EC2のMySQL設定
+- [ ] EC2のnginx設定
 ```
+$ cd ansible
 $ ansible-playbook -i inventory.yaml test_connection.yaml
+$ ansible-playbook -i inventory.yaml setup_targets.yaml --tags deploy_agents
 ``` 
 - [ ] ベンチ実施。pprofの表示。
-- [ ] isucon-o11y/isucon13-try/ISUCON13のwebappで自分版CICDベンチ環境構築。ansible読み/スニペットisucon-tools反映。
+- [ ] ISUCON13のwebapp登録。
+- [ ] Webapp Deployスクリプトの動作確認。
+- [ ] cc1版CICDベンチ環境の動作確認。
+- [ ] 必要に応じプルリクを送る。
+- [ ] isucon13版のcloudformationのyamlを作成。
+- [ ] cloudformationでインスタンスを作成してcodespaceから接続。
+- [ ] 攻略・点数アップ（まずはindex追加から）
