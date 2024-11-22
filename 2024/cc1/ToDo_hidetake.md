@@ -83,6 +83,7 @@
 - [x] isucon13-o11yをフォーク　⇒　[isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1)
 - [x] isucon13-o11yからcodespaces作成　⇒　[cc1-isucon13-try](https://fantastic-couscous-4jwj7vvwpjghj445.github.dev/)
 - [x] codespacesに鍵ペアを配置。(ssh-agentを起動してssh-addしておくのがお薦め。)
+- [x] ついでにcodespacesのソースIPアドレスも調べておこう。
 ```
 $ mkdir ~/.ssh
 $ vim ~/.ssh/id_ed25519.pub
@@ -93,6 +94,7 @@ $ stat -c "%n %a" ~/.ssh/*
 /home/codespace/.ssh/id_ed25519.pub 644
 $ eval "$(ssh-agent -s)
 $ ssh-add ~/.ssh/id_ed25519
+$ curl httpbin.org/ip
 ```
 - EC2インスタンス作業
 - [x] codeapacesの~/.ssh/configにEC2全インスタンス(isucon13f1とか)のIPアドレス追記するのがお薦め。
@@ -114,18 +116,21 @@ $ ./07_add_github_keys.sh HideakiTakechi
 ``` 
 - Codespaces作業
 - [x] codeapacesのinventory.yamlを修正。(ansible_host: ip_addressを記載)
-- [x] ansible playbookの試験(test_connection.yamlでwebservers(web1,web2)にpingを行う。)
+- [x] ansible playbookdで接続試験(test_connection.yamlでwebservers(web1,web2)にpingを行う。)
 - [x] EC2にagentサービスをインストール(pprotein,node-exporter,process-exporter)
-- [ ] EC2のMySQL設定
-- [ ] EC2のnginx設定
+- [x] EC2のセキュリティグループのinboundにcodespacesのipアドレスからの許可を追加しておこう。
+- [x] EC2のMySQL設定(Slowlogをオン)
+- [x] EC2のnginx設定(log formatのtsv化)
 ```
 $ cd ansible
-$ ansible-playbook -i inventory.yaml test_connection.yaml
-$ ansible-playbook -i inventory.yaml setup_targets.yaml --tags deploy_agents
+$ ansible-playbook -i inventory.yaml test_connection.yaml # ssh接続を試す
+$ ansible-playbook -i inventory.yaml setup_targets.yaml --tags deploy_agents # agent設定のみ個別適用する場合
+$ ansible-playbook -i inventory.yaml setup_targets.yaml # 全部のタスクを適用する場合
 ``` 
-- [ ] ベンチ実施。pprofの表示。
 - [ ] ISUCON13のwebapp登録。
+- [ ] ISUCON13のwebappにpprofの計装を追加。
 - [ ] Webapp Deployスクリプトの動作確認。
+- [ ] ベンチ実施。pprofの表示。
 - [ ] cc1版CICDベンチ環境の動作確認。
 - [ ] 必要に応じプルリクを送る。
 - [ ] isucon13版のcloudformationのyamlを作成。
