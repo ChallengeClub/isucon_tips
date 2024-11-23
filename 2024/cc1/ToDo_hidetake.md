@@ -134,7 +134,7 @@ $ ansible-playbook -i inventory.yaml setup_targets.yaml # 全部のタスクを�
 - [x] Webapp Deployスクリプトの動作確認。
 	- `$ ansible-playbook -i inventory.yaml -u isucon build_and_deploy.yaml`
 	- `$ systemctl status isupipe-go` 
-- [ ] ベンチ実施。`./bench run --enable-ssl` pprofの表示。
+- [x] ベンチ実施。`./bench run --enable-ssl` pprofの表示。
 - [ ] cc1版CICDベンチ環境の動作確認。
 - [ ] 必要に応じプルリクを送る。
 - [ ] isucon13版のcloudformationのyamlを作成。
