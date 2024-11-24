@@ -164,8 +164,9 @@ cs $ vi pprotein/data/targets.json　　　# pprotainが測定する先のEC2 ip
 ec2 $ systemctl status isupipe-go      # Build/Deploy/サービス再起動が成功したか確認
 ec2 $ ./bench run --enable-ssl         # ベンチ実行。事前確認に30秒ほどかかる。
 ```
-- [ ] cc1版CICDベンチ環境の動作確認。
-- [ ] 必要に応じプルリクを送る。
-- [ ] isucon13版のcloudformationのyamlを作成。
+- [ ] isucon13かprivate-isuのAMIを指すcloudformationのyamlを作成。
 - [ ] cloudformationでインスタンスを作成してcodespaceから接続。
 - [ ] 攻略・点数アップ（まずはindex追加から）
+- [ ] 点数アップした結果を各自のブランチにcommitしてからmainとsync(マージ/pull)
+- [ ] 必要に応じプルリクを送る。
+- [ ] このあたりの構成図を作る
