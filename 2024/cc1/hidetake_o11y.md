@@ -1,8 +1,10 @@
 # ISUCON14攻略環境
 
-moさんが作成されたisucon-o11yで以下を行います。
-- pprotainを利用したcodespaces計測環境を用意します。  
-- EC2環境設定やCI/CDをansibleで自動化します。  
+moさんが作成されたisucon-o11yを元に以下を行います。
+- codespaces上にpprotainを利用した可視化環境を用意します。
+- EC2のpprotain,mysql,nginxの設定をcodespacesのansibleから自動で行います。
+- EC2上のwebappソースコードを空のgithub privateリポジトリに登録します。
+- EC2へのCI/CDをansibleで自動化します。  
 
 ## ■参考情報
 ### pprotein参考情報
@@ -18,7 +20,7 @@ moさんが作成されたisucon-o11yで以下を行います。
 - [20241112_ISUCON13モニタリングツール起動からベンチマークまで](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/20241112_ISUCON13%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E3%83%84%E3%83%BC%E3%83%AB%E8%B5%B7%E5%8B%95%E3%81%8B%E3%82%89%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF%E3%81%BE%E3%81%A7.md) isucon-o11yでMySql/Nginxを計測
 
 > [!TIP]
-> goのprofile出力は`net/http/pprof`を計装する方法、`github.com/kaz/pprotein/integration/standalone`を計装する方法があるようです。今回後者を使います。  
+> goのpprof出力は`net/http/pprof`を計装する方法、`github.com/kaz/pprotein/integration/standalone`を計装する方法があるようです。今回後者を使います。  
 
 ### cc1の攻略環境準備
 - [isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1) isucon-o11yのfork(cc1用に整備中)
@@ -115,7 +117,7 @@ ec2 $ ./bench run --enable-ssl         # ベンチ実行。事前確認に30秒�
 #### 使う
 - [ ] isucon13かprivate-isuのAMIを指すcloudformationのyamlを作成。
 - [ ] cloudformationでインスタンスを作成してcodespaceから接続。
-- [ ] 攻略・点数アップ（まずはindex追加から）
+- [ ] 上記の手順で攻略準備を整えてから攻略・点数アップ（まずはindex追加から）
 - [ ] 点数アップした結果を各自のブランチにcommitしてからmainとsync(マージ/pull)
 - [ ] 必要に応じプルリクを送る。
 #### 残件
