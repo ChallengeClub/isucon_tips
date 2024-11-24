@@ -1,4 +1,4 @@
-# ISUCON14攻略環境準備
+# ISUCON14攻略環境
 
 ## 【スケジュール】
 - [x] 11/21 もくもく会、環境構築（AnsibleでAWS EC2に接続して動かす。）
@@ -19,50 +19,6 @@
 - [ ] 各自の攻略環境用意（pprotein可視化環境／CICD環境。ssh秘密鍵登録。github codespaces推奨。）
 - [ ] お昼ごはん、おやつ、ドリンク、睡眠
 
-## ■ISUCON本攻略チェックリスト（Action込みメモ）
-```
-	□１章　基礎
-		□ top
-		□ ベンチマーク
-	□２章　モニタリング
-		□ stress -c 1
-		□ node_expoter(prometeus)
-	□３章　負荷試験
-		□  nginxのjsonログ
-		□ alp
-		□ ab
-		□ log rotate
-		□ slow queryログ(mysqldumpslow)
-		□ mysql接続, EXPLAIN, ADD INDEX
-		□ dstat
-	□４章　シナリオ試験
-		□ k6
-	□５章　データベース
-		□ SHOW PLOCESSLIST
-		□ pt-query-digest
-		□ query-digester
-		□ ADD FULLTEXT INDEX
-		□ N+1問題
-		□ memcached
-	□６章　リバースプロキシ
-		□ 静的ファイル配信
-```
-## ■環境や攻略のヒント
-- [pprotein でボトルネックを探して ISUCON で優勝する](https://zenn.dev/team_soda/articles/20231206000000)
-- [ISUCONチートシートv2022 公開版](https://hackmd.io/@to-hutohu/isucon2022)
-
-## ■IUSCON13解説・攻略に沿った攻略
-- [ISUCON13 問題の解説と講評(公式)](https://isucon.net/archives/58001272.html)
-- [ISUCON13 関連エントリまとめ(公式)](https://isucon.net/archives/57991509.html)
-- [ISUCON13に参加して4位になりました (187,577点)](https://blog.p1ass.com/posts/isucon13/)
-
-## ■IUSCON12予選解説に沿った攻略
-- [ISUCON12 予選の解説 (Node.jsでSQLiteのまま10万点行く方法)](https://isucon.net/archives/56842718.html)  
-- [ISUCON12 予選問題の解説と講評](https://isucon.net/archives/56850281.html)  
-```
-	□ visit_historyへのindex追加
-	□ visit_historyの不要行の削減(300万→20万行)
-```
 ## ■moさんのisucon-o11y足跡起点
 - [isucon-o11y](https://github.com/mo124121/isucon-o11y)　各種可視化ツールの詰め合わせ環境
 - [isucon13-try](https://github.com/mo124121/isucon13-try) isucon13を構成管理をものすごい勢いでやるトライアル
@@ -71,6 +27,9 @@
 ## ■モブプロでisucon-o11y演習
 - [20241112_ISUCON13モニタリングツール起動からベンチマークまで](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/20241112_ISUCON13%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E3%83%84%E3%83%BC%E3%83%AB%E8%B5%B7%E5%8B%95%E3%81%8B%E3%82%89%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF%E3%81%BE%E3%81%A7.md)
 - [20241105_pprof](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/20241105_pprof.md)
+
+## ■pprotein環境のヒント
+- [pprotein でボトルネックを探して ISUCON で優勝する](https://zenn.dev/team_soda/articles/20231206000000)
 
 ## ■足掛かりリポジトリ
 - [isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1) isucon-o11yのfork(cc1起点整備中)
