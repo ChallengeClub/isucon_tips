@@ -2,7 +2,7 @@
 
 ## 【スケジュール】
 - [x] 11/21 もくもく会、環境構築（AnsibleでAWS EC2に接続して動かす。）
-- [ ] 11/26 素振り会、環境を使ってチームで点数アップ演習（環境は触らない。３人で最低１個加点要素を試す。）
+- [ ] 11/26 素振り会、チーム登録、作った環境を使ってチームで点数アップ演習（皆で加点要素を試す。）
 - [ ] 11/28 もくもく会、環境整備（Ansible/pprof/webapp/nginx/mysqlで動くもの。構築手順確立。）
 - [ ] 12/3  素振り会、環境を使ってチームで点数アップ演習（github経由でマージ）
 - [ ] 12/5  もくもく会、環境整備（フル動作済み。構築手順整備。出来たらnginx/SQL設定替えなどの加点要素。）
@@ -18,9 +18,6 @@
 - [ ] 攻略用のPrivareリポジトリ用意
 - [ ] 各自の攻略環境用意（pprotein可視化環境／CICD環境。ssh秘密鍵登録。github codespaces推奨。）
 - [ ] お昼ごはん、おやつ、ドリンク、睡眠
-
-## 【攻略準備】
-### 11/21
 
 ## ■ISUCON本攻略チェックリスト（Action込みメモ）
 ```
@@ -66,24 +63,29 @@
 	□ visit_historyへのindex追加
 	□ visit_historyの不要行の削減(300万→20万行)
 ```
-## ■moさん足跡起点
+## ■moさんのisucon-o11y足跡起点
+- [isucon-o11y](https://github.com/mo124121/isucon-o11y)　各種可視化ツールの詰め合わせ環境
+- [isucon13-try](https://github.com/mo124121/isucon13-try) isucon13を構成管理をものすごい勢いでやるトライアル
 - [ISUCON過去問関連の計装に関するメモ書き](https://qiita.com/mo124121/items/d99ca8fb39ed54237e9b)
-- [isucon-o11y:OvservabilityRepo](https://github.com/mo124121/isucon-o11y/tree/main)
-- [isucon13-try:isucon13を構成管理をものすごい勢いでやるトライアル](https://github.com/mo124121/isucon13-try/tree/main)
+
+## ■モブプロでisucon-o11y演習
+- [20241112_ISUCON13モニタリングツール起動からベンチマークまで](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/20241112_ISUCON13%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E3%83%84%E3%83%BC%E3%83%AB%E8%B5%B7%E5%8B%95%E3%81%8B%E3%82%89%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF%E3%81%BE%E3%81%A7.md)
+- [20241105_pprof](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/20241105_pprof.md)
 
 ## ■足掛かりリポジトリ
-- [isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1) isucon-o11yのfork(cc1起点の予定)
+- [isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1) isucon-o11yのfork(cc1起点整備中)
 - [isucon13](https://github.com/HideakiTakechi/isucon13) 10/22にAkijinさんが演習構築したもののfork（使わない予定）
-- [isucon13f3](https://github.com/HideakiTakechi/isucon13f3) 11/19にスクラッチで作成したisucon13 webappリポジトリ（使わない予定）
+- [isucon13f3](https://github.com/HideakiTakechi/isucon13f3) 11/19にスクラッチで作成したisucon13 webappリポジトリ
+- [isucon_tools](https://github.com/ChallengeClub/isucon_tools) CICD自動化前に個別ツールが重宝する場面で適宜使おう。
 
-## ■ToDo
-- 事前準備
-- [x] isucon14用の鍵ペア作成、githubへ登録（本番用/git push用）、AWSへ登録（練習時のubuntu用）
-- Codespaces作業
-- [x] isucon13-o11yをフォーク　⇒　[isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1)
-- [x] isucon13-o11yからcodespaces作成　⇒　[cc1-isucon13-try](https://fantastic-couscous-4jwj7vvwpjghj445.github.dev/)
-- [x] codespacesに鍵ペアを配置。(ssh-agentを起動してssh-addしておくのがお薦め。)
-- [x] ついでにcodespacesのソースIPアドレスも調べておこう。
+## ■作業フロー
+- 鍵ペアの準備
+    - [x] isucon14用の鍵ペア作成、githubへ登録（ssh用/git push用）、AWSへ登録（練習時のubuntuのssh用）
+- 攻略用のCodespaces準備
+    - [x] isucon13-o11yをフォーク　⇒　[isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1)
+    - [x] フォークしたリポジトリからcodespaces作成　⇒　[cc1-isucon13-try](https://fantastic-couscous-4jwj7vvwpjghj445.github.dev/)
+    - [x] codespacesに先の鍵ペアを配置。(ssh-agentを起動してssh-addしておくと接続時に鍵の指定が不要になるのでお薦め。)
+    - [x] ついでにhttpbin.orgでcodespacesのソースIPアドレスも調べておこう。
 ```
 $ mkdir ~/.ssh
 $ vim ~/.ssh/id_ed25519.pub
@@ -96,14 +98,14 @@ $ eval "$(ssh-agent -s)
 $ ssh-add ~/.ssh/id_ed25519
 $ curl httpbin.org/ip
 ```
-- EC2インスタンス作業
-- [x] codeapacesの~/.ssh/configにEC2全インスタンス(isucon13f1とか)のIPアドレス追記するのがお薦め。
-- [x] EC2インスタンスに接続。(本戦はuser=isuconで接続できる。練習時はuser=ubuntuで接続する必要がある。)
-- [x] ~/binを作成しisucon_toolsをgit cloneする。
-- [x] ./04_setupSSH.shを実行してssh keepalive設定を行う。
-- [x] ./07_add_github_keys.shを実行してuser=isuconでssh接続できるようにする。   
+- EC2インスタンスを起動して接続
+    - [x] EC2インスタンスに接続。(本戦はuser=isuconで接続できる。練習時はuser=ubuntuで接続する必要がある。)
+    - [x] codeapacesの~/.ssh/configにEC2全インスタンスのIPアドレス追記しておくのがお薦め。
+    - [x] ~/binを作成しisucon_toolsをgit cloneする。
+    - [x] ./04_setupSSH.shを実行してssh keepalive設定を行う。
+    - [x] ./07_add_github_keys.shを実行してuser=isuconでssh接続できるようにする。（本番では不要）  
 ```
-$ ssh -l ubuntu -i ip_address
+$ ssh -l ubuntu ip_address
 $ sudo su isucon -
 $ cd
 $ mkdir bin
@@ -114,27 +116,54 @@ $ cd isucon_tools/
 $ ./04_setupSSH.sh
 $ ./07_add_github_keys.sh HideakiTakechi
 ``` 
-- Codespaces作業
-- [x] codeapacesのinventory.yamlを修正。(ansible_host: ip_addressを記載)
-- [x] ansible playbookdで接続試験(test_connection.yamlでwebservers(web1,web2)にpingを行う。)
-- [x] EC2にagentサービスをインストール(pprotein,node-exporter,process-exporter)
-- [x] EC2のセキュリティグループのinboundにcodespacesのipアドレスからの許可を追加しておこう。
-- [x] EC2のMySQL設定(Slowlogをオン)
-- [x] EC2のnginx設定(log formatのtsv化)
+- CodespacesからEC2を計測する環境を整備
+    - [x] codeapacesのinventory.yamlを修正。(ansible_host: ip_addressを記載)
+    - [x] ansibleでssh接続試験(test_connection.yamlでwebservers(web1,web2)にpingを行う。)
+    - [x] ansibleでsetup_targets.yamlを実行してEC2に計測環境を準備する
+        - [x] agentサービス(pprotein-agent,node_exporter,process-exporter）をインストール
+        - [x] MySQL設定(Slowlogをオン)
+        - [x] nginx設定(log formatのtsv化)
+    - [x] EC2のセキュリティグループのinboundにcodespacesのipアドレスからの許可を追加しておこう。(pprotein-agent,node_exporter,process-exporterなどが使う)
 ```
 $ cd ansible
-$ ansible-playbook -i inventory.yaml test_connection.yaml # ssh接続を試す
+$ vi inventory.yaml
+$ ansible-playbook -i inventory.yaml test_connection.yaml # EC2へのssh接続試験
 $ ansible-playbook -i inventory.yaml setup_targets.yaml --tags deploy_agents # agent設定のみ個別適用する場合
 $ ansible-playbook -i inventory.yaml setup_targets.yaml # 全部のタスクを適用する場合
 ``` 
-- [x] ISUCON13のwebapp登録。[HideakiTakechi/isucon13f3](https://github.com/HideakiTakechi/isucon13f3)
-- [x] codespaceにclone。`$ git clone git@github.com:HideakiTakechi/isucon13f3.git` `$ mv isucon13f3 webapp`
-- [x] ISUCON13のwebappにpprofの計装を追加。
-- [x] goのモジュール導入。---> `$ cd webapp/go` `$ go mod tidy`
-- [x] Webapp Deployスクリプトの動作確認。
-	- `$ ansible-playbook -i inventory.yaml -u isucon build_and_deploy.yaml`
-	- `$ systemctl status isupipe-go` 
-- [x] ベンチ実施。`./bench run --enable-ssl` pprofの表示。
+- 用意しておいたgithubの空リポジトリにwebappを登録する。
+    - [x] EC2に接続しwebapp/.gitigonoreを設定。
+    - [x] webappをgithubに登録。---> [HideakiTakechi/isucon13f3](https://github.com/HideakiTakechi/isucon13f3)
+```
+$ ssh -l isucon ip_address
+$ cd webapp
+$ du -h --max-depth=1                     # フォルダ容量確認
+$ vi .gitignore                           # 不要なものをignoreする
+$ git clone/config/add/commit/pushで空リポジトリにwebappを登録する。
+```
+- codespacesでwebappのCICD準備とpprof計装
+    - [x] codespacesにwebappをclone。
+    - [x] webappのmain.goにpprofの計装を追加。ビルドに必要なgoモジュールを導入。
+    - [x] WebappのBuild and Deployスクリプトを実施。
+```
+$ git clone git@github.com:HideakiTakechi/isucon13f3.git
+$ mv isucon13f3 webapp
+$ cd webapp/go
+$ vi main.go
+$ go mod tidy                              # moduleの導入。module追記時のみ。
+$ ansible-playbook -i inventory.yaml build_and_deploy.yaml
+```
+- 計測
+    - [x] codespacesでpprotein環境を起動しWebコンソール画面を表示。
+    - [x] EC2でBuild/Deploy/再起動が成功しているか確認
+    - [x] EC2でベンチ実施し、pproteinのWebで計測。(計測開始はcollectボタンを押す。現在70秒間計測する設定。)
+    - [x] codespacesのpproteinのWeb画面で結果表示。
+```
+cs $ docker-compose up -d　　　　　　　　# codespacesでpprotain環境を起動。port:9000でWebコンソールが起動する。
+cs $ vi pprotein/data/targets.json　　　# pprotainが測定する先のEC2 ip adrressを設定。（リロードで反映出来た）
+ec2 $ systemctl status isupipe-go      # Build/Deploy/サービス再起動が成功したか確認
+ec2 $ ./bench run --enable-ssl         # ベンチ実行。事前確認に30秒ほどかかる。
+```
 - [ ] cc1版CICDベンチ環境の動作確認。
 - [ ] 必要に応じプルリクを送る。
 - [ ] isucon13版のcloudformationのyamlを作成。
