@@ -12,8 +12,8 @@
 ## 【参加準備と手配】
 - [x] cc1チーム登録（ひでたけ）
 - [x] 競技環境確認（ポータルから試験用のCloudFormation実施/試験ssh接続）  
+- [x] AWSクーポン入手
 - [ ] メンバ全員の登録（よーこさとう）、Discord参加、githubのssh公開鍵登録
-- [ ] AWSクーポン入手
 - [ ] Discordグループ作成
 - [ ] 攻略用のPrivareリポジトリ用意
 - [ ] 各自の攻略環境用意（pprotein可視化環境／CICD環境。ssh秘密鍵登録。github codespaces推奨。）
