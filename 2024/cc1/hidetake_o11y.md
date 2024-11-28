@@ -1,8 +1,8 @@
 # ISUCON14攻略環境
 
 moさんが作成されたisucon-o11yを元に以下を行います。
-- github Codespaces上のDockerでpprotainを利用した可視化環境を用意します。
-- EC2のpprotain,mysql,nginxの設定をCodespacesのansibleから自動で行います。
+- github codespaces上のDockerでpprotainを利用した可視化環境を用意します。
+- EC2のpprotain,mysql,nginxの設定をcodespacesのansibleから自動で行います。
 - EC2上のwebappソースコードを空のgithub privateリポジトリに登録します。
 - EC2へのwebappのCI/CDをansibleで自動化します。  
 
@@ -52,14 +52,22 @@ $ ssh-add ~/.ssh/id_ed25519    # ssh-agentに鍵を登録
 $ ssh-add -l                   # 登録済み鍵を確認
 $ curl httpbin.org/ip          # Codespacesのipアドレスを取得
 ```
+お勧めの.bashrc
+```
+# SSHエージェントの自動起動
+if [ -z "$SSH_AGENT_PID" ]; then
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/id_ed25519   # 必要な秘密鍵を追加
+fi
+```
 #### EC2を起動してssh接続
-- [x] EC2インスタンスに接続。(本戦はuser=isuconで接続できる。練習時はuser=ubuntuで接続する必要がある。)
 - [x] codeapacesの~/.ssh/configにEC2全インスタンスのIPアドレス追記しておくのがお薦め。
+- [x] EC2インスタンスに接続。(本戦はuser=isuconで接続できる。練習時はuser=ubuntuで接続する必要がある。)
 - [x] 接続したら~/binを作成しisucon_toolsをgit cloneする。
 - [x] ./04_setupSSH.shを実行してssh keepalive設定を行う。
 - [x] ./07_add_github_keys.shを実行してuser=isuconでssh接続できるようにする。（本番では不要）  
 ```
-$ ssh -l -A ubuntu ip_address
+$ ssh -A -l ubuntu ip_address
 $ sudo su isucon -
 $ cd
 $ mkdir bin
@@ -69,7 +77,16 @@ $ git remote set-url origin git@github.com:ChallengeClub/isucon_tools.git
 $ cd isucon_tools/
 $ ./04_setupSSH.sh
 $ ./07_add_github_keys.sh HideakiTakechi
-``` 
+```
+お勧めの.ssh/config
+```
+Host isucon14f1
+  User isucon
+  HostName ip-address
+  Port 22
+  IdentityFile ~/.ssh/id_ed25519
+  ForwardAgent yes
+```
 #### CodespacesからEC2を計測する環境を整備
 - [x] codeapacesのinventory.yamlを修正。(ansible_host: ip_addressを記載)
 - [x] ansibleでssh接続試験(test_connection.yamlでwebservers(web1,web2)にpingを行う。)
@@ -89,7 +106,7 @@ $ ansible-playbook -i inventory.yaml setup_targets.yaml # 全部のタスクを�
 - [x] EC2に接続しwebapp/.gitigonoreを設定。
 - [x] webappをgithubに登録する。webappのgithubへの登録は[ここ](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20231102_isucon12q3_github_nginx_alp.md)や[ここ](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20231019_webapp_to_github.md)を参考に。---> [HideakiTakechi/isucon13f3](https://github.com/HideakiTakechi/isucon13f3)
 ```
-$ ssh -l isucon ip_address
+$ ssh -A -l isucon ip_address
 $ cd webapp
 $ du -h --max-depth=1                     # フォルダ容量確認
 $ vi .gitignore                           # 不要なものをignoreする
