@@ -24,6 +24,9 @@
 - [11/12](./20241112_ISUCON13%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E3%83%84%E3%83%BC%E3%83%AB%E8%B5%B7%E5%8B%95%E3%81%8B%E3%82%89%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF%E3%81%BE%E3%81%A7.md) 素振り会。moさんprof環境を使ってEC2チューニング。いわささんがドライバ。EC2環境とデプロイ環境構築⇒pprof起動⇒ベンチマーク実行とSQL高速化
 - 11/14 もくもく会。各自環境でもくもく作業。
 - 11/19 素振り会。チーム作業開始。本戦当日は各チームDiscordグループ通話予定。(cc1は[環境構築](./cc1/runbook.md)とか[競技環境試験](./images/2024-11-19_portal.isucon.net.jpeg)とかしました。)
+- 11/21 もくもく会（private-isu攻略始め。）
+- 11/26 素振り会（チーム編成調整、pprotein計装デバグなど。）
+- 11/28 もくもく会(各チーム登録と参加条件クリア。cc4⇒cc3合流。チーム別に素振とチーム名議論。)
   
 ## ■予定表
 - [x] キックオフ作戦会議：10/1(火)21:00～
@@ -46,30 +49,32 @@
     - [x] おのさんのAnsible構成説明など。
 - [x] 素振会：10/29(火)21:00～
     - [x] おのさんのAnsible構築を追跡再構成。ドライバはアワノさん。
-- [ ] 11月29まで 確定メンバーのチーム登録・Discord登録・ssh鍵登録
-    - [ ] 「GitHubにSSH鍵が登録されていません」「Discordサーバーに参加していません」のアラートを別途〆切までに対応作業をする。
-    - [ ] 招待URLを使って他のメンバー（１チーム計３名まで）を11月7日までに追加する。
+- [x] 11月29日19:00まで 確定メンバーのチーム登録・Discord登録・ssh鍵登録
+    - [x] 「GitHubにSSH鍵が登録されていません」「Discordサーバーに参加していません」のアラートを別途〆切までに対応作業をする。
+    - [x] 招待URLを使って他のメンバー（１チーム計３名まで）を11月29日までに追加する。
 
 ## ■ToDo
-- [ ] ISUCON13インスタンス攻略（案）
+- [x] ISUCON13インスタンス攻略の基本所作
     - [x] ssh接続と環境確認、環境設定
     - [x] ブラウザでサービス画面確認
     - [x] ベンチマーク(bench)実行、結果確認
     - [x] ISUCON本2章モニタリングあたり（prometheus/node-exporter）
     - [x] ソースコード構成確認、（言語談義・フレームワーク確認）
-    - [ ] サービスプロセス確認
-- [ ] 高速化 [IUSCON13予選解説](https://isucon.net/archives/58001272.html)に沿った攻略 
-- [ ] ISUCON14 SRE Works
+    - [x] サービスプロセス確認
+- [x] ISUCON14向け SRE Works
     - [x] 負荷測定（prometheus/node-exporter)
     - [x] ログ保存設定（nginx,alp,sql-sloq-logなどのISUCON本3章。)
     - [x] pprotain導入
     - [x] CICD構成 (.gitignore,ansible,docker,ほか)
     - [x] 負荷分析（pprotainなど）
-    - [ ] githubcodespacesか攻略用EC2など（各チームで）  
-- [ ]　各自の環境整備や操作の確認など
+    - [x] githubcodespacesか攻略用EC2など（各チームで）  
+- [x]　各自の環境整備や操作の確認など
     - [x] github clone/pull/push
     - [x] 情報交換ツール(discode,outline,ほか)
-    - [ ] AI支援Tool（gitauto,warp,cursor,ほか）
+    - [x] AI支援Tool（gitauto,warp,cursor,ほか/各自でチャレンジ）
+- [ ] 高速化
+    - [ ]  [IUSCON13予選解説](https://isucon.net/archives/58001272.html)に沿った攻略
+    - [ ]  private-isu攻略
 
 _誰かが試行済みで聞けば判る状態で✔にしています。_
  
@@ -79,25 +84,25 @@ _誰かが試行済みで聞けば判る状態で✔にしています。_
 		✔ top
 		✔ ベンチマーク
 	□２章　モニタリング
-		□ stress -c 1
+		□ stress -c 1（benchが回せれば不要なので参考程度に。）
 		✔ node_expoter(prometeus)
 	□３章　負荷試験
-		□ nginxのjsonログ
+		✔ nginxのjsonログ(⇒alp向け。pprotein/tsvで問題ない感じ)
 		□ alp
 		□ ab
-  		□ log rotate
-		□ slow queryログ(mysqldumpslow)
-		□ mysql接続, EXPLAIN, ADD INDEX
-		□ dstat
+  		□ log rotate（⇒ansible化済みなので参考程度に。）
+		□ slow queryログ(mysqldumpslow)（⇒ansible化済みなので参考程度に。）
+		□ mysql接続, EXPLAIN, ADD INDEX（⇒重要。やろうね！）
+		□ dstat（⇒bench中に手元で使えると参考になるよ）
 	□４章　シナリオ試験
-		□ k6
+		□ k6（⇒特定の細かい動作を調べたい時に参考になるはず。やるならcodespacesに入れておくべきと思う。）
 	□５章　データベース
-    		□ SHOW PLOCESSLIST
-     		□ pt-query-digest
-     		□ query-digester
-      　	□ ADD FULLTEXT INDEX
-      　	□ N+1問題
+    		□ SHOW PLOCESSLIST（⇒pprotein/sqlを補完できるかも）
+     		□ pt-query-digest（⇒pprotein/sqlを補完できるかも）
+     		□ query-digester（⇒pprotein/sqlを補完できるかも）
+      　	□ ADD FULLTEXT INDEX（⇒やろうね。）
+      　	□ N+1問題（⇒重要。やろうね！）
     　　	□ memcached
 	□６章　リバースプロキシ
-		□ 静的ファイル配信
+		□ 静的ファイル配信（⇒重要。やろうね！）
 ``` 
