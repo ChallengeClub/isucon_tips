@@ -3,14 +3,14 @@
 [参加規約](https://isucon.net/archives/58657108.html)  
 [レギュレーション](https://isucon.net/archives/58657116.html)   
 
-## 【準備】
+## 【前日までの準備】
 - [x] cc1チーム登録（ひでたけ）
 - [x] 競技環境確認（ポータルから試験用のCloudFormation実施/試験ssh接続）  
-- [ ] メンバ全員の登録（よーこさとう）、Discord参加、githubのssh公開鍵登録
-- [ ] AWSクーポン入手
+- [x] メンバ全員の登録（よーこさとう）、Discord参加、githubのssh公開鍵登録
+- [x] AWSクーポン入手とAWSへの登録
 - [ ] Discordグループ作成
+- [ ] 各自の攻略環境用意（o11yリポジトリを元にしたpprotein可視化環境／CICD環境。github codespaces推奨。ssh秘密鍵登録しよう。.bashrcでssh-agent登録推奨。）
 - [ ] 攻略用のPrivareリポジトリ用意
-- [ ] 各自の攻略環境用意（pprotein可視化環境／CICD環境。ssh秘密鍵登録。github codespaces推奨。）
 - [ ] お昼ごはん、おやつ、ドリンク、睡眠  
 
 ## 【当日競技開始】
