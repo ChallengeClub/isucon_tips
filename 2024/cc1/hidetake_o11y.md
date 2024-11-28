@@ -59,7 +59,7 @@ $ curl httpbin.org/ip          # Codespacesのipアドレスを取得
 - [x] ./04_setupSSH.shを実行してssh keepalive設定を行う。
 - [x] ./07_add_github_keys.shを実行してuser=isuconでssh接続できるようにする。（本番では不要）  
 ```
-$ ssh -l ubuntu ip_address
+$ ssh -l -A ubuntu ip_address
 $ sudo su isucon -
 $ cd
 $ mkdir bin
