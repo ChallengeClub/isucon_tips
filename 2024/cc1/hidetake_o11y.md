@@ -1,10 +1,10 @@
 # ISUCON14攻略環境
 
 moさんが作成されたisucon-o11yを元に以下を行います。
-- codespaces上にpprotainを利用した可視化環境を用意します。
-- EC2のpprotain,mysql,nginxの設定をcodespacesのansibleから自動で行います。
+- github Codespaces上のDockerでpprotainを利用した可視化環境を用意します。
+- EC2のpprotain,mysql,nginxの設定をCodespacesのansibleから自動で行います。
 - EC2上のwebappソースコードを空のgithub privateリポジトリに登録します。
-- EC2へのCI/CDをansibleで自動化します。  
+- EC2へのwebappのCI/CDをansibleで自動化します。  
 
 ## ■参考情報
 ### pprotein参考情報
@@ -29,8 +29,11 @@ moさんが作成されたisucon-o11yを元に以下を行います。
 - [isucon_tools](https://github.com/ChallengeClub/isucon_tools) 昨年度から用意しているツール。CICD自動化前に個別ツールが重宝する場面で使おう。
 
 ## ■作業フロー
-#### 鍵ペアの準備  
-- [x] isucon14用の鍵ペア作成、githubへ登録（ssh用/git push用）、AWSへ登録（練習時のubuntuのssh用）
+#### 予め鍵ペアを準備する  
+- [x] isucon14用の鍵ペアを作成し、githubへ登録（ssh用/git push用）、AWSへ登録（練習時のubuntuのssh用）
+```
+$ ssh-keygen -t ed25519 -C "isucon14-key"
+```
 #### 攻略用のCodespaces準備
 - [x] isucon13-o11yをフォーク　⇒　[isucon-o11y-isucon13f1](https://github.com/HideakiTakechi/isucon-o11y-isucon13f1)
 - [x] フォークしたリポジトリからcodespaces作成　⇒　[cc1-isucon13-try](https://fantastic-couscous-4jwj7vvwpjghj445.github.dev/)
@@ -38,20 +41,21 @@ moさんが作成されたisucon-o11yを元に以下を行います。
 - [x] ついでにhttpbin.orgでcodespacesのソースIPアドレスも調べておこう。
 ```
 $ mkdir ~/.ssh
-$ vim ~/.ssh/id_ed25519.pub
-$ vim ~/.ssh/id_ed25519
-$ chmod 600 ~/.ssh/id_ed25519
-$ stat -c "%n %a" ~/.ssh/*
+$ vim ~/.ssh/id_ed25519.pub    # 公開鍵を保存
+$ vim ~/.ssh/id_ed25519        # 秘密鍵を保存
+$ chmod 600 ~/.ssh/id_ed25519  # 安全なPermissionにする
+$ stat -c "%n %a" ~/.ssh/*     # Permissionを確認
 /home/codespace/.ssh/id_ed25519 600
 /home/codespace/.ssh/id_ed25519.pub 644
-$ eval "$(ssh-agent -s)
-$ ssh-add ~/.ssh/id_ed25519
-$ curl httpbin.org/ip
+$ eval "$(ssh-agent -s)"       # ssh-agent起動
+$ ssh-add ~/.ssh/id_ed25519    # ssh-agentに鍵を登録
+$ ssh-add -l                   # 登録済み鍵を確認
+$ curl httpbin.org/ip          # Codespacesのipアドレスを取得
 ```
 #### EC2を起動してssh接続
 - [x] EC2インスタンスに接続。(本戦はuser=isuconで接続できる。練習時はuser=ubuntuで接続する必要がある。)
 - [x] codeapacesの~/.ssh/configにEC2全インスタンスのIPアドレス追記しておくのがお薦め。
-- [x] ~/binを作成しisucon_toolsをgit cloneする。
+- [x] 接続したら~/binを作成しisucon_toolsをgit cloneする。
 - [x] ./04_setupSSH.shを実行してssh keepalive設定を行う。
 - [x] ./07_add_github_keys.shを実行してuser=isuconでssh接続できるようにする。（本番では不要）  
 ```
@@ -83,13 +87,15 @@ $ ansible-playbook -i inventory.yaml setup_targets.yaml # 全部のタスクを�
 ``` 
 #### 用意しておいたgithubの空リポジトリにwebappを登録する。
 - [x] EC2に接続しwebapp/.gitigonoreを設定。
-- [x] webappをgithubに登録。---> [HideakiTakechi/isucon13f3](https://github.com/HideakiTakechi/isucon13f3)
+- [x] webappをgithubに登録する。webappのgithubへの登録は[ここ](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20231102_isucon12q3_github_nginx_alp.md)や[ここ](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/20231019_webapp_to_github.md)を参考に。---> [HideakiTakechi/isucon13f3](https://github.com/HideakiTakechi/isucon13f3)
 ```
 $ ssh -l isucon ip_address
 $ cd webapp
 $ du -h --max-depth=1                     # フォルダ容量確認
 $ vi .gitignore                           # 不要なものをignoreする
-# git clone/config/add/commit/pushで空リポジトリにwebappを登録する。
+$ cd ~/bin
+$ vi 06_add_webapp_to_github_gitpull.sh   # configやremote urlを編集
+$ ./06_add_webapp_to_github_gitpull.sh    # webapp以下をgithubに登録する。
 ```
 #### codespacesでwebappのCICD準備とpprotein計装
 - [x] codespacesにwebappをclone。
@@ -99,7 +105,7 @@ $ vi .gitignore                           # 不要なものをignoreする
 $ git clone git@github.com:HideakiTakechi/isucon13f3.git
 $ mv isucon13f3 webapp
 $ cd webapp/go
-$ vi main.go
+$ vi main.go                               # pproteinを計装する。
 $ go mod tidy                              # moduleの導入。module追記時のみ。
 $ ansible-playbook -i inventory.yaml build_and_deploy.yaml
 ```
