@@ -1,9 +1,3 @@
----
-marp: true
-theme: gaia
-header: "**isucon** __＠技術チャレンジ部__"
-footer: "by **hidetake** 2024/12/01 "
----
 # システム構成とCICDフロー
 ![hight:100](images/system_setup.dio.svg)
 
