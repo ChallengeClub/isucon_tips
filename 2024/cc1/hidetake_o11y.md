@@ -94,6 +94,7 @@ Host isucon14f1
     - [x] agentサービス(pprotein-agent,node_exporter,process-exporter）をインストール
     - [x] MySQL設定(Slowlogをオン)
     - [x] nginx設定(log formatのtsv化)
+- [x] pprotein/data/targets.jsonに測定対象のEC2のip_addressを記載する。 
 - [x] EC2のセキュリティグループのinboundにcodespacesのipアドレスからの許可を追加しておこう。(各agentサービスが使う)
 ```
 $ cd ansible
