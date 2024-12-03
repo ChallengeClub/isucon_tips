@@ -248,6 +248,9 @@ $ make
 ```
 
 - デプロイ方法は要確認
+- デプロイ方法によって、依存関係に注意する必要あり。参照（https://www.elastiflow.com/blog/posts/disabling-cgo-to-remove-glibc-dependency）。
+1. ビルド → コピーの時
+1. コピー → ビルドの時
 
 # 以下、編集予定 from ひでたけさんメモから参照
 
