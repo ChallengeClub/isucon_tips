@@ -42,6 +42,10 @@ $ ./04_setupSSH.sh
 ClientAliveInterval を 30 秒に設定しました。
 パスワードによるSSHログインが無効化されました。
 ```
+```bash
+$ ./07_add_github_keys.sh iwatadive28 [github user name1] [github user name2]
+```
+
 
 各自の秘密鍵を `~/.ssh/` へ置き、権限を変更。
 ```bash
@@ -109,8 +113,8 @@ isucon14f1を代表としてソースや設定をgithubのプライベートリ�
 
 EC2上、isuconユーザーで扱う前提。
 ```
-$ cp -r /etc/mysql webapp/mysq$
 $ sudo cp -r /etc/mysql webapp/mysql
+$ sudo cp -r /etc/nginx webapp/nginx
 ```
 
 ##### 1.webappをローカルにコピーして保存する方法
@@ -247,7 +251,55 @@ $ cd webapp/go
 $ make
 ```
 
-- デプロイ方法は要確認
+ansible 上で、ビルド→デプロイする設定ファイルを記載する。以下、例。
+
+`ansible/build_and_deploy.yaml`
+```yaml
+---
+- name: Build and deploy Go application
+  hosts: localhost  # ローカルでビルドを実行
+  gather_facts: false
+
+  tasks:
+    - name: Build Go application
+      command: make
+      args:
+        chdir: /workspaces/isucon-o11y/webapp/go  # ローカルのGoアプリケーションのディレクトリ
+      register: build_result
+      ignore_errors: no
+
+    - name: Check if build was successful
+      fail:
+        msg: "Build failed. Check Go installation and code."
+      when: build_result.rc != 0
+
+    - name: Copy the webapp directory to the remote server
+      delegate_to: server1  # デプロイ先のサーバー
+      ansible.builtin.copy:
+        src: /workspaces/isucon-o11y/webapp/go/isupipe  # ローカルのwebappディレクトリ
+        dest: /home/isucon/webapp/go/isupipe  # 本番サーバのデプロイ先ディレクトリ
+        mode: '0755'
+        remote_src: no  # ローカルからリモートへコピー
+      become: true  # root権限で実行
+
+- name: Restart the application on the remote server
+  hosts: server1  # 本番サーバーでの操作
+  become: true  # root権限で実行
+  tasks:
+    - name: Restart the application service
+      ansible.builtin.systemd:
+        name: isupipe-go.service  # サービス名（適宜変更）
+        state: restarted
+      become: true
+
+```
+
+実行します。
+```bash
+$ cd ansible
+$ ansible-playbook -i inventory.yaml -u ubuntu build_and_deploy.yaml --private-key ~/.ssh/isucon13.pem
+```
+
 
 # 以下、編集予定 from ひでたけさんメモから参照
 
