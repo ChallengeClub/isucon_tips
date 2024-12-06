@@ -22,3 +22,7 @@
     - 各インスタンスのソースコード更新（※goのbuild_and_deploy.yamlで実行ファイルのみ更新している場合。）
     - 計測環境のリバート（agentサービス停止、slowlogオフ。pprotein計装コメントアウト。nginxログのオフ？）
     - 再起動試験(EC2の再起動、ベンチマーク)
+
+## Ovserbavility接続図
+![hight:100](images\o11y_setup.dio.svg)
+
