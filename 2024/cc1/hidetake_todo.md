@@ -20,7 +20,11 @@
 - [ ] お昼ごはん、おやつ、ドリンク、睡眠
 
 ## 
- - ansibleの整備
+- 攻略用のPrivareリポジトリ用意
+  - cc1_webpp
+  - cc1_o11y
+  - cc1_tips
+- ansibleの整備
    - build_and_deploy.yaml
    - build.yaml
    - deploy.yaml
