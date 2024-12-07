@@ -300,6 +300,81 @@ $ cd ansible
 $ ansible-playbook -i inventory.yaml -u ubuntu build_and_deploy.yaml --private-key ~/.ssh/isucon13.pem
 ```
 
+#### pprotainでwebモニタリング設定
+
+
+参考： [pprotain webappが動くように変更](https://github.com/mo124121/isucon-o11y/commit/13fbf460a770f7c618770234e0cb929a2483f60c)
+
+##### main.goの変更
+
+  - main.go importモジュールの追加
+  ```go
+  import(
+  ...
+  "github.com/kaz/pprotein/integration/standalone"
+  ...
+  )
+  ```
+
+  - func initializeHandler に追記
+  ```go
+  func initializeHandler(c echo.Context) error {
+    if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
+      c.Logger().Warnf("init.sh failed with err=%s", string(out))
+      return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
+    }
+    // ここに追加
+    go func() {
+      // if _, err := http.Get("(codespaces-forwarded-port)/api/group/collect"); err != nil {
+      // 	log.Printf("failed to communicate with pprotein: %v", err)
+      // }
+      if _, err := http.Get("https://ominous-zebra-j76r5v65gp5hpjq6-9000.app.github.dev/api/group/collect"); err != nil {
+        log.Printf("failed to communicate with pprotein: %v", err)
+      }
+    }()
+    c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
+    return c.JSON(http.StatusOK, InitializeResponse{
+      Language: "golang",
+    })
+  }
+  ```
+
+  - ポートを開く設定を追記
+  ```go
+  func main() {
+    // 課金情報
+    e.GET("/api/payment", GetPaymentResult)
+
+    e.HTTPErrorHandler = errorResponseHandler
+
+    // 19001ポートを開く for pprotain
+    go standalone.Integrate(":19001")
+  ```
+  
+- build 前に 依存関係を解消
+  ```bash
+  $ go mod tidy
+  ```
+  go mod tidy の目的: プロジェクトから削除されたコードが依存していたパッケージを go.mod および go.sum から取り除きます。コードで使用されているが、go.mod に記載されていない依存関係を追加します。
+
+##### CodeSpace上設定
+- ローカル環境でpprotainのポート9000番をPublicに変更する。
+
+  ![image](image_CodeSpace_portOpen.png)
+
+##### pprotain設定ファイルの変更
+- "Type": "pprof", のポートをを19001番に変更（8080番は別のポートと被っていた）
+  ![image](image_pprotain_target_json.png)
+  ```
+    [
+    {
+      "Type": "pprof",
+      "Label": "web",
+      "URL": "http://3.112.3.216:19001/debug/pprof/profile",
+      "Duration": 70
+    },
+    ...
+  ```
 
 # 以下、編集予定 from ひでたけさんメモから参照
 
