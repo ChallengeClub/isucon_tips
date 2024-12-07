@@ -376,6 +376,50 @@ $ ansible-playbook -i inventory.yaml -u ubuntu build_and_deploy.yaml --private-k
     ...
   ```
 
+#### DB変更をmain.go関数内に記載
+
+main.go 上で追記する
+参考：
+  - https://github.com/saba-in-the-kettle/isucon13/blob/a19c66932c4c53345117e4c09d47c44c4db3b38c/go/isuutil/db.go#L71-L87
+
+  - https://github.com/saba-in-the-kettle/isucon13/blob/a19c66932c4c53345117e4c09d47c44c4db3b38c/go/main.go#L119-L122
+
+
+
+- isuutil を webapp/go/isuutil へコピーして持ってくる
+- main.go のinitializeHandlerに追記。
+
+```go
+func initializeHandler(c echo.Context) error {
+	if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
+		c.Logger().Warnf("init.sh failed with err=%s", string(out))
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
+	}
+
+	// pprotain
+	go func() {
+		// if _, err := http.Get("(codespaces-forwarded-port)/api/group/collect"); err != nil {
+		// 	log.Printf("failed to communicate with pprotein: %v", err)
+		// }
+		if _, err := http.Get("https://ominous-zebra-j76r5v65gp5hpjq6-9000.app.github.dev/api/group/collect"); err != nil {
+			log.Printf("failed to communicate with pprotein: %v", err)
+		}
+	}()
+  
+  // ここに追記
+	// インデックスを貼る（一つのクエリに対する記述）
+	if err := isuutil.CreateIndexIfNotExists(dbConn, "create index livestream_tags_tag_id_index\n    on livestream_tags (tag_id);\n\n"); err != nil {
+		c.Logger().Errorf("create index failed with err=%s", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
+	}
+
+	c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
+	return c.JSON(http.StatusOK, InitializeResponse{
+		Language: "golang",
+	})
+}
+```
+
 # 以下、編集予定 from ひでたけさんメモから参照
 
 --- 
