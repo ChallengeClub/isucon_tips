@@ -42,6 +42,10 @@ $ ./04_setupSSH.sh
 ClientAliveInterval を 30 秒に設定しました。
 パスワードによるSSHログインが無効化されました。
 ```
+```bash
+$ ./07_add_github_keys.sh iwatadive28 [github user name1] [github user name2]
+```
+
 
 各自の秘密鍵を `~/.ssh/` へ置き、権限を変更。
 ```bash
@@ -109,8 +113,8 @@ isucon14f1を代表としてソースや設定をgithubのプライベートリ�
 
 EC2上、isuconユーザーで扱う前提。
 ```
-$ cp -r /etc/mysql webapp/mysq$
 $ sudo cp -r /etc/mysql webapp/mysql
+$ sudo cp -r /etc/nginx webapp/nginx
 ```
 
 ##### 1.webappをローカルにコピーして保存する方法
@@ -247,10 +251,174 @@ $ cd webapp/go
 $ make
 ```
 
-- デプロイ方法は要確認
-- デプロイ方法によって、依存関係に注意する必要あり。参照（https://www.elastiflow.com/blog/posts/disabling-cgo-to-remove-glibc-dependency）。
-1. ビルド → コピーの時
-1. コピー → ビルドの時
+ansible 上で、ビルド→デプロイする設定ファイルを記載する。以下、例。
+
+`ansible/build_and_deploy.yaml`
+```yaml
+---
+- name: Build and deploy Go application
+  hosts: localhost  # ローカルでビルドを実行
+  gather_facts: false
+
+  tasks:
+    - name: Build Go application
+      command: make
+      args:
+        chdir: /workspaces/isucon-o11y/webapp/go  # ローカルのGoアプリケーションのディレクトリ
+      register: build_result
+      ignore_errors: no
+
+    - name: Check if build was successful
+      fail:
+        msg: "Build failed. Check Go installation and code."
+      when: build_result.rc != 0
+
+    - name: Copy the webapp directory to the remote server
+      delegate_to: server1  # デプロイ先のサーバー
+      ansible.builtin.copy:
+        src: /workspaces/isucon-o11y/webapp/go/isupipe  # ローカルのwebappディレクトリ
+        dest: /home/isucon/webapp/go/isupipe  # 本番サーバのデプロイ先ディレクトリ
+        mode: '0755'
+        remote_src: no  # ローカルからリモートへコピー
+      become: true  # root権限で実行
+
+- name: Restart the application on the remote server
+  hosts: server1  # 本番サーバーでの操作
+  become: true  # root権限で実行
+  tasks:
+    - name: Restart the application service
+      ansible.builtin.systemd:
+        name: isupipe-go.service  # サービス名（適宜変更）
+        state: restarted
+      become: true
+
+```
+
+実行します。
+```bash
+$ cd ansible
+$ ansible-playbook -i inventory.yaml -u ubuntu build_and_deploy.yaml --private-key ~/.ssh/isucon13.pem
+```
+
+#### pprotainでwebモニタリング設定
+
+
+参考： [pprotain webappが動くように変更](https://github.com/mo124121/isucon-o11y/commit/13fbf460a770f7c618770234e0cb929a2483f60c)
+
+##### main.goの変更
+
+  - main.go importモジュールの追加
+  ```go
+  import(
+  ...
+  "github.com/kaz/pprotein/integration/standalone"
+  ...
+  )
+  ```
+
+  - func initializeHandler に追記
+  ```go
+  func initializeHandler(c echo.Context) error {
+    if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
+      c.Logger().Warnf("init.sh failed with err=%s", string(out))
+      return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
+    }
+    // ここに追加
+    go func() {
+      // if _, err := http.Get("(codespaces-forwarded-port)/api/group/collect"); err != nil {
+      // 	log.Printf("failed to communicate with pprotein: %v", err)
+      // }
+      if _, err := http.Get("https://ominous-zebra-j76r5v65gp5hpjq6-9000.app.github.dev/api/group/collect"); err != nil {
+        log.Printf("failed to communicate with pprotein: %v", err)
+      }
+    }()
+    c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
+    return c.JSON(http.StatusOK, InitializeResponse{
+      Language: "golang",
+    })
+  }
+  ```
+
+  - ポートを開く設定を追記
+  ```go
+  func main() {
+    // 課金情報
+    e.GET("/api/payment", GetPaymentResult)
+
+    e.HTTPErrorHandler = errorResponseHandler
+
+    // 19001ポートを開く for pprotain
+    go standalone.Integrate(":19001")
+  ```
+  
+- build 前に 依存関係を解消
+  ```bash
+  $ go mod tidy
+  ```
+  go mod tidy の目的: プロジェクトから削除されたコードが依存していたパッケージを go.mod および go.sum から取り除きます。コードで使用されているが、go.mod に記載されていない依存関係を追加します。
+
+##### CodeSpace上設定
+- ローカル環境でpprotainのポート9000番をPublicに変更する。
+
+  ![image](image_CodeSpace_portOpen.png)
+
+##### pprotain設定ファイルの変更
+- "Type": "pprof", のポートをを19001番に変更（8080番は別のポートと被っていた）
+  ![image](image_pprotain_target_json.png)
+  ```
+    [
+    {
+      "Type": "pprof",
+      "Label": "web",
+      "URL": "http://3.112.3.216:19001/debug/pprof/profile",
+      "Duration": 70
+    },
+    ...
+  ```
+
+#### DB変更をmain.go関数内に記載
+
+main.go 上で追記する
+参考：
+  - https://github.com/saba-in-the-kettle/isucon13/blob/a19c66932c4c53345117e4c09d47c44c4db3b38c/go/isuutil/db.go#L71-L87
+
+  - https://github.com/saba-in-the-kettle/isucon13/blob/a19c66932c4c53345117e4c09d47c44c4db3b38c/go/main.go#L119-L122
+
+
+
+- isuutil を webapp/go/isuutil へコピーして持ってくる
+- main.go のinitializeHandlerに追記。
+
+```go
+func initializeHandler(c echo.Context) error {
+	if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
+		c.Logger().Warnf("init.sh failed with err=%s", string(out))
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
+	}
+
+	// pprotain
+	go func() {
+		// if _, err := http.Get("(codespaces-forwarded-port)/api/group/collect"); err != nil {
+		// 	log.Printf("failed to communicate with pprotein: %v", err)
+		// }
+		if _, err := http.Get("https://ominous-zebra-j76r5v65gp5hpjq6-9000.app.github.dev/api/group/collect"); err != nil {
+			log.Printf("failed to communicate with pprotein: %v", err)
+		}
+	}()
+  
+  // ここに追記
+	// インデックスを貼る（一つのクエリに対する記述）
+	if err := isuutil.CreateIndexIfNotExists(dbConn, "create index livestream_tags_tag_id_index\n    on livestream_tags (tag_id);\n\n"); err != nil {
+		c.Logger().Errorf("create index failed with err=%s", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
+	}
+
+	c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
+	return c.JSON(http.StatusOK, InitializeResponse{
+		Language: "golang",
+	})
+}
+```
 
 # 以下、編集予定 from ひでたけさんメモから参照
 
