@@ -1,0 +1,174 @@
+#OS確認
+isucon@ip-192-168-0-11:~$ cat /etc/os-release 
+PRETTY_NAME="Ubuntu 24.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.1 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+
+#ユーザー確認
+isucon@ip-192-168-0-11:~$ grep -v nologin /etc/passwd 
+root:x:0:0:root:/root:/bin/bash
+sync:x:4:65534:sync:/bin:/bin/sync
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+pollinate:x:106:1::/var/cache/pollinate:/bin/false
+ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+isucon:x:1100:1100::/home/isucon:/bin/bash
+isuadmin:x:1110:1110::/home/isuadmin:/bin/bash
+mysql:x:111:113:MySQL Server,,,:/nonexistent:/bin/false
+
+#プロセス確認
+isucon@ip-192-168-0-11:~$ sudo lsof -P -i | grep -v sshd
+COMMAND     PID            USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+systemd       1            root  196u  IPv6   5800      0t0  TCP *:22 (LISTEN)
+systemd-r   342 systemd-resolve   14u  IPv4   5266      0t0  UDP _localdnsstub:53 
+systemd-r   342 systemd-resolve   15u  IPv4   5267      0t0  TCP _localdnsstub:53 (LISTEN)
+systemd-r   342 systemd-resolve   16u  IPv4   5268      0t0  UDP _localdnsproxy:53 
+systemd-r   342 systemd-resolve   17u  IPv4   5269      0t0  TCP _localdnsproxy:53 (LISTEN)
+systemd-n   534 systemd-network   21u  IPv4   5656      0t0  UDP ip-192-168-0-11.ap-northeast-1.compute.internal:68 
+nginx       713            root    5u  IPv4   7269      0t0  TCP *:80 (LISTEN)
+nginx       713            root    6u  IPv4   7270      0t0  TCP *:443 (LISTEN)
+nginx       716        www-data    5u  IPv4   7269      0t0  TCP *:80 (LISTEN)
+nginx       716        www-data    6u  IPv4   7270      0t0  TCP *:443 (LISTEN)
+nginx       717        www-data    5u  IPv4   7269      0t0  TCP *:80 (LISTEN)
+nginx       717        www-data    6u  IPv4   7270      0t0  TCP *:443 (LISTEN)
+chronyd     738         _chrony    5u  IPv4   6546      0t0  UDP localhost:323 
+chronyd     738         _chrony    6u  IPv6   6547      0t0  UDP ip6-localhost:323 
+mysqld      943           mysql   21u  IPv4   6985      0t0  TCP localhost:33060 (LISTEN)
+mysqld      943           mysql   33u  IPv4   6987      0t0  TCP localhost:3306 (LISTEN)
+mysqld      943           mysql   61u  IPv4  83131      0t0  TCP localhost:3306->localhost:33236 (ESTABLISHED)
+mysqld      943           mysql   68u  IPv4  83118      0t0  TCP localhost:3306->localhost:33110 (ESTABLISHED)
+isuride    1066          isucon    6u  IPv6   7968      0t0  TCP *:8080 (LISTEN)
+isuride    1066          isucon   48u  IPv4  82847      0t0  TCP localhost:33236->localhost:3306 (ESTABLISHED)
+isuride    1066          isucon   57u  IPv4  82753      0t0  TCP localhost:33110->localhost:3306 (ESTABLISHED)
+payment_m  1068          isucon    3u  IPv6   7054      0t0  TCP *:12345 (LISTEN)
+ssm-agent  1187            root   14u  IPv4   8412      0t0  TCP ip-192-168-0-11.ap-northeast-1.compute.internal:21846->52.119.220.97:443 (ESTABLISHED)
+
+#サービス確認
+isucon@ip-192-168-0-11:~$ service --status-all
+ [ + ]  acpid
+ [ + ]  apparmor
+ [ + ]  apport
+ [ + ]  chrony
+ [ - ]  console-setup.sh
+ [ + ]  cron
+ [ - ]  cryptdisks
+ [ - ]  cryptdisks-early
+ [ + ]  dbus
+ [ - ]  grub-common
+ [ - ]  hibagent
+ [ + ]  irqbalance
+ [ - ]  iscsid
+ [ - ]  keyboard-setup.sh
+ [ + ]  kmod
+ [ + ]  mysql
+ [ + ]  nginx
+ [ - ]  open-iscsi
+ [ - ]  open-vm-tools
+ [ + ]  plymouth
+ [ + ]  plymouth-log
+ [ + ]  procps
+ [ - ]  rsync
+ [ - ]  screen-cleanup
+ [ + ]  ssh
+ [ + ]  sysstat
+ [ + ]  ufw
+ [ + ]  unattended-upgrades
+ [ - ]  uuidd
+
+
+#ホスト確認
+isucon@ip-192-168-0-11:~$ cat /etc/hosts
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+# BEGIN ANSIBLE MANAGED BLOCK
+
+# ISURIDE IP for matching requests
+127.0.0.1 isuride.xiv.isucon.net
+# END ANSIBLE MANAGED BLOCK
+
+# SQLの接続ユーザ・パスワード・DB名
+$ cat env.sh 
+ISUCON_DB_HOST="127.0.0.1"
+ISUCON_DB_PORT="3306"
+ISUCON_DB_USER="isucon"
+ISUCON_DB_PASSWORD="isucon"
+ISUCON_DB_NAME="isuride"
+
+# WebApp以下の容量
+~/webapp$ du -h --max-depth=1 
+96M     ./nodejs
+53M     ./php
+84K     ./ruby
+1.4M    ./public
+39M     ./python
+5.3M    ./payment_mock
+7.3M    ./go
+59M     ./perl
+722M    ./rust
+828K    ./sql
+982M    .
+go, sqlは必要。
+public,payment_mockは念のため保持。
+nodejs, php, ruby, public, python, perl, rustは不要。
+
+# webappプロセス
+isuride-go.serviceが起動している。
+バイナリの場所は/home/isucon/webapp/go/isurideの筈。
+
+$ systemctl status isuride-go
+● isuride-go.service - isuride-go
+     Loaded: loaded (/etc/systemd/system/isuride-go.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2024-12-08 05:15:46 UTC; 19min ago
+   Main PID: 95719 (isuride)
+      Tasks: 10 (limit: 4535)
+     Memory: 8.9M (peak: 26.5M)
+        CPU: 23.141s
+     CGroup: /system.slice/isuride-go.service
+             └─95719 /home/isucon/webapp/go/isuride
+
+Dec 08 05:35:38 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:38 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31178 - 204 0B in 11.0422>
+Dec 08 05:35:38 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:38 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31186 - 204 0B in 10.9039>
+Dec 08 05:35:39 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:39 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31194 - 204 0B in 10.7819>
+Dec 08 05:35:39 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:39 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31210 - 204 0B in 10.7976>
+Dec 08 05:35:40 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:40 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31226 - 204 0B in 11.1240>
+Dec 08 05:35:40 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:40 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31230 - 204 0B in 10.7894>
+Dec 08 05:35:41 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:41 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31244 - 204 0B in 10.8775>
+Dec 08 05:35:42 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:42 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31258 - 204 0B in 10.9943>
+Dec 08 05:35:42 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:42 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31266 - 204 0B in 10.9480>
+Dec 08 05:35:43 ip-192-168-0-11 isuride[95719]: 2024/12/08 05:35:43 "GET http://isuride.xiv.isucon.net/api/internal/matching HTTP/1.0" from 127.0.0.1:31272 - 204 0B in 10.8204>
+lines 1-20/20 (END)
+
+go$ ll
+total 7412
+drwxr-xr-x  2 isucon isucon    4096 Dec  8 05:14 ./
+drwxr-xr-x 14 isucon isucon    4096 Dec  8 02:50 ../
+-rw-r--r--  1 isucon isucon    1235 Dec  7 19:58 .gitignore
+-rw-r--r--  1 isucon isucon   28976 Dec  7 19:58 app_handlers.go
+-rw-r--r--  1 isucon isucon    9452 Dec  7 19:58 chair_handlers.go
+-rw-r--r--  1 isucon isucon     255 Dec  7 19:58 go.mod
+-rw-r--r--  1 isucon isucon    1291 Dec  7 19:58 go.sum
+-rw-rw-r--  1 isucon isucon      45 Dec  8 05:14 grep
+-rw-r--r--  1 isucon isucon    1818 Dec  7 19:58 internal_handlers.go
+-rwxrwxr-x  1 isucon isucon 7483652 Dec  7 20:03 isuride*
+-rw-r--r--  1 isucon isucon    4785 Dec  7 19:58 main.go
+-rw-r--r--  1 isucon isucon    2474 Dec  7 19:58 middlewares.go
+-rw-r--r--  1 isucon isucon    2602 Dec  7 19:58 models.go
+-rw-r--r--  1 isucon isucon    6655 Dec  7 19:58 owner_handlers.go
+-rw-r--r--  1 isucon isucon    2639 Dec  7 19:58 payment_gateway.go
