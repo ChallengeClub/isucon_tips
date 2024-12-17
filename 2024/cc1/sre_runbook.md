@@ -138,50 +138,11 @@ memcahedやRedisも居るかも。調査結果や不明点を適度にログる�
 ~/webappのディレクトリ構成を調べ必要に応じ/etc, var/logの様子も確認。  
 goのサービス名やファイル構成がisucon13(isupipe)どの程度違うか調べてAnsibleに反映/錬成する。  
 
-
-
-
------
-### 以下2023年版。2024年はcodespacesから作業するので概ね再錬成になるはず。
-
-### ■サーバ環境設定
-以後の作業のため環境設定。
-```
-$ sudo apt -y install dstat             # dstat
-$ sudo apt -y install jq                # jq
-# prometheus; http://{IP}:9090/ or curl localhost:9090/metrics --> AWSの9090ポートを開けること
-# 呪文:　avg without(cpu) (rate(node_cpu_seconds_total{mode!="idle"}[1m]))
-$ sudo apt -y install prometheus prometheus-node-exporter
-# alp
-$ wget https://github.com/tkuchiki/alp/releases/download/v1.0.18/alp_linux_amd64.tar.gz
-$ tar xvzf alp_linux_amd64.tar.gz
-$ mv alp /usr/local/bin/alp
-$ sudo apt -y install apache2-utils     # ab
-# ログ置場準備(ベンチマーク結果等github回収用)
-$ cd ~/webapp
-$ mkdir log
-```
 #### ポートの開け方
 EC2→セキュリティグループ->インバウンドルールの追加で変更できます。
-![image](https://github.com/ChallengeClub/isucon_tips/assets/62125060/4994645e-b4a2-4692-8456-817a880e4c6f)
-
-#### nginxのlogのjson化設定
-[ここ](20230926_nginx_jsonLog.md)などを参考に作業。
-
-#### /var/logアクセス性改善
-/var/logなどの各種ログを見えるようにadmグループに各ユーザーを追加する。下記を参考に編集。  
-```
-$ sudo vigr -s
-- adm:x:4:syslog,ubuntu
-+ adm:x:4:syslog,ubuntu,isucon,hidetake,seigot,maleicacid,kiwasa,takaaki,miteru
-```
-他にもisucon,webapp,mysql等のグループが存在して作業の都合が良ければ必要に応じユーザ追加する。
 
 ### ■サーバ動作確認
 アプリケーションマニュアルを参照しつつブラウザでアクセスして動作を把握する。
-
-### ■初回ベンチマーク
-sudo logrotate -f /etc/logrotate.confしてからベンチマーク実施。
 
 ## 【攻略】
 ### ■RDB攻略
@@ -190,11 +151,7 @@ sudo logrotate -f /etc/logrotate.confしてからベンチマーク実施。
 - 初期化データの有無を確認。無ければこの時点でmysqldump実施。★
 - [ここ](20231005_mysql_slowlog.md)を参考にslowlogをオン（競技終了時にはoff）
 ### ■WebApp攻略
-- alpの実行
-- アプリログの場所の確認、内容の確認（journaldで集めている場合下記で確認できる）
-```
-journalctl -xef -u <サービス名:isuportsなど>
-```
+- pproteinの実行(pprof/http/slowlog)
 - WebAPIのリストアップ
 - N+1の特定と対策
 - その他の重くて不要な処理の確認
@@ -210,9 +167,9 @@ journalctl -xef -u <サービス名:isuportsなど>
 ## 【競技終了】
 17:00 リーダーボードの更新停止
 ### ■最終動作確認(17:00-18:00)
-- slowlog off、prometheusサービス停止
+- slowlog offなどサービス停止
 - RDBデータ初期化、サービス再起動、再起動試験
 - 最終ベンチ
 - 18:00 競技終了、ログアウト
 
-### ■結果発表(19:30)
+### ■結果発表(20:00)
