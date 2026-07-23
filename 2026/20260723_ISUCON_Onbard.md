@@ -12,7 +12,7 @@
 | ゆーこ | 初心者からクラウド業務に就いて、昨年度ISUCONに参加しAWS等にも挑戦。ISUCON2026挑戦していきます🚀テストや改善したい | PPND/SQLのチューニングなどでも戦える | 有 |
 | nuno(布矢) | まず関り方を探る！スキル習得できたら嬉しい | PAS/組み込み技術者/C/Python/Rust/Linuxなど取組！ | |
 | もりあい | Web系のスキルアップを！ | PITS/入社2年目/去年からプロコン参加/Web系の仕事/Java/C++/TypeScript/Node.js ||
-| ヒビキ | 本戦は友人との別チームで参加 |  PPND/組込/過去にISUPIPE/ISURIDE/C++/Java/Linux/nginx | 有 |
+| ヒビキ | 本戦は友人との別チームで参加 |  PPND/組込/過去にISUPIPE,ISURIDE参加/C++/Java/Linux/nginx | 有 |
 | とも(Tomo) | 見学していると参加したくなってくるかも?! | 業務は組み込み/趣味はオンプレ/技チャレはVR ||
 
 - DiscordのPrivateChannelへのアクセス権（ロール）付与
