@@ -4,6 +4,16 @@
 
 参加者の自己紹介（抱負や得意不得意など）をして記載しました。 
 
+# 自己紹介  
+
+| メンバー | 抱負・目標 | そのほか自由に |
+| --- | --- | --- |
+| ひでたん | 今年の目標は失格回避 | 出場３回目でこれまで２回は失格 |
+| ゆーこ | 初心者からクラウド業務に就いて、昨年度ISUCONに参加しAWS等にも挑戦。ISUCON2026挑戦していきます🚀テストや改善したい | SQLのチューニングなどでも戦える　|
+| nuno(布矢) | まず関り方を探る！スキル習得できたら嬉しい | 組み込み技術者/C/Python/Rust/Linuxなど取組！ | 
+| もりあい | Web系のスキルアップを！ | PITS/入社2年目/去年からプロコン参加/Web系の仕事/Java/C++/TypeScript/Node.js |
+| ヒビキ | 本戦は友人との別チームで参加 |  PPND/組込/過去にISUPIPE/ISURIDE/C++/Java/Linux/nginx |
+
 - DiscordのPrivateChannelへのアクセス権（ロール）付与
 - github organizationへのメンバー追加とrepoのcollaborator追加
 - ssh鍵生成とgithubへの設定（これは最終的にAWS EC2にログインする鍵にも使います）
@@ -20,4 +30,6 @@
 
 https://isucon.net/archives/59917350.html  
 https://x.com/isucon_official/status/2078999190903095506  
+
+
 
