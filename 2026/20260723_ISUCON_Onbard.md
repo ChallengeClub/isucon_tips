@@ -13,6 +13,7 @@
 | nuno(布矢) | まず関り方を探る！スキル習得できたら嬉しい | 組み込み技術者/C/Python/Rust/Linuxなど取組！ | 
 | もりあい | Web系のスキルアップを！ | PITS/入社2年目/去年からプロコン参加/Web系の仕事/Java/C++/TypeScript/Node.js |
 | ヒビキ | 本戦は友人との別チームで参加 |  PPND/組込/過去にISUPIPE/ISURIDE/C++/Java/Linux/nginx |
+| とも(Tomo) | 見学していると参加したくなってくるかも?! | 業務は組み込み/趣味はオンプレ/技チャレはVR |
 
 - DiscordのPrivateChannelへのアクセス権（ロール）付与
 - github organizationへのメンバー追加(リポジトリの変更が可能)
