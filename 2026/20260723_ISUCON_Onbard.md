@@ -15,9 +15,8 @@
 | ヒビキ | 本戦は友人との別チームで参加 |  PPND/組込/過去にISUPIPE/ISURIDE/C++/Java/Linux/nginx |
 
 - DiscordのPrivateChannelへのアクセス権（ロール）付与
-- github organizationへのメンバー追加とrepoのcollaborator追加
+- github organizationへのメンバー追加(リポジトリの変更が可能)
 - ssh鍵生成とgithubへの設定（これは最終的にAWS EC2にログインする鍵にも使います）
-- outlineへのDiscord認証ログイン    
 
 など初期環境準備を行いました  
 
