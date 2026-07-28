@@ -1,9 +1,7 @@
 # やりたいこと
 - ssh鍵生成とgithubへの設定
-
 - 同じ共同作業用のAWS(isupipe)にみんなで入る
-⭐private-isu環境を各自のWSL上に作る！！
+- private-isu環境を各自のWSL上に作る！！（←こちらを実施）
 https://github.com/catatsuy/private-isu
 
-
-# ローカルでlinuxが動くかどうかチェック
+nuno8さんの環境でPrivate isuを立ち上げていく
