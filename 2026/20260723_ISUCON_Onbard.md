@@ -14,6 +14,7 @@
 | もりあい | Web系のスキルアップを！ | PITS/入社2年目/去年からプロコン参加/Web系の仕事/Java/C++/TypeScript/Node.js ||
 | ヒビキ | 本戦は友人との別チームで参加 |  PPND/組込/過去にISUPIPE,ISURIDE参加/C++/Java/Linux/nginx | 有 |
 | とも(Tomo) | 見学していると参加したくなってくるかも?! | 業務は組み込み/趣味はオンプレ/技チャレはVR ||
+| mo | 上位入賞！ | クラウドインフラの知識をいかすぞー |有|
 
 - DiscordのPrivateChannelへのアクセス権（ロール）付与
 - github organizationへのメンバー追加(リポジトリの変更が可能)
