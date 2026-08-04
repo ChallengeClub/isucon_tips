@@ -15,6 +15,7 @@
 | ヒビキ | 本戦は友人との別チームで参加 |  PPND/組込/過去にISUPIPE,ISURIDE参加/C++/Java/Linux/nginx | 有 |
 | アワノ | 去年よりイイ順位！ | PCO/競プロ/入社3年目/ISUCON14参加/Python | 有 |
 | とも(Tomo) | 見学していると参加したくなってくるかも?! | 業務は組み込み/趣味はオンプレ/技チャレはVR ||
+| mo | 上位入賞！ | クラウドインフラの知識をいかすぞー |有|
 
 - DiscordのPrivateChannelへのアクセス権（ロール）付与
 - github organizationへのメンバー追加(リポジトリの変更が可能)
