@@ -3,18 +3,18 @@ by 技術チャレンジ部
 
 ## 活動ルール
 - 参加してくれた人をリスペクトし、活動の多様性を尊重しましょう。
-- リアクションはコメント、質問、ホメること。批判は無しです。
+- リアクション内容はコメント、質問、ホメることでお願いします。批判は無しです。
 - リアクション大きめ、多めでお願いします。
 
 ## 注意事項：Publicリポジトリです。
 - 秘密情報を置かないでください。（パスワード/秘密鍵/個人情報等）
-- 競技中に攻略情報をおかないでください。（レギュレーションに違反します。）
-- 演習参加／本戦参加メンバーをcollaboratorに招待します。
+- 本戦競技中には、ここに攻略情報をおかないでください。（競技レギュレーションに違反します。）
+- 演習のみ参加者、本戦参加者を問わず、本リポジトリのcollaboratorに招待します。
 
 ## 攻略の起点
 - [2024 Readme](https://github.com/ChallengeClub/isucon_tips/blob/main/2024/Readme.md)
 - [isucon_tools](https://github.com/ChallengeClub/isucon_tools) 素振用/本戦用スクリプト
-- 2024 Runbook
+- [ISUCON13 Runbook](https://github.com/ChallengeClub/isucon_tips/blob/main/2023/runbook.md)
 
 ## 公式サイトリンク
 - [ISUCON公式Github](https://github.com/isucon)
