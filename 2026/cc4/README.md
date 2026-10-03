@@ -1,13 +1,13 @@
 # ChallengeClub4（cc4）: Codex による ISUCON2026 自動化計画
 
-更新: 2026-10-03 / 状態: 構成を検討済み、環境構築・動作確認はこれから
+更新: 2026-10-03 / 状態: 構成を検討済み、練習 EC2 の通常 SSM 接続を確認。SSH over SSM・専用 VM は未検証
 
 ## 目的と活動の位置付け
 
 企業の有志活動「技術チャレンジ部」の ISUCON メンバー7人で、Discord の定例会・練習と GitHub への TIPS 蓄積を進めている。
 cc4 は ChallengeClub4 の略で、人間の参加者と Codex により、AI エージェント全自動でどこまで改善できるかを試す競技参加チーム。運営へのエントリーは済んでいる。AI は人間の登録選手を意味するものではない。
 
-この文書は事前準備の設計・手順であり、環境構築や自動化が成功した記録ではない。大会当日のマニュアルと最新の公式資料を確認して更新する。
+この文書は事前準備の設計・手順と一部の練習結果をまとめたもの。構成全体や自動改善の動作確認は未完了。大会当日のマニュアルと最新の公式資料を確認して更新する。
 
 ## 公開 TIPS と競技用リポジトリの分離
 
@@ -112,13 +112,94 @@ MacBook・スマートフォンは操作窓口。AWS CLI を実行する Linux V
 6. Codex 用権限で同じ接続を試し、対象外 EC2・未許可 document・管理操作が拒否されることも確認する。
 7. 人間の復旧経路、資格情報更新、セッション終了・再接続を確認してから自動改善に組み込む。
 
-この順序で、接続基盤の不備と Codex 用 IAM ポリシーの不足を切り分ける。実際の設定・成功確認はこれから行う。
+この順序で、接続基盤の不備と Codex 用 IAM ポリシーの不足を切り分ける。人間による通常の SSM シェル接続は確認済み。SSH over SSM と Codex 用の制限ロールはこれから検証する。
 
 ## EC2 接続: Session Manager を第一候補として検証
 
 通常の Session Manager シェルは SSH 鍵や EC2 のインバウンド22番開放を必要としない。
 Codex の配備・ファイル転送には **Session Manager 経由の SSH** を第一候補として練習する。
 これは通信経路が SSM になるだけで、EC2 上の sshd、ログインユーザー、SSH ユーザー鍵・ホスト鍵の確認は必要。
+
+### 接続の原理と IAM の二つの役割
+
+SSH over SSM の接続先は競技 EC2 上の sshd（通常22番）。
+開発 VM の SSH が ProxyCommand で AWS CLI・Session Manager plugin を起動し、SSM のトンネルを通信路として使う。
+操作側と EC2 の SSM Agent は、それぞれ AWS のエンドポイントへ TLS/443 の接続を作る。
+VPC 全体へ参加する VPN ではなく、指定した対象・ポートへ通信を中継する方式。
+EC2 のパブリック IP や外部からの22番開放は不要だが、Agent の外向き通信は必要。
+
+- EC2 側の IAM ロール: SSM Agent が AWS と通信するための権限。
+- 操作する人間・Codex 側の IAM 主体: 対象へのセッション開始等を依頼する権限。
+
+既に人間側に必要な権限がある場合、追加設定は不要。EC2 側のロールを付けても操作側の権限は付かない。
+通常の SSM シェルは Agent がシェルを起動する方式で、SSH ログインとは別。
+
+### EC2 のロール付与と起動時の準備
+
+今回は **EC2 個別の IAM インスタンスプロファイル方式**を採用する。
+DHMC（Default Host Management Configuration）はアカウント・リージョン単位で管理対象を自動登録する別方式で、併用は必須ではない。
+DHMC 自体も管理用 IAM ロールを使い、IMDSv2 と対応する Agent を必要とする。
+
+1. IAM で AWS サービス「EC2」を信頼するロールを作成し、AmazonSSMManagedInstanceCore を付ける。
+2. 新規起動なら「高度な詳細 → IAM インスタンスプロファイル」で指定する。
+3. 起動済みなら「アクション → セキュリティ → IAM ロールを変更」で付ける。
+4. 既存ロールがある場合は、必要な既存権限を維持してそのロールにポリシーを追加する。EC2 に付けられるロールは一つ。
+5. Agent の自動起動と外向き通信を確認し、通常の SSM シェル接続を試す。
+
+Agent が導入済み・自動起動する AMI なら、起動時にロールを指定することで最初から SSM 接続できる構成にできる。
+未導入なら、許可された起動時ユーザーデータで導入する方法もあるため、初回 SSH は必須ではない。
+当日は指定 AMI・起動手順に従い、必要なら既存 SSH 経路で導入・起動する。
+起動後のロール追加では、Agent の再起動が必要になることがある。
+
+### Ubuntu の Snap 版 Agent: 確認と復旧
+
+通常の amazon-ssm-agent.service が見つからなくても、Snap 版が入っている可能性がある。
+APT の標準リポジトリでパッケージが見つからないことも、未導入の証拠にはならない。
+
+```bash
+snap list amazon-ssm-agent
+sudo snap services amazon-ssm-agent
+
+# 未導入の場合のみ実行
+sudo snap install amazon-ssm-agent --classic
+
+# 自動起動を有効にし、ロール追加後の再接続を促す
+sudo snap start --enable amazon-ssm-agent
+sudo snap restart amazon-ssm-agent
+sudo snap services amazon-ssm-agent
+```
+
+Startup が enabled、Current が active であることを確認し、数分待って接続画面を更新する。
+古いエラーの時刻を確認し、ロール付与前の記録と現在の障害を区別する。
+新しい資格情報取得エラーが続く場合は、ロールの信頼関係、IMDS、Agent のログを確認する。
+
+### ログインユーザーとサービス実行ユーザー
+
+| 用途 | 方針 |
+|---|---|
+| 通常の SSM シェル | 既定の ssm-user。接続確認・復旧用。既定では sudo が可能 |
+| SSH over SSM | SSH 設定の User で指定する既存の作業ユーザー。対応する SSH 鍵で認証 |
+| 編集・ビルド・配備 | 課題の指定とソースの所有者に合わせる。必要な管理操作だけ sudo |
+| アプリ・DB の実行 | 配布時の systemd 等に設定されたユーザーを確認して維持 |
+
+SSH over SSM で User ubuntu を指定すれば ubuntu としてログインし、ssm-user を経由しない。
+通常の SSM シェルから既存ユーザーに切り替える場合は、例えば sudo -iu ubuntu を使える。
+ホームに go ディレクトリが見えるだけではアプリの実行ユーザーは確定しない。
+ファイル所有者、systemd の User=・WorkingDirectory=、実際のプロセスを確認する。
+root や ssm-user 所有のファイルを作業ツリーに混在させない。
+
+### 2026-10-03 の練習結果
+
+人間が ISUCON14 の Ubuntu 練習 EC2 で実施し、このチャットに結果を報告した。
+
+- [x] EC2 に AmazonSSMManagedInstanceCore を持つ IAM ロールを付与。
+- [x] 既存の SSH 接続で Snap 版 SSM Agent が導入済みであることを確認し、再起動。
+- [x] 通常の Session Manager シェルに接続し、ssm-user と sudo の利用を確認。
+- [ ] SSH over SSM、ファイル転送、非対話コマンド。
+- [ ] Codex 用の制限ロールでの接続と拒否テスト。
+- [ ] 起動時のロール指定から初回 SSM 接続までの検証。
+
+今回の成功はこの練習 EC2 での結果であり、ISUCON2026 の指定 AMI に Agent が入っていることや、当日の初回 SSH が不要であることを保証しない。
 
 ### 必要な設定
 
@@ -221,7 +302,9 @@ AGENTS.md            当日ルール、権限、停止条件、実行手順
 ### 1. ルールと環境を確認
 
 - 当日マニュアルを読み、禁止事項、ベンチ方法、サーバー台数、初期化・再起動条件を非公開の作業指示に反映。
-- 自チームの AWS アカウントで指定 AMI・指定方法に従って競技 EC2 を起動。
+- 自チームの AWS アカウントで指定 AMI・指定方法に従って競技 EC2 を起動。許可された設定範囲で SSM 用インスタンスプロファイルを起動時に指定し、既存インスタンスなら後から付与。
+- SSM Agent の導入・自動起動を確認。SSM が使えなければ既存 SSH 経路から確認・復旧。
+- ソース所有者と systemd 等の実行ユーザーを確認し、編集・配備のユーザーを決める。
 - インスタンス ID、リージョン、OS ユーザー、サービス構成を非公開の記録に保存。
 - SSM/SSH 接続と必要権限を確認。AWS 基盤変更とアプリ改善の権限を分ける。
 - Discord の運営アナウンスとポータルを人間が確認できる状態にする。
@@ -303,3 +386,9 @@ AGENTS.md            当日ルール、権限、停止条件、実行手順
 
 - [IAM のベストプラクティス](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html): 一時資格情報・ワークロード用ロール。
 - [Session Manager の IAM 制限例](https://docs.aws.amazon.com/systems-manager/latest/userguide/getting-started-restrict-access-examples.html): 対象インスタンス・タグ・セッション操作の制限。
+
+- [EC2 への IAM ロール取り付け](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/attach-iam-role.html)
+- [DHMC](https://docs.aws.amazon.com/systems-manager/latest/userguide/fleet-manager-default-host-management-configuration.html)
+- [Ubuntu の Snap 版 SSM Agent](https://docs.aws.amazon.com/systems-manager/latest/userguide/agent-install-ubuntu-64-snap.html)
+- [Session Manager のトラブルシューティング](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-troubleshooting.html)
+- [Linux の SSM Agent 導入・ユーザーデータ](https://docs.aws.amazon.com/systems-manager/latest/userguide/manually-install-ssm-agent-linux.html)
