@@ -75,6 +75,45 @@ Agent forwarding は基本的に無効にする。接続先のホスト鍵は信
 競技ではサービス再起動や DB 設定変更が必要になるので、読み取り専用から始めた後、練習で必要な権限を洗い出す。
 鍵の分離は接続先を、OS の権限はログイン後の操作を制限する。
 
+### 人間・Codex・競技 EC2 の IAM 分担
+
+IAM の接続権限と、接続後の Linux の操作権限を分ける。Codex 用の権限は人間用と分離し、専用 IAM ロールを第一候補とする。新しい IAM ユーザーの作成は必須ではない。
+
+| 主体 | 権限・役割 |
+|---|---|
+| 人間の操作用 IAM 主体 | 練習・競技 EC2 の起動、復旧、ネットワーク・IAM 設定、手動の Session Manager 接続 |
+| Codex の操作用ロール（例: cc4-codex-operator） | cc4 の対象 EC2 の参照、必要な Session Manager 接続、自分のセッションの終了・必要な再開 |
+| 接続される競技 EC2 のロール | SSM Agent が AWS と通信する権限。AmazonSSMManagedInstanceCore 等 |
+| EC2 内の Linux 操作ユーザー | アプリ・設定・DB の変更、必要なサービス管理。SSH 鍵と sudo 権限で制御 |
+
+競技 EC2 に SSM Agent 用ロールを付けても、Codex にセッション開始権限は付かない。操作側の IAM ポリシーが別途必要。
+人間と Codex はそれぞれの IAM 主体で同じ EC2 に接続できる。Codex の権限を分けても、人間の復旧経路は維持する。
+サービス再起動は Linux の権限、EC2 自体の再起動は AWS API の権限。最初は Codex に EC2 の削除、IAM 変更、セキュリティグループ変更を許可せず、必要な操作を練習で洗い出す。
+
+Codex の接続権限はインスタンス ID または Team=cc4 等のタグ、使用する Session document（SSH なら AWS-StartSSHSession）に限定する。
+セッション開始以外に必要なデータチャネル、終了・再開、参照権限は公式ポリシー例で確認する。タグ制限を使う場合、そのタグを Codex が自由に変更できないようにする。
+具体的な IAM ポリシー JSON は、アカウント・リージョン・対象・認証方式を確定してから作成・検証する。
+
+#### 専用 VM に AWS 資格情報を持たせる方法
+
+- 開発 VM が EC2 の場合: 操作用ロールをインスタンスプロファイルで割り当て、AWS CLI が取得する一時資格情報を使う。競技 EC2 の SSM Agent 用ロールとは別。VM 上で同じ資格情報にアクセスできるプロセスもその権限を使える点を考慮する。
+- 開発 VM が手元の Linux VM の場合: 制限されたロールの一時資格情報を用意する方法をまず検証する。AssumeRole には信頼ポリシーと元の認証が必要で、ロールを作るだけでは利用できない。長時間の無人実行に向け、資格情報の期限と更新を確認する。IAM Roles Anywhere 等も将来の候補。
+- 長期アクセスキーを持つ専用 IAM ユーザーは、必要な場合の代替案。人間用の管理者キーを共有せず、対象・操作を限定し、終了後に失効する。
+
+MacBook・スマートフォンは操作窓口。AWS CLI を実行する Linux VM 側に操作用資格情報を用意し、人間のブラウザーの AWS ログインが自動共有されるとは考えない。
+
+#### 練習の順序
+
+1. 人間の IAM 権限で用意した練習用 EC2 に、SSM Agent・EC2 用ロール・ネットワークを設定する。
+2. 人間の権限で通常の Session Manager シェル接続を成功させる。
+3. 人間の権限で SSH over Session Manager、ファイル転送、非対話コマンドを検証する。
+4. Codex 用の制限されたロールと、そのロールを利用する認証経路を用意する。
+5. 開発 VM で aws sts get-caller-identity を実行し、意図した操作用 IAM 主体であることを確認する。
+6. Codex 用権限で同じ接続を試し、対象外 EC2・未許可 document・管理操作が拒否されることも確認する。
+7. 人間の復旧経路、資格情報更新、セッション終了・再接続を確認してから自動改善に組み込む。
+
+この順序で、接続基盤の不備と Codex 用 IAM ポリシーの不足を切り分ける。実際の設定・成功確認はこれから行う。
+
 ## EC2 接続: Session Manager を第一候補として検証
 
 通常の Session Manager シェルは SSH 鍵や EC2 のインバウンド22番開放を必要としない。
@@ -122,6 +161,7 @@ SSH over SSM のコマンド内容は通常の Session Manager セッション�
 - [ ] SSH のログインシェルで codex --version と codex login status が成功。
 - [ ] 競技用 Agent と鍵、GitHub 用の限定資格情報を用意。
 - [ ] AWS CLI、Session Manager plugin、対象を限定した AWS 権限を検証。
+- [ ] 人間の権限で接続基盤を確認後、Codex 用ロールで許可・拒否と資格情報更新を検証。
 - [ ] 認証の期限切れ・更新、Codex の利用上限と当日の余裕を確認。
 
 ### Windows とスマートフォン
@@ -260,3 +300,6 @@ AGENTS.md            当日ルール、権限、停止条件、実行手順
 - [SSM のネットワーク・VPC Endpoint](https://docs.aws.amazon.com/systems-manager/latest/userguide/setup-create-vpc.html)
 - [Session Manager 経由の SSH](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started-enable-ssh-connections.html)
 - [GitHub Deploy Key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys)
+
+- [IAM のベストプラクティス](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html): 一時資格情報・ワークロード用ロール。
+- [Session Manager の IAM 制限例](https://docs.aws.amazon.com/systems-manager/latest/userguide/getting-started-restrict-access-examples.html): 対象インスタンス・タグ・セッション操作の制限。
