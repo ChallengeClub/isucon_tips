@@ -1,6 +1,6 @@
 # ChallengeClub4（cc4）: Codex による ISUCON2026 自動化計画
 
-更新: 2026-10-03 / 状態: 構成を検討済み、練習 EC2 の通常 SSM 接続を確認。SSH over SSM・専用 VM は未検証
+更新: 2026-10-03 / 状態: Ubuntu 26.04 Desktop VM と ChatGPT Desktop を導入し、Mac・スマートフォンからの遠隔操作を確認。SSH over SSM・自動改善は未検証
 
 ## 目的と活動の位置付け
 
@@ -23,17 +23,16 @@ cc4 は ChallengeClub4 の略で、人間の参加者と Codex により、AI �
 
 ```mermaid
 flowchart LR
-    Mobile["スマートフォンの ChatGPT"] <-->|Remote| Windows["Windows デスクトップアプリ"]
-    Windows <-->|SSH リモートプロジェクト| VM["専用 Linux VM<br/>Codex CLI / app-server<br/>Git 作業ツリー・専用 Agent"]
+    Mac["Mac の ChatGPT"] <-->|遠隔操作| VM["専用 Linux VM<br/>Ubuntu 26.04 Desktop<br/>ChatGPT Desktop / Codex<br/>Git 作業ツリー・競技用 Agent"]
+    Mobile["スマートフォンの ChatGPT"] <-->|遠隔操作| VM
     VM <-->|push / pull| GitHub["cc4 専用の非公開 GitHub"]
-    VM <-->|SSH over Session Manager 等| EC2["競技 EC2<br/>アプリ・DB・ミドルウェア"]
+    VM <-->|SSH over Session Manager| EC2["競技 EC2<br/>アプリ・DB・ミドルウェア"]
 ```
 
 | 場所 | 役割 |
 |---|---|
-| スマートフォン | チャット、進捗、差分、承認・質問、通知の確認 |
-| Windows | Remote の接続窓口、Linux VM の SSH リモートプロジェクトを表示 |
-| 専用 Linux VM | Codex の実行、コード検索・修正、Git、テスト、配備、実験記録 |
+| Mac・スマートフォン | VM 上のチャット・進捗の確認と追加指示。差分・通知・承認の各機能は練習で確認 |
+| 専用 Linux VM | Ubuntu 26.04 Desktop 上の ChatGPT Desktop / Codex の実行、コード検索・修正、Git、テスト、配備、実験記録 |
 | 非公開 GitHub | 履歴の保存、差分・実験結果の観測、復旧用コピー |
 | 競技 EC2 | サービス実行、実環境の調査、公式ベンチでの性能検証 |
 
@@ -42,16 +41,27 @@ flowchart LR
 Codex の作業負荷・認証情報・履歴を競技サーバーから分離し、EC2 の再起動に備える。
 外部 VM は開発・モニタリング用とし、採点対象の Web サービスの処理は許可された競技サーバー内で完結させる。
 
-### Windows と Linux の Codex 接続
+### 専用 Linux Desktop VM を中心にする理由
 
-- Windows の「設定 → 接続 → この PC を操作」でスマートフォンをペアリングする。
-- 同じ画面の「SSH」で Linux VM とそのプロジェクトフォルダーを登録する。
-- スマートフォンは Windows ホストに接続し、そのホストが接続するリモート開発環境の作業を扱う構成が公式に説明されている。
-- Linux VM は **Codex CLI** をインストール・認証する。Windows アプリが SSH 経由でリモート app-server を起動する。
-- SSH のログインシェルから codex が PATH 上で見つかる必要がある。Linux の GUI は不要。
-- Linux デスクトップアプリもプレビューとして存在するが、今回のヘッドレス VM には不要。
-- Windows の電源・通信・アプリを維持し、スリープを防ぐ。スマートフォンからの一覧・通知・承認・再接続を実機検証する。
-- Windows が切断されたときの実行継続・復旧は、使用バージョンで実験して確認する。CLI の実験的 remote-control を本番の前提にはしない。
+- 普段使いの Windows とエージェント用の権限・資格情報を VM 単位で分離する。
+- Codex 以外のエージェントを動かす VM も用意する予定があり、その基盤として活用する。
+- Ubuntu 26.04 Desktop の利用経験を積む。
+- Windows と Linux 間の通信に懸念があり、競技の必須経路から外す。
+- SSH over SSM の検証と競技環境の練習を進める。
+
+Windows アプリを経由する構成は採用構成から外し、Mac・スマートフォンから Linux VM の Desktop アプリを直接遠隔操作する。
+同じ VM 上の他エージェントが競技資格情報や作業ツリーにアクセスできる範囲は、ユーザー・権限・実行環境で分離して確認する。
+
+### 導入済みと残る確認
+
+ユーザーの報告により、Ubuntu 26.04 Desktop の VM、ChatGPT Desktop の導入、Mac・スマートフォンからの遠隔操作を確認済み。
+VM 上のローカルプロジェクトを作業の中心にする。Windows の SSH リモートプロジェクトや CLI の experimental remote-control は、本番の必須経路にしない。
+
+- VM の電源、ネットワーク、Desktop セッション、アプリを維持し、スリープや自動更新による中断を管理する。
+- 差分表示、通知、承認、追加指示を Mac・スマートフォンで一周確認する。
+- クライアント切断・アプリ再起動・VM 再起動後の復旧を練習する。
+- AWS CLI、Session Manager plugin、競技用 SSH Agent を VM 内に用意し、Desktop アプリから実行するコマンドで利用できるか確認する。
+- 長時間ジョブのログ・結果を保存し、必要に応じて SSH と tmux 等の復旧経路を用意する。
 
 ## 認証と権限の分離
 
@@ -59,14 +69,14 @@ Codex の作業負荷・認証情報・履歴を競技サーバーから分離�
 
 | 接続 | 認証・権限 |
 |---|---|
-| スマートフォン → Windows | 同一 ChatGPT アカウント・ワークスペース、デバイスのペアリング |
-| Windows → Linux VM | VM 専用の SSH 鍵と Linux ユーザー |
+| Mac・スマートフォン → Linux Desktop VM | ChatGPT の遠隔接続に必要なアカウント・ワークスペースとデバイス認証 |
+| 人間の復旧用 SSH → Linux VM | VM 専用の SSH 鍵と Linux ユーザー |
 | Linux VM → Codex サービス | VM 上で ChatGPT アカウントにログイン |
 | Linux VM → GitHub | cc4 の非公開リポジトリに限定した資格情報 |
 | Linux VM → 競技 EC2 | 競技用 SSH 鍵・専用 Agent、必要な OS 権限 |
 | Linux VM → AWS Session Manager | 対象 EC2・SSM document 等に範囲を絞った IAM 権限 |
 
-個人用 Pageant や既存の全鍵を共有せず、VM に競技用の Agent を用意する。
+普段使いの Windows の Pageant・SSH Agent や既存の全鍵を共有せず、Linux VM 内に競技用の SSH Agent を用意する。
 秘密鍵は VM の保護された場所に置き、人間が Agent に登録する。チャットや Git に渡さない。
 Agent にアクセスできるプロセスは登録鍵で認証を試せるため、Agent は秘密鍵の読み取り防止だけでなく、登録鍵の分離と利用可能時間を管理する。
 Agent forwarding は基本的に無効にする。接続先のホスト鍵は信頼できる経路で確認する。
@@ -235,25 +245,25 @@ SSH over SSM のコマンド内容は通常の Session Manager セッション�
 
 ### 専用 Linux VM
 
+- [x] Ubuntu 26.04 Desktop VM を用意し、ChatGPT Desktop をインストール（ユーザー報告）。
 - [ ] 専用ユーザー、OS 更新、時刻同期、ディスク容量、バックアップを確認。
 - [ ] Git、SSH、rg、ビルド・計測に必要なツールを導入。
-- [ ] Codex CLI を公式手順で導入し、バージョンを記録。
-- [ ] ChatGPT 認証を完了。ヘッドレス環境では codex login --device-auth を検証。
-- [ ] SSH のログインシェルで codex --version と codex login status が成功。
+- [ ] Desktop アプリ・Codex のバージョンと認証状態を記録。CLI を併用する場合は導入・認証を確認。
 - [ ] 競技用 Agent と鍵、GitHub 用の限定資格情報を用意。
+- [ ] Desktop アプリのコマンド実行環境から Agent と AWS 資格情報が利用できることを確認。
 - [ ] AWS CLI、Session Manager plugin、対象を限定した AWS 権限を検証。
+- [ ] SSH over SSM、ファイル転送、非対話コマンドを VM から確認。
 - [ ] 人間の権限で接続基盤を確認後、Codex 用ロールで許可・拒否と資格情報更新を検証。
 - [ ] 認証の期限切れ・更新、Codex の利用上限と当日の余裕を確認。
+- [ ] 同居する他エージェントとの権限・資格情報・作業ツリーの分離を確認。
 
-### Windows とスマートフォン
+### Mac・スマートフォンからの遠隔操作
 
-- [ ] Windows から VM に手動 SSH 接続できる。
-- [ ] Windows の SSH 設定に具体的な Host エイリアスを追加。
-- [ ] アプリの「SSH」で VM の練習プロジェクトを登録。
-- [ ] 「この PC を操作」でスマートフォンをペアリング。
-- [ ] スマートフォンから VM 上のチャット、差分、通知、承認、追加指示を確認。
-- [ ] スリープ・通信切断・アプリ再起動後の復旧を練習。
-- [ ] 予備としてスマートフォン等から VM への SSH と履歴・ログの確認経路を確保。
+- [x] Linux Desktop VM への遠隔操作を Mac・スマートフォンから確認（ユーザー報告）。
+- [ ] VM のローカルプロジェクトで、差分、通知、承認、追加指示を一周確認。
+- [ ] VM のスリープ防止、Desktop セッション・アプリの維持を設定。
+- [ ] 通信切断・アプリ再起動・VM 再起動後の復旧を練習。
+- [ ] 予備として VM への SSH と履歴・ログの確認経路を確保。
 
 ### Git と自動化の練習
 
@@ -355,13 +365,22 @@ AGENTS.md            当日ルール、権限、停止条件、実行手順
 
 スマートフォンの Codex 接続は実行中の状態を見る入口、GitHub は保存された履歴を読む入口。
 全自動化を評価するため、人間の介入時刻・理由、停止時間、使用モデル・バージョン、利用量も非公開で記録する。
-この会話で公開されたホスト鍵による接続先確認は成功したが、既存の Pageant への接続は検証していない。
-その Windows 上の実験と、これから構築する専用 VM の動作実績を混同しない。
+### 構成変更前の検証記録
+
+Windows アプリから Ubuntu 22.04 の SSH プロジェクト・チャットは表示できたが、Windows に接続した Mac・スマートフォンには SSH 側のチャットが表示されなかった。
+原因が仕様・不具合・対応状況のどれかは未確定。
+
+Windows 標準 SSH Agent に登録した競技専用鍵を使い、承認付きのサンドボックス外 SSH は成功した。
+サンドボックス内は、workspace-write と通信許可を設定し、アプリ再起動・新規チャットで試しても22番への接続が拒否された。
+認証前の拒否のため、サンドボックス内から Agent を利用できるかは未確認。
+
+これらは以前の Windows 構成での結果。現在採用する Ubuntu 26.04 Desktop VM の権限・通信・Agent の検証結果とは分けて扱う。
 
 ## 未検証・当日確定する事項
 
-- [ ] 専用 VM の OS・構成、リモートチャットの切断時の挙動。
-- [ ] スマートフォンから SSH リモートプロジェクトへの操作・通知。
+- [ ] 導入済み Ubuntu 26.04 Desktop VM の切断・再起動時の挙動と復旧。
+- [ ] Mac・スマートフォンからの差分表示・通知・承認。
+- [ ] Linux Desktop アプリの実行環境での Agent・AWS 認証と承認不要の操作範囲。
 - [ ] 指定 AMI の SSM Agent と SSM/SSH の到達性。
 - [ ] 配備方式（Git、アーカイブ、ファイル転送）とビルド場所。
 - [ ] 公式ベンチの呼び出し・結果取得を自動化できる範囲。
@@ -374,10 +393,10 @@ AGENTS.md            当日ルール、権限、停止条件、実行手順
 設定は使用するバージョンの公式資料で確認する。
 
 - [ISUCON2026 レギュレーション](https://isucon.net/archives/59966826.html): AI 活用、外部開発環境、情報共有、再起動後の追試。当日マニュアルが優先。
-- [Codex Remote・SSH 接続](https://learn.chatgpt.com/docs/remote-connections): Windows とスマートフォン、SSH リモートプロジェクト。
+- [Codex Remote・SSH 接続](https://learn.chatgpt.com/docs/remote-connections): 遠隔接続の一般的な設定。Linux Desktop VM からの遠隔操作は今回の実機報告に基づく。
 - [Codex 認証](https://learn.chatgpt.com/docs/auth): ChatGPT と device code ログイン。
 - [Codex CLI コマンド](https://learn.chatgpt.com/docs/developer-commands): CLI と app-server。
-- [Linux デスクトップアプリ](https://learn.chatgpt.com/docs/linux/linux-app): GUI を使う場合の選択肢。
+- [Linux デスクトップアプリ](https://learn.chatgpt.com/docs/linux/linux-app): 今回採用する Desktop アプリの導入・更新。
 - [Session Manager 前提条件](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-prerequisites.html)
 - [Session Manager 構築](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started.html)
 - [SSM のネットワーク・VPC Endpoint](https://docs.aws.amazon.com/systems-manager/latest/userguide/setup-create-vpc.html)
