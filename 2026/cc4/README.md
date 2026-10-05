@@ -1,6 +1,6 @@
 # ChallengeClub4（cc4）: Codex による ISUCON2026 自動化計画
 
-更新: 2026-10-05 / 状態: Linux Desktop VM の遠隔操作と SSH over SSM を確認。競技の接続経路は通常の SSH を採用し、次は過去問の改善サイクルを一周する
+更新: 2026-10-06 / 状態: Linux Desktop VM の遠隔操作と SSH over SSM を確認。競技の接続経路は通常の SSH を採用し、次は過去問の改善サイクルを一周する
 
 ## 目的と活動の位置付け
 
@@ -153,6 +153,48 @@ ssh cc4-competition 'id; hostname; pwd'
 ```
 
 さらに、練習用の一時ディレクトリで SCP または rsync による転送を確認し、sudo、ビルド、サービス再起動、ベンチ実行までつなげる。
+
+### Codex のサンドボックスで SSH 共通設定の所有者エラーになる場合
+
+2026-10-05〜06、Ubuntu 26.04.1 LTS / OpenSSH 10.2p1 の練習環境で確認。通常の VM 端末では接続できる一方、Codex のコマンド実行環境では次のエラーで、接続先への通信前に停止した。
+
+```text
+Bad owner or permissions on /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
+```
+
+この場合は、ユーザー設定を `-F` で明示すると共通設定の読み込みを避けられる。
+
+```bash
+ssh -F "$HOME/.ssh/config" -o BatchMode=yes -o StrictHostKeyChecking=yes \
+  cc4-practice 'id; hostname; pwd'
+```
+
+`cc4-practice` は練習用の Host 名。本番では用意した Host 名に置き換える。同じ設定指定は SCP にも使える。
+
+```bash
+scp -F "$HOME/.ssh/config" ./example.txt cc4-practice:/tmp/example.txt
+```
+
+通常の SSH は `~/.ssh/config` に加えて `/etc/ssh/ssh_config` とその `Include` 先も読む。`-F` を指定するとシステム共通設定を読まないことは [OpenSSH の公式仕様](https://man.openbsd.org/ssh)に記載されている。ユーザー設定から共通設定を `Include` している場合は、それも確認する。共通設定に依存している必要な項目はユーザー設定側で明示する。
+
+原因は、読み取り権限そのものではなく、OpenSSH の所有者チェックとサンドボックス内の所有者表示の組み合わせと考えられる。
+
+- [Codex の公式資料](https://learn.chatgpt.com/docs/sandboxing)では、Linux のサンドボックスに bubblewrap とユーザー名前空間を利用することが説明されている。
+- [Linux のユーザー名前空間の仕様](https://www.man7.org/linux/man-pages/man7/user_namespaces.7.html)では、対応付けられていない UID/GID は通常 65534（nobody/nogroup）として表示される。ファイルを実際に `chown` したことを意味しない。
+- 今回、Codex 内では設定ファイルの所有者が UID 65534、モードは `0644` と表示された。通常の端末での実際の所有者は未確認であり、外側の root が名前空間内で未対応になっているという説明と整合する。
+- [OpenSSH 10.2p1 の実装](https://github.com/openssh/openssh-portable/blob/V_10_2_P1/readconf.c)では、`Include` 先の所有者が root または実行ユーザーでない場合、またはグループ・その他に書き込み権限がある場合に拒否する。今回の `0644` は書き込み権限の条件を満たすが、UID 65534 が所有者の条件を満たさない。検査は開いたファイルに対して行われ、シンボリックリンク自体の `0777` 表示が原因ではない。
+
+切り分けでは、通常の VM 端末と Codex 内で次を比較する。`ssh -G` は設定を評価するだけで、EC2 への接続は行わない。
+
+```bash
+id
+cat /proc/self/uid_map
+stat -Lc '%u %g %a %n' /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
+ssh -G cc4-practice
+ssh -F "$HOME/.ssh/config" -G cc4-practice
+```
+
+この環境では共通設定の所有者・権限を変更せず、`-F` 指定で接続・ファイル転送できた。ホスト鍵検証と認証は維持する。なお、設定読み込み後の `Connection timed out` は別の問題で、EC2 の状態・接続先 IP・ネットワーク制限を切り分ける。`-F` はネットワーク制限を解除するものではない。
 
 ## Session Manager: 検証記録と代替経路
 
