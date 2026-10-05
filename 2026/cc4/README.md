@@ -1,6 +1,6 @@
 # ChallengeClub4（cc4）: Codex による ISUCON2026 自動化計画
 
-更新: 2026-10-03 / 状態: Ubuntu 26.04 Desktop VM と ChatGPT Desktop を導入し、Mac・スマートフォンからの遠隔操作を確認。SSH over SSM・自動改善は未検証
+更新: 2026-10-05 / 状態: Linux Desktop VM の遠隔操作と SSH over SSM を確認。競技の接続経路は通常の SSH を採用し、次は過去問の改善サイクルを一周する
 
 ## 目的と活動の位置付け
 
@@ -26,7 +26,7 @@ flowchart LR
     Mac["Mac の ChatGPT"] <-->|遠隔操作| VM["専用 Linux VM<br/>Ubuntu 26.04 Desktop<br/>ChatGPT Desktop / Codex<br/>Git 作業ツリー・競技用 Agent"]
     Mobile["スマートフォンの ChatGPT"] <-->|遠隔操作| VM
     VM <-->|push / pull| GitHub["cc4 専用の非公開 GitHub"]
-    VM <-->|SSH over Session Manager| EC2["競技 EC2<br/>アプリ・DB・ミドルウェア"]
+    VM <-->|通常の SSH| EC2["競技 EC2<br/>アプリ・DB・ミドルウェア"]
 ```
 
 | 場所 | 役割 |
@@ -47,7 +47,7 @@ Codex の作業負荷・認証情報・履歴を競技サーバーから分離�
 - Codex 以外のエージェントを動かす VM も用意する予定があり、その基盤として活用する。
 - Ubuntu 26.04 Desktop の利用経験を積む。
 - Windows と Linux 間の通信に懸念があり、競技の必須経路から外す。
-- SSH over SSM の検証と競技環境の練習を進める。
+- SSH over SSM の仕組みを練習で確認し、競技では通常の SSH で改善作業に集中する。
 
 Windows アプリを経由する構成は採用構成から外し、Mac・スマートフォンから Linux VM の Desktop アプリを直接遠隔操作する。
 同じ VM 上の他エージェントが競技資格情報や作業ツリーにアクセスできる範囲は、ユーザー・権限・実行環境で分離して確認する。
@@ -60,7 +60,7 @@ VM 上のローカルプロジェクトを作業の中心にする。Windows の
 - VM の電源、ネットワーク、Desktop セッション、アプリを維持し、スリープや自動更新による中断を管理する。
 - 差分表示、通知、承認、追加指示を Mac・スマートフォンで一周確認する。
 - クライアント切断・アプリ再起動・VM 再起動後の復旧を練習する。
-- AWS CLI、Session Manager plugin、競技用 SSH Agent を VM 内に用意し、Desktop アプリから実行するコマンドで利用できるか確認する。
+- 競技用 SSH Agent を VM 内に用意し、Desktop アプリから通常の SSH・ファイル転送・非対話コマンドを利用できるか確認する。AWS CLI と Session Manager plugin は SSM の練習・代替経路用とする。
 - 長時間ジョブのログ・結果を保存し、必要に応じて SSH と tmux 等の復旧経路を用意する。
 
 ## 認証と権限の分離
@@ -74,7 +74,7 @@ VM 上のローカルプロジェクトを作業の中心にする。Windows の
 | Linux VM → Codex サービス | VM 上で ChatGPT アカウントにログイン |
 | Linux VM → GitHub | cc4 の非公開リポジトリに限定した資格情報 |
 | Linux VM → 競技 EC2 | 競技用 SSH 鍵・専用 Agent、必要な OS 権限 |
-| Linux VM → AWS Session Manager | 対象 EC2・SSM document 等に範囲を絞った IAM 権限 |
+| Linux VM → AWS Session Manager（代替経路） | 対象 EC2・SSM document 等に範囲を絞った IAM 権限。通常の SSH の必須条件にはしない |
 
 普段使いの Windows の Pageant・SSH Agent や既存の全鍵を共有せず、Linux VM 内に競技用の SSH Agent を用意する。
 秘密鍵は VM の保護された場所に置き、人間が Agent に登録する。チャットや Git に渡さない。
@@ -87,7 +87,7 @@ Agent forwarding は基本的に無効にする。接続先のホスト鍵は信
 
 ### 人間・Codex・競技 EC2 の IAM 分担
 
-IAM の接続権限と、接続後の Linux の操作権限を分ける。Codex 用の権限は人間用と分離し、専用 IAM ロールを第一候補とする。新しい IAM ユーザーの作成は必須ではない。
+IAM の接続権限と、接続後の Linux の操作権限を分ける。以下は SSM を使う場合の分担であり、通常の SSH で競技を進めるために Codex へ AWS 資格情報を渡す必要はない。AWS API を利用する場合は人間用と分離した専用 IAM ロールを第一候補とする。
 
 | 主体 | 権限・役割 |
 |---|---|
@@ -112,7 +112,7 @@ Codex の接続権限はインスタンス ID または Team=cc4 等のタグ、
 
 MacBook・スマートフォンは操作窓口。AWS CLI を実行する Linux VM 側に操作用資格情報を用意し、人間のブラウザーの AWS ログインが自動共有されるとは考えない。
 
-#### 練習の順序
+#### SSM を利用する場合の練習の順序
 
 1. 人間の IAM 権限で用意した練習用 EC2 に、SSM Agent・EC2 用ロール・ネットワークを設定する。
 2. 人間の権限で通常の Session Manager シェル接続を成功させる。
@@ -122,13 +122,43 @@ MacBook・スマートフォンは操作窓口。AWS CLI を実行する Linux V
 6. Codex 用権限で同じ接続を試し、対象外 EC2・未許可 document・管理操作が拒否されることも確認する。
 7. 人間の復旧経路、資格情報更新、セッション終了・再接続を確認してから自動改善に組み込む。
 
-この順序で、接続基盤の不備と Codex 用 IAM ポリシーの不足を切り分ける。人間による通常の SSM シェル接続は確認済み。SSH over SSM と Codex 用の制限ロールはこれから検証する。
+この順序で、接続基盤の不備と操作用 IAM ポリシーの不足を切り分ける。制限ロールの一時資格情報による SSM シェルと SSH over SSM は確認済み。対象外への拒否、資格情報更新、Codex のコマンド実行環境からの接続は未検証。SSM の更新方式の検討は競技練習の前提にしない。
 
-## EC2 接続: Session Manager を第一候補として検証
+## EC2 接続: 競技は通常の SSH を採用
 
+競技の調査・配備・ファイル転送は **通常の SSH** を使う。SSM の一時資格情報の期限・更新に作業が依存しない構成とし、まず過去問で「初期状態保存→計測→修正→配備→ベンチ→採用/復元」を一周する。
+
+- EC2 の到達可能な IP または DNS 名、作業ユーザー、競技用 SSH 鍵を用意する。
+- セキュリティグループの TCP/22 は開発 VM の送信元グローバル IP 等、必要な接続元に限定して許可する。送信元 IP が変わる場合の更新・復旧は人間が担当する。
+- SSM の練習で削除した22番の許可は、通常の SSH を試す際に必要な範囲で再設定する。
+- 接続先ホスト鍵を信頼できる経路で照合し、known_hosts に登録する。
+
+Linux VM の SSH 設定例（値は当日に置き換える）:
+
+```sshconfig
+Host cc4-competition
+    HostName REPLACE_WITH_EC2_IP_OR_DNS
+    User REPLACE_WITH_OS_USER
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519_cc4
+    IdentitiesOnly yes
+    ForwardAgent no
+    StrictHostKeyChecking yes
+```
+
+ProxyCommand は設定しない。SSH Agent 利用時は秘密鍵へのアクセス範囲と Agent の利用範囲を確認する。公開鍵の登録後、VM の端末と Codex の実行環境の両方で接続を検証する。
+
+```bash
+ssh cc4-competition 'id; hostname; pwd'
+```
+
+さらに、練習用の一時ディレクトリで SCP または rsync による転送を確認し、sudo、ビルド、サービス再起動、ベンチ実行までつなげる。
+
+## Session Manager: 検証記録と代替経路
+
+SSM は学習・必要時の代替経路として残す。本番の必須設定にはせず、当日の許可範囲と準備時間に応じて利用する。
 通常の Session Manager シェルは SSH 鍵や EC2 のインバウンド22番開放を必要としない。
-Codex の配備・ファイル転送には **Session Manager 経由の SSH** を第一候補として練習する。
-これは通信経路が SSM になるだけで、EC2 上の sshd、ログインユーザー、SSH ユーザー鍵・ホスト鍵の確認は必要。
+SSH over SSM は通信経路が SSM になるだけで、EC2 上の sshd、ログインユーザー、SSH ユーザー鍵・ホスト鍵の確認は必要。
 
 ### 接続の原理と IAM の二つの役割
 
@@ -198,15 +228,18 @@ SSH over SSM で User ubuntu を指定すれば ubuntu としてログインし�
 ファイル所有者、systemd の User=・WorkingDirectory=、実際のプロセスを確認する。
 root や ssm-user 所有のファイルを作業ツリーに混在させない。
 
-### 2026-10-03 の練習結果
+### 2026-10-03〜05 の練習結果
 
 人間が ISUCON14 の Ubuntu 練習 EC2 で実施し、このチャットに結果を報告した。
 
 - [x] EC2 に AmazonSSMManagedInstanceCore を持つ IAM ロールを付与。
 - [x] 既存の SSH 接続で Snap 版 SSM Agent が導入済みであることを確認し、再起動。
 - [x] 通常の Session Manager シェルに接続し、ssm-user と sudo の利用を確認。
-- [ ] SSH over SSM、ファイル転送、非対話コマンド。
-- [ ] Codex 用の制限ロールでの接続と拒否テスト。
+- [x] cc4-codex-operator の一時資格情報（プロファイル cc4）で通常の SSM シェルへ接続。
+- [x] SSH over SSM で接続し、セキュリティグループの外部向け22番の許可を削除しても接続できることを確認。
+- [x] w で SSH の接続元が 127.0.0.1 と表示されることを確認。EC2 内の SSM Agent から sshd への接続となる。
+- [ ] ファイル転送、非対話コマンド、Codex の実行環境からの接続。
+- [ ] 制限ロールの対象外への拒否テストと資格情報更新。
 - [ ] 起動時のロール指定から初回 SSM 接続までの検証。
 
 今回の成功はこの練習 EC2 での結果であり、ISUCON2026 の指定 AMI に Agent が入っていることや、当日の初回 SSH が不要であることを保証しない。
@@ -224,21 +257,21 @@ root や ssm-user 所有のファイルを作業ツリーに混在させない�
 インターネット経路を使わない場合は VPC Interface Endpoint と DNS・セキュリティグループを設定する。
 通常の Session Manager は既定で管理権限を持つ ssm-user を使うため、必要に応じて Run As や権限を見直す。
 
-Linux VM の SSH 設定例（値は当日に置き換える）:
+SSM を使う場合だけ追加する設定例（通常の SSH とは別名にする）:
 
 ```sshconfig
-Host cc4-competition
+Host cc4-competition-ssm
     HostName i-REPLACE_WITH_INSTANCE_ID
     User REPLACE_WITH_OS_USER
     IdentityFile ~/.ssh/id_ed25519_cc4
     IdentitiesOnly yes
     ForwardAgent no
     StrictHostKeyChecking yes
-    ProxyCommand aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p --region REPLACE_WITH_REGION
+    ProxyCommand aws ssm start-session --profile cc4 --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p --region REPLACE_WITH_REGION
 ```
 
 公開鍵・ホスト鍵の登録を済ませた上で、SSH、SCP、非対話コマンドを確認する。
-通常の SSM シェルを復旧用に残す。SSM が使えない場合の接続経路も練習する。
+代替経路として使う場合は一時資格情報の期限を確認する。手動で配置した資格情報は自動更新されない。AssumeRole はロールの最大セッション時間の範囲で最大12時間、ロールチェーンでは最大1時間。人間が発行して渡す方式は短期の練習向けで、継続的な自動更新方式は今後の検討事項とする。
 SSH over SSM のコマンド内容は通常の Session Manager セッションログでは記録できないため、配備・実験ログを別途保存する。
 
 ## 事前準備チェックリスト
@@ -250,10 +283,10 @@ SSH over SSM のコマンド内容は通常の Session Manager セッション�
 - [ ] Git、SSH、rg、ビルド・計測に必要なツールを導入。
 - [ ] Desktop アプリ・Codex のバージョンと認証状態を記録。CLI を併用する場合は導入・認証を確認。
 - [ ] 競技用 Agent と鍵、GitHub 用の限定資格情報を用意。
-- [ ] Desktop アプリのコマンド実行環境から Agent と AWS 資格情報が利用できることを確認。
-- [ ] AWS CLI、Session Manager plugin、対象を限定した AWS 権限を検証。
-- [ ] SSH over SSM、ファイル転送、非対話コマンドを VM から確認。
-- [ ] 人間の権限で接続基盤を確認後、Codex 用ロールで許可・拒否と資格情報更新を検証。
+- [ ] Desktop アプリのコマンド実行環境から競技用 Agent と通常の SSH が利用できることを確認。
+- [ ] 通常の SSH でファイル転送、非対話コマンド、配備を VM から確認。
+- [x] AWS CLI・Session Manager plugin を導入し、制限ロールで SSM シェル・SSH over SSM の接続を確認（ユーザー報告）。
+- [ ] SSM を代替経路として使う場合だけ、拒否テスト・資格情報更新・Codex からの接続を検証。
 - [ ] 認証の期限切れ・更新、Codex の利用上限と当日の余裕を確認。
 - [ ] 同居する他エージェントとの権限・資格情報・作業ツリーの分離を確認。
 
@@ -312,11 +345,12 @@ AGENTS.md            当日ルール、権限、停止条件、実行手順
 ### 1. ルールと環境を確認
 
 - 当日マニュアルを読み、禁止事項、ベンチ方法、サーバー台数、初期化・再起動条件を非公開の作業指示に反映。
-- 自チームの AWS アカウントで指定 AMI・指定方法に従って競技 EC2 を起動。許可された設定範囲で SSM 用インスタンスプロファイルを起動時に指定し、既存インスタンスなら後から付与。
-- SSM Agent の導入・自動起動を確認。SSM が使えなければ既存 SSH 経路から確認・復旧。
+- 自チームの AWS アカウントで指定 AMI・指定方法に従って競技 EC2 を起動。
+- 通常の SSH の到達先、送信元に限定した22番の許可、SSH 鍵、ホスト鍵を設定・確認。
+- SSM は必要なら代替経路として設定する。ロール付与・Agent 設定・資格情報更新を競技開始の必須手順にしない。
 - ソース所有者と systemd 等の実行ユーザーを確認し、編集・配備のユーザーを決める。
 - インスタンス ID、リージョン、OS ユーザー、サービス構成を非公開の記録に保存。
-- SSM/SSH 接続と必要権限を確認。AWS 基盤変更とアプリ改善の権限を分ける。
+- VM と Codex の実行環境から通常の SSH・ファイル転送・必要な sudo 操作を確認。AWS 基盤変更は人間が担当し、アプリ改善の権限を分ける。
 - Discord の運営アナウンスとポータルを人間が確認できる状態にする。
 
 ### 2. 初期状態を保存
@@ -380,8 +414,9 @@ Windows 標準 SSH Agent に登録した競技専用鍵を使い、承認付き�
 
 - [ ] 導入済み Ubuntu 26.04 Desktop VM の切断・再起動時の挙動と復旧。
 - [ ] Mac・スマートフォンからの差分表示・通知・承認。
-- [ ] Linux Desktop アプリの実行環境での Agent・AWS 認証と承認不要の操作範囲。
-- [ ] 指定 AMI の SSM Agent と SSM/SSH の到達性。
+- [ ] Linux Desktop アプリの実行環境での競技用 Agent・通常の SSH と承認不要の操作範囲。
+- [ ] 指定 AMI の SSH 到達性、作業ユーザー、送信元 IP に限定したネットワーク設定。
+- [ ] SSM を代替経路にする場合の Agent・IAM・資格情報更新（競技の必須条件にはしない）。
 - [ ] 配備方式（Git、アーカイブ、ファイル転送）とビルド場所。
 - [ ] 公式ベンチの呼び出し・結果取得を自動化できる範囲。
 - [ ] sudo、DB、AWS IAM の必要権限と停止条件。
