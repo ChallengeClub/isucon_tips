@@ -1,6 +1,6 @@
 # ChallengeClub4（cc4）: Codex による ISUCON2026 自動化計画
 
-更新: 2026-10-07 / 状態: 通常SSHでの調査・取得と、専用スキルによるISUCON14の改善サイクル一周・復元を確認。次は非公開リポジトリとISUCON13環境で検証する
+更新: 2026-10-10 / 状態: 通常SSHの調査・取得、専用スキルの改善サイクル、aws login＋限定AssumeRoleによる練習EC2の起動を確認。本戦のAWS操作に同方式を採用する方針
 
 ## 当日向けの事前学習資料
 
@@ -10,6 +10,7 @@
 
 - [過去問の傾向と2026の確認事項](./past-contest-research.md): 11〜14の公式講評、作問者の実践記事、AI利用の参加者報告を出典付きで整理。確認済み事実と推論・未確認事項を区別する。
 - [改善の手引き](./performance-playbook.md): 症状から選ぶ計測と仮説、適用条件、正しさの注意点、検証・復元の判断。
+- [AWS認証と限定ロールの操作](./aws-access.md): 本番採用方針、専用IAMユーザーのaws login、AssumeRole、短期キー更新、キャッシュ権限、検証済み/未検証の区別。
 - [EC2調査とソース取得](./ec2-source-workflow.md): 公開リポジトリがない環境での選別取得と読解。
 
 調査日は2026-10-07。資料は公開された過去問に基づく準備情報で、競技中の実環境情報は非公開のSTATUS.md等へ保存する。
@@ -78,7 +79,7 @@ VM 上のローカルプロジェクトを作業の中心にする。Windows の
 - VM の電源、ネットワーク、Desktop セッション、アプリを維持し、スリープや自動更新による中断を管理する。
 - 差分表示、通知、承認、追加指示を Mac・スマートフォンで一周確認する。
 - クライアント切断・アプリ再起動・VM 再起動後の復旧を練習する。
-- 競技用 SSH Agent を VM 内に用意し、Desktop アプリから通常の SSH・ファイル転送・非対話コマンドを利用できるか確認する。AWS CLI と Session Manager plugin は SSM の練習・代替経路用とする。
+- 競技用 SSH Agent を VM 内に用意し、Desktop アプリから通常の SSH・ファイル転送・非対話コマンドを利用できるか確認する。AWS CLI は限定ロールによる許可されたEC2の起動・停止等にも使う。Session Manager pluginはSSMの練習・代替経路用とする。
 - 長時間ジョブのログ・結果を保存し、必要に応じて SSH と tmux 等の復旧経路を用意する。
 
 ## 認証と権限の分離
@@ -92,7 +93,7 @@ VM 上のローカルプロジェクトを作業の中心にする。Windows の
 | Linux VM → Codex サービス | VM 上で ChatGPT アカウントにログイン |
 | Linux VM → GitHub | cc4 の非公開リポジトリに限定した資格情報 |
 | Linux VM → 競技 EC2 | 競技用 SSH 鍵・専用 Agent、必要な OS 権限 |
-| Linux VM → AWS Session Manager（代替経路） | 対象 EC2・SSM document 等に範囲を絞った IAM 権限。通常の SSH の必須条件にはしない |
+| Linux VM → AWS API・Session Manager（代替経路） | 専用IAMユーザーのaws login→限定AssumeRole。対象EC2の起動/停止・参照と必要なSSM document等に限定。通常SSHの認証とは別 |
 
 普段使いの Windows の Pageant・SSH Agent や既存の全鍵を共有せず、Linux VM 内に競技用の SSH Agent を用意する。
 秘密鍵は VM の保護された場所に置き、人間が Agent に登録する。チャットや Git に渡さない。
@@ -105,12 +106,12 @@ Agent forwarding は基本的に無効にする。接続先のホスト鍵は信
 
 ### 人間・Codex・競技 EC2 の IAM 分担
 
-IAM の接続権限と、接続後の Linux の操作権限を分ける。以下は SSM を使う場合の分担であり、通常の SSH で競技を進めるために Codex へ AWS 資格情報を渡す必要はない。AWS API を利用する場合は人間用と分離した専用 IAM ロールを第一候補とする。
+IAM の接続権限と、接続後の Linux の操作権限を分ける。通常SSHの認証にAWS資格情報は不要だが、EC2自体の許可された起動/停止等にはAWS APIを使う。本番では専用IAMユーザーでaws loginし、限定された操作用ロールをAssumeRoleする。[採用手順と検証範囲](./aws-access.md)を参照。
 
 | 主体 | 権限・役割 |
 |---|---|
-| 人間の操作用 IAM 主体 | 練習・競技 EC2 の起動、復旧、ネットワーク・IAM 設定、手動の Session Manager 接続 |
-| Codex の操作用ロール（例: cc4-codex-operator） | cc4 の対象 EC2 の参照、必要な Session Manager 接続、自分のセッションの終了・必要な再開 |
+| 人間の操作用 IAM 主体 | 専用ユーザーのブラウザ認証/MFA・再ログイン、IAM・ネットワークの準備、対象/操作の許可、復旧、運営制約の確認 |
+| Codex の操作用ロール（例: cc4-codex-operator） | 指定EC2の参照・許可された起動/停止、必要なSession Manager接続、自分のセッション終了・必要な再開。作成/削除等は別途許可 |
 | 接続される競技 EC2 のロール | SSM Agent が AWS と通信する権限。AmazonSSMManagedInstanceCore 等 |
 | EC2 内の Linux 操作ユーザー | アプリ・設定・DB の変更、必要なサービス管理。SSH 鍵と sudo 権限で制御 |
 
@@ -124,11 +125,12 @@ Codex の接続権限はインスタンス ID または Team=cc4 等のタグ、
 
 #### 専用 VM に AWS 資格情報を持たせる方法
 
-- 開発 VM が EC2 の場合: 操作用ロールをインスタンスプロファイルで割り当て、AWS CLI が取得する一時資格情報を使う。競技 EC2 の SSM Agent 用ロールとは別。VM 上で同じ資格情報にアクセスできるプロセスもその権限を使える点を考慮する。
-- 開発 VM が手元の Linux VM の場合: 制限されたロールの一時資格情報を用意する方法をまず検証する。AssumeRole には信頼ポリシーと元の認証が必要で、ロールを作るだけでは利用できない。長時間の無人実行に向け、資格情報の期限と更新を確認する。IAM Roles Anywhere 等も将来の候補。
-- 長期アクセスキーを持つ専用 IAM ユーザーは、必要な場合の代替案。人間用の管理者キーを共有せず、対象・操作を限定し、終了後に失効する。
+採用するのは自宅PC上のLinux VMからのaws login＋限定AssumeRole。人間の管理者ユーザーや長期キーは共有せず、専用IAMユーザーにはログイン・自分の認証管理・指定ロールのAssumeRoleだけを必要な範囲で許可する。認証元を直接使えてもAWSサービスの広い管理操作ができない構成にする。
 
-MacBook・スマートフォンは操作窓口。AWS CLI を実行する Linux VM 側に操作用資格情報を用意し、人間のブラウザーの AWS ログインが自動共有されるとは考えない。
+手動で取得した短期キーをcredentialsへ渡す方式は自動更新されない。aws loginはログイン期間内のキー更新をCLIが管理し、期限後の再ログインは人間が行う。ロール用profileでの自動AssumeRoleは別の取得段階であり、認証元が有効であることが必要。今回の起動実験は明示的AssumeRoleで行い、ロール用profileの自動再取得は未検証。
+
+常時起動EC2やIdentity Centerは必須ではない。EC2上の開発VMにインスタンスプロファイルを付ける方法、Identity CenterのSSOも別の選択肢として区別する。
+設定例、キャッシュ保存先、MFA登録、サンドボックスの書込制限、人間側の確認は[詳細手順](./aws-access.md)にまとめた。
 
 #### SSM を利用する場合の練習の順序
 
