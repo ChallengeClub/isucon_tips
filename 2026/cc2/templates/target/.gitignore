@@ -1,0 +1,10 @@
+# Credentials and local results
+.env
+.env.*
+*.pem
+*.key
+.aws/
+.ssh/
+artifacts/
+*.log
+*.log.*

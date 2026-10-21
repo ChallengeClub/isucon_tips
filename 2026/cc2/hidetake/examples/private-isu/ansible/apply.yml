@@ -1,0 +1,126 @@
+- name: Apply or restore Ruby application files
+  hosts: deployment_target
+  gather_facts: false
+  become: true
+  vars:
+    run_dir: '{{ backup_root }}/{{ run_id }}'
+  tasks:
+    - name: Check arguments
+      ansible.builtin.assert:
+        that:
+          - run_id is match('^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$')
+          - operation in ['deploy', 'rollback']
+          - operation != 'rollback' or restore_id is match('^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$')
+    - name: Check run directory does not exist
+      ansible.builtin.stat:
+        path: '{{ run_dir }}'
+      register: existing
+    - ansible.builtin.assert:
+        that: not existing.stat.exists
+    - name: Check application directories
+      ansible.builtin.stat:
+        path: '{{ webapp }}/{{ item }}'
+      loop: [ruby, public]
+      register: app_dirs
+    - ansible.builtin.assert:
+        that:
+          - item.stat.isdir | default(false)
+          - not (item.stat.islnk | default(false))
+      loop: '{{ app_dirs.results }}'
+      loop_control:
+        label: '{{ item.item }}'
+    - name: Refuse embedded dependencies or configuration
+      ansible.builtin.stat:
+        path: '{{ webapp }}/ruby/{{ item }}'
+      loop: [vendor, .bundle]
+      register: dependencies
+    - ansible.builtin.assert:
+        that: not item.stat.exists
+      loop: '{{ dependencies.results }}'
+      loop_control:
+        label: '{{ item.item }}'
+    - name: Create staging directory
+      ansible.builtin.file:
+        path: '{{ run_dir }}/stage'
+        state: directory
+        owner: '{{ app_user }}'
+        group: '{{ app_group }}'
+        mode: '0700'
+    - name: Stage commit archive
+      ansible.builtin.unarchive:
+        src: '{{ archive_path }}'
+        dest: '{{ run_dir }}/stage'
+        owner: '{{ app_user }}'
+        group: '{{ app_group }}'
+      when: operation == 'deploy'
+    - name: Stage backup snapshot
+      ansible.builtin.unarchive:
+        src: '{{ backup_root }}/{{ restore_id }}/snapshot.tar'
+        dest: '{{ run_dir }}/stage'
+        remote_src: true
+        owner: '{{ app_user }}'
+        group: '{{ app_group }}'
+      when: operation == 'rollback'
+    - name: Read current dependency hashes
+      ansible.builtin.command:
+        argv: [sha256sum, ruby/Gemfile, ruby/Gemfile.lock, ruby/prepare_unicorn.rb]
+        chdir: '{{ webapp }}'
+      changed_when: false
+      register: current_deps
+    - name: Read candidate dependency hashes
+      ansible.builtin.command:
+        argv: [sha256sum, ruby/Gemfile, ruby/Gemfile.lock, ruby/prepare_unicorn.rb]
+        chdir: '{{ run_dir }}/stage'
+      changed_when: false
+      register: candidate_deps
+    - name: Reject dependency updates
+      ansible.builtin.assert:
+        that: current_deps.stdout == candidate_deps.stdout
+        fail_msg: 'Dependency changes are outside this deployment scope.'
+    - name: Snapshot current application and static files
+      ansible.builtin.command:
+        argv: [tar, -cf, '{{ run_dir }}/snapshot.tar', -C, '{{ webapp }}', ruby, public]
+        creates: '{{ run_dir }}/snapshot.tar'
+    - name: Restrict snapshot permissions
+      ansible.builtin.file:
+        path: '{{ run_dir }}/snapshot.tar'
+        mode: '0600'
+    - name: Record operation
+      ansible.builtin.copy:
+        content: '{{ {"operation": operation, "revision": revision | default(none), "restore_id": restore_id | default(none)} | to_nice_json }}'
+        dest: '{{ run_dir }}/operation.json'
+        mode: '0600'
+    - name: Stop Ruby service
+      ansible.builtin.systemd_service:
+        name: '{{ app_service }}'
+        state: stopped
+    - name: Preserve displaced directories and move staged files into place
+      ansible.builtin.command:
+        argv:
+          - /usr/bin/python3
+          - -c
+          - |
+            import pathlib,sys
+            webapp,run=map(pathlib.Path,sys.argv[1:])
+            for name in ('ruby','public'):
+                (webapp/name).rename(run/('displaced-'+name))
+                (run/'stage'/name).rename(webapp/name)
+          - '{{ webapp }}'
+          - '{{ run_dir }}'
+    - name: Start Ruby service
+      ansible.builtin.systemd_service:
+        name: '{{ app_service }}'
+        state: started
+    - name: Verify service is active
+      ansible.builtin.command:
+        argv: [systemctl, is-active, '{{ app_service }}']
+      changed_when: false
+    - name: Verify HTTP response without initialization
+      ansible.builtin.uri:
+        url: '{{ health_url }}'
+        status_code: 200
+        return_content: false
+      register: health
+      retries: 10
+      delay: 2
+      until: health is succeeded

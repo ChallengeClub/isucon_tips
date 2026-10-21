@@ -1,0 +1,10 @@
+{
+  "ssh_alias": "",
+  "login_user": "",
+  "app_user": "",
+  "app_group": "",
+  "webapp": "",
+  "backup_root": "",
+  "app_service": "",
+  "health_url": ""
+}

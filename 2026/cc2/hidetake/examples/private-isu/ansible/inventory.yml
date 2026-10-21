@@ -1,0 +1,7 @@
+all:
+  hosts:
+    deployment_target:
+      ansible_host: '{{ ssh_alias }}'
+      ansible_user: '{{ login_user }}'
+      ansible_python_interpreter: /usr/bin/python3
+      ansible_ssh_args: '-o BatchMode=yes -o ControlMaster=no'
