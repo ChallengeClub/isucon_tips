@@ -53,3 +53,15 @@ Ansibleのrawは読み取りコマンドでもCHANGED表示になる場合があ
 [private-isu参考例のRUNBOOK](examples/private-isu/RUNBOOK.md)に、準備・手動採取・復元を分ける手順と依存構成を保存しています。運営benchmarkerをローカルへ持つことは前提にしません。実際の運営Web画面では未検証です。
 新しい問題では最初に初期状態のbenchmarkを実行し、ログ配置・MySQLの版と接続・service・ディスク名を調査してから移植します。Goのdeploy／rollbackは別途実装・検証します。ローカル解析にはalp・pt-query-digestのPATHも確認します。
 参考例は公開資料の配置場所から直接実行せず、非公開targetへ必要なscripts・ansible・infraを取り込み、設定と試験を対象に合わせます。チーム標準への昇格は別対象での受入れ確認後に検討します。
+
+## 次の対象へ移る際の合意事項
+
+- ISUCON13は別workspace・別の非公開targetリポジトリで進める。旧workspaceは参照元として残し、SSHエイリアス切り替え後は旧workspaceからremote操作を行わない。
+- 最初は1台で初回benchmark、Goの同一内容deploy／rollback、計測の移植を確認する。本戦前に複数台練習を一度行い、対象指定・ホスト別成果物・復元対象を検証する。複数台でも攻略リポジトリは1つのtargetとする。
+- 接続IP・鍵は各人のSSH configで管理し、Ansible inventoryには同じSSHエイリアスと役割を記載する。IPはinventoryへ重複記載しない。複数台ではisucon-target1・2・3の対応をチームで固定し、役割変更で番号を付け替えない。
+- SSHエイリアスはサーバー間通信やbenchmarkのURLには使えるとは限らない。これらの接続値は別途、非公開targetへ記録する。
+- 接続先は準備時・変更時・セッション再開時に確認する。毎操作の詳細な環境再調査は不要だが、deploy後の動作確認と測定前の計装状態確認は維持する。
+- 設定準備・配備は、単純になる範囲でAnsibleの冪等な処理へ寄せる。測定開始時に設定を自動修復せず、不一致なら停止する。採取・回収・ローカル解析はscriptで制御する。移植前の一括書き直しは行わない。
+- 状態変更用の操作入口がある場合はtarget/scripts/*.shを使用する。approvalを避けるために絶対パス・Python本体・raw SSHへ置き換えない。この指示は新workspaceのAGENTS.mdにも反映する。
+
+具体的な利用者の準備手順と再開時の依頼文は[ISUCON13移行手順](ISUCON13-START.md)を参照する。

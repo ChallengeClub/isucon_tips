@@ -4,6 +4,7 @@
 公開リポジトリの一部なので、秘密情報・実インスタンスの接続情報・生ログ・競技中の攻略情報は置きません。
 
 - [再構築メモ](WORKSPACE-RECOVERY.md)：別の対象環境でworkspaceを用意するときに必要な前提と、復旧上の注意。
+- [ISUCON13移行手順](ISUCON13-START.md)：新workspace・EC2・SSHの利用者向け準備と、新セッションへの引き継ぎ。
 - [個人PLAYBOOK](PLAYBOOK.md)：チーム版作成前の草案。現行の運用案は[team/PLAYBOOK.md](../team/PLAYBOOK.md)を参照。
 - [private-isu参考例](examples/private-isu/README.md)：deploy・復旧と、準備／手動採取／復元を分けた計測の実装・知見。例外的なbackend言語に依存し、Go向けの汎用実装ではありません。
 
