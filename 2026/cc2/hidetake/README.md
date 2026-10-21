@@ -5,6 +5,6 @@
 
 - [再構築メモ](WORKSPACE-RECOVERY.md)：別の対象環境でworkspaceを用意するときに必要な前提と、復旧上の注意。
 - [個人PLAYBOOK](PLAYBOOK.md)：チーム版作成前の草案。現行の運用案は[team/PLAYBOOK.md](../team/PLAYBOOK.md)を参照。
-- [private-isu参考例](examples/private-isu/README.md)：例外的なbackend言語で検証した実装。Go向けの汎用実装ではありません。
+- [private-isu参考例](examples/private-isu/README.md)：deploy・復旧と、準備／手動採取／復元を分けた計測の実装・知見。例外的なbackend言語に依存し、Go向けの汎用実装ではありません。
 
 再構築時はこの補足を指針にできますが、実際の対象・操作範囲を利用者と確認してください。

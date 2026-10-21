@@ -1,0 +1,123 @@
+- name: Configure or restore nginx access logging
+  hosts: isucon-target
+  gather_facts: false
+  become: true
+  vars:
+    backup_root: /home/isucon/nginx-log-backups
+    run_dir: '{{ backup_root }}/{{ run_id }}'
+    fragment: /etc/nginx/isucon-json-log.conf
+  tasks:
+    - ansible.builtin.assert:
+        that:
+          - run_id is match('^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$')
+          - logging_mode in ['enable', 'restore']
+          - logging_mode != 'restore' or backup_id is match('^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$')
+    - name: Refuse reused operation ID
+      ansible.builtin.stat:
+        path: '{{ run_dir }}'
+      register: existing
+    - ansible.builtin.assert:
+        that: not existing.stat.exists
+    - name: Read main configuration hash
+      ansible.builtin.stat:
+        path: /etc/nginx/nginx.conf
+        checksum_algorithm: sha256
+      register: current_main
+    - name: Reject unrelated configuration drift
+      ansible.builtin.assert:
+        that: current_main.stat.checksum in [baseline_sha256, candidate_sha256]
+        fail_msg: 'nginx.conf differs from the inspected baseline and candidate; review before overwriting.'
+      when: logging_mode == 'enable'
+    - name: Inspect existing log format file
+      ansible.builtin.stat:
+        path: '{{ fragment }}'
+      register: current_fragment
+    - name: Create private backup directory
+      ansible.builtin.file:
+        path: '{{ run_dir }}'
+        state: directory
+        mode: '0700'
+    - name: Preserve main configuration
+      ansible.builtin.copy:
+        src: /etc/nginx/nginx.conf
+        dest: '{{ run_dir }}/nginx.conf'
+        remote_src: true
+        mode: '0600'
+    - name: Preserve previous format if present
+      ansible.builtin.copy:
+        src: '{{ fragment }}'
+        dest: '{{ run_dir }}/format.conf'
+        remote_src: true
+        mode: '0600'
+      when: current_fragment.stat.exists
+    - name: Record backup description
+      ansible.builtin.copy:
+        content: '{{ {"fragment_existed": current_fragment.stat.exists} | to_nice_json }}'
+        dest: '{{ run_dir }}/backup.json'
+        mode: '0600'
+    - name: Install JSON format
+      ansible.builtin.copy:
+        src: '{{ format_path }}'
+        dest: '{{ fragment }}'
+        owner: root
+        group: root
+        mode: '0644'
+      when: logging_mode == 'enable'
+    - name: Install validated main configuration
+      ansible.builtin.copy:
+        src: '{{ main_path }}'
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: '0644'
+        validate: /usr/sbin/nginx -t -c %s
+      when: logging_mode == 'enable'
+    - name: Read requested backup description
+      ansible.builtin.slurp:
+        src: '{{ backup_root }}/{{ backup_id }}/backup.json'
+      register: restore_description
+      when: logging_mode == 'restore'
+    - name: Restore previous format if needed
+      ansible.builtin.copy:
+        src: '{{ backup_root }}/{{ backup_id }}/format.conf'
+        dest: '{{ fragment }}'
+        remote_src: true
+        owner: root
+        group: root
+        mode: '0644'
+      when:
+        - logging_mode == 'restore'
+        - (restore_description.content | b64decode | from_json).fragment_existed
+    - name: Restore validated main configuration
+      ansible.builtin.copy:
+        src: '{{ backup_root }}/{{ backup_id }}/nginx.conf'
+        dest: /etc/nginx/nginx.conf
+        remote_src: true
+        owner: root
+        group: root
+        mode: '0644'
+        validate: /usr/sbin/nginx -t -c %s
+      when: logging_mode == 'restore'
+    - name: Remove format introduced by enable
+      ansible.builtin.file:
+        path: '{{ fragment }}'
+        state: absent
+      when:
+        - logging_mode == 'restore'
+        - not (restore_description.content | b64decode | from_json).fragment_existed
+    - name: Check complete configuration
+      ansible.builtin.command:
+        argv: [/usr/sbin/nginx, -t]
+      changed_when: false
+    - name: Reload nginx
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: reloaded
+    - name: Verify HTTP response
+      ansible.builtin.uri:
+        url: http://127.0.0.1/
+        status_code: 200
+      register: health
+      retries: 10
+      delay: 2
+      until: health is succeeded
