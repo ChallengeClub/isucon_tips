@@ -21,3 +21,5 @@ python3 -m unittest discover -s tests -v
 
 共有例のローカル試験34件が成功し、シェル・Python・JSON・Ansible playbookの構文を確認しました。
 テストは一時ディレクトリと模擬コマンドを使い、実際のSSH接続・benchmark・service操作を行いません。配備は同一内容の置換・復元のみ実証しており、異なる機能変更・依存更新・DB復旧は未検証です。
+
+操作入口・remoteへの影響・基本の実行順序は、[スクリプト一覧と操作の流れ](RUNBOOK.md#スクリプト一覧と操作の流れ)を参照してください。

@@ -8,6 +8,52 @@
 この例はprivate-isu専用です。利用先repository内の運用規則と承認条件に従ってください。
 作業宣言と必要な承認を得てから実行します。LLMはworkspaceのAGENTS.mdにも従います。
 
+
+## スクリプト一覧と操作の流れ
+
+利用者が操作する入口は次の8本です。すべてローカルのworkspace直下から`bash target/scripts/<名前>`で実行します。remoteを操作する際は、作業宣言と必要な承認を得てください。
+
+| スクリプト | 役割 | remoteへの影響 |
+|---|---|---|
+| `deploy.sh` | 指定commit SHAのアプリを配備 | ファイル置換・アプリ再起動 |
+| `rollback.sh` | 配備前のsnapshotへ復元 | ファイル復元・アプリ再起動 |
+| `benchmark.sh` | 練習用benchmarkを実行し、結果を保存 | 初期化・DB更新などの負荷処理 |
+| `nginx-logging.sh` | JSONログ設定の適用・復元 | 設定変更・nginx reload |
+| `mysql-slowlog.sh` | slow logの準備・復元・動作確認 | MySQL設定変更・アプリ再起動 |
+| `measure.sh` | 別操作で開始するbenchmarkに合わせて採取・回収・解析 | ログ退避・再作成・再オープン。設定変更・service restart/reloadなし |
+| `analyze-access.sh` | 回収済みアクセスログをalpで集計 | なし。ローカル解析のみ |
+| `analyze-slowlog.sh` | 回収済みslow logをpt-query-digestで解析 | なし。ローカル解析のみ |
+
+`config.sh`はSSHエイリアス、benchmarker・userdataのパス、対象URLなどの設定ファイルです。`measure.sh`はログファイルを操作するため、完全なread-onlyではありません。
+
+基本の操作順序は次のとおりです。
+
+1. 起動後、計装前に初回benchmarkを実行し、動作を確認する。
+2. 調査開始時に`nginx-logging.sh --mode enable`と`mysql-slowlog.sh --mode prepare`で一度準備する。
+3. 候補SHAを配備して動作確認後、`measure.sh`で採取を開始する。
+4. 採取準備完了後、別操作でbenchmarkを開始し、結果確定後に採取側でEnterを押して終了・回収・解析する。
+5. 同じ計装状態で測定を繰り返し、調査終了時にMySQL・nginxをそれぞれ`--mode restore`で復元する。
+
+運営Web画面からのbenchmarkを想定します。private-isuの練習では、別ターミナルの`benchmark.sh`で代用できます。採取成功とbenchmarkのPASSは別々に確認・記録します。
+具体的な引数、ID、設定、復旧方法は本書の各手順を参照してください。
+
+Pythonファイルは処理本体です。通常は上記の`.sh`経由で利用し、remote用の実装もローカルからSSH経由で呼び出します。
+
+| ファイル | 役割 |
+|---|---|
+| `deployment.py` | deploy・rollbackをAnsibleへ引き渡す |
+| `benchmark.py` | benchmark実行、結果・metadata保存 |
+| `nginx_logging.py` | nginx設定適用・復元をAnsibleへ引き渡す |
+| `slowlog.py` | MySQL計装準備・復元・ログ回収の制御 |
+| `measurement.py` | 手動計測の開始、Enter待ち、終了・回収・解析 |
+| `nginx_logs.py` | nginxログ操作・転送のSSH制御 |
+| `nginx_log_remote.py` | target上でログ退避・再作成・再オープン |
+| `metrics.py` | OS指標採取のSSH開始・停止・ローカル保存 |
+| `metrics_remote.py` | target上でvmstat・mpstat・pidstat・iostatを実行 |
+| `slowlog_remote.py` | target上でMySQL設定保存・変更・復元、ログ境界作成 |
+| `analyze_access.py` | JSONログ検証とalp解析 |
+| `analyze_slowlog.py` | slow log検証とpt-query-digest解析 |
+
 ## 1. 準備
 
 - ローカルにBash・Python 3・SSHを用意します。deploy／rollbackにはAnsibleも必要です。
