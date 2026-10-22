@@ -95,5 +95,7 @@ SSHのread-only確認と変更系入口のapprovalは別扱いです。現在の
 
 > このworkspaceでISUCON13攻略を開始します。AGENTS.md、README.md、isucon_tips/2026/cc2/hidetake/WORKSPACE-RECOVERY.mdとISUCON13-START.mdを読んでください。まず許可したSSHエイリアスへのread-only調査で構成とbenchmark実行方法を確認し、計装前の初回benchmark実行案を提示してください。remote変更・benchmarkは承認まで行わないでください。private-isu用scriptはそのまま実行しないでください。
 
-続く順序は「初回benchmark→詳細調査・必要ファイル回収→Goの同一内容deploy／rollback→計測移植・実証→最初の性能改善」です。
+練習で同一インスタンスを使用する場合の順序は「read-only調査→変更前の環境保全（実環境のwebapp・関連設定を非公開targetへ回収、秘密情報の除外確認、承認後のcommit・push）→承認後の初回benchmark→詳細調査・追加回収→Goの同一内容deploy／rollback→計測移植・実証→最初の性能改善」です。benchmarkによるDB・DNS初期化も変更に含めます。Gitで保全できないDB・認証情報等の扱いは別途確認します。
+
+本番3台での環境保全と別インスタンスのbenchmarkの並行実行は未確定の検討案です。共有依存への変更波及や測定競合がないことを確認してから順序・分担を決めます。詳しくは共通RUNBOOKの「変更前の環境保全」を参照してください。
 最初の到達目標は、初回benchmark成功・Go配備復旧成功・計測成功の3つです。本戦前に複数台で操作を通し、チームで受入れ確認します。

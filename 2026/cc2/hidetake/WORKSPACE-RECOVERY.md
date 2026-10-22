@@ -17,7 +17,7 @@
 1. ローカルに非公開target・チーム資料をcloneし、ひな形は既存ファイルを上書きせず取り込む。
 2. workspaceのAGENTS.mdへ許可する接続先を記入する。通常調査はubuntu、アプリのHOMEや権限に依存する調査は `sudo -u isucon -H bash -lc '<command>'` を使う。環境全体や認証ファイルを表示しない。
 3. SSHホスト鍵・接続を確認する。IP変更で確認が必要でも鍵チェックを無効化しない。
-4. 最小限の接続先・実行条件を確認し、承認後、計装前の初回benchmarkを実行して結果をローカルのartifactsへ残す。
+4. 接続先・実行条件を確認し、対象への変更前に実環境の `~/webapp` と `/etc` 以下の関連設定を非公開targetへ退避する。秘密情報を除外して復元用metadataを記録し、承認を得てcommit・pushを完了する。DB等の別途保全が必要かも確認する。初期化・更新を伴うbenchmarkも変更に含め、同一インスタンスの保全後に、承認を得て計装前の初回benchmarkを実行しartifactsへ結果を残す。詳細は共通RUNBOOKの「変更前の環境保全」を参照する。
 5. 事前の分担でserviceのWorkingDirectory・ExecStart・実行ユーザー、webappの配置、DB・初期化・ログを調査して回収する。初期backend言語はGoと想定するがserviceで確認する。
 6. ビルド・配備・復旧方法をtarget/docs/RUNBOOK.mdへ記入する。配備前の実行ファイル・設定・権限と、コードだけで戻せないDB状態を確認する。
 
