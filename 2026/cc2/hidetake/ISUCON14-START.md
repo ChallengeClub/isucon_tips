@@ -17,6 +17,8 @@ templates/README.mdのコピー表に沿い、workspaceのAGENTS/README、target
 ひな形のcommit SHAを記録する。未commit・未pushのTemplate変更は新cloneに含まれないため、反映済みrevisionか旧workspaceのローカル差分を明示して使う。
 旧targetの認証情報・生ログ・復旧データや年度固有設定を新targetへ一括コピーしない。
 
+Go配備と計測は[ISUCON13参考例](examples/isucon13/README.md)を先に確認し、[調整箇所](examples/isucon13/ADAPTATION.md)に沿って必要な素材を選ぶ。公開例から直接実行せず、コピー先で調整・試験後にreviewフラグを設定する。
+
 ## 最初に通す流れ
 
 1. [練習引き継ぎメモ](PRACTICE-TRANSFER.md)、workspaceの規則、公式問題資料を読む。許可aliasからread-onlyで構成・初期化・benchmark方法を確認。

@@ -9,5 +9,6 @@
 - [ISUCON13移行手順](ISUCON13-START.md)：新workspace・EC2・SSHの利用者向け準備と、新セッションへの引き継ぎ。
 - [個人PLAYBOOK](PLAYBOOK.md)：チーム版作成前の草案。現行の運用案は[team/PLAYBOOK.md](../team/PLAYBOOK.md)を参照。
 - [private-isu参考例](examples/private-isu/README.md)：deploy・復旧と、準備／手動採取／復元を分けた計測の実装・知見。例外的なbackend言語に依存し、Go向けの汎用実装ではありません。
+- [ISUCON13参考例](examples/isucon13/README.md)：Go build・binary deploy/rollback、nginx/MySQL/OSの計測を実証した素材。調整箇所を明示してISUCON14への移植に使い、移植効率は後で振り返ります。
 
 再構築時はこの補足を指針にできますが、実際の対象・操作範囲を利用者と確認してください。

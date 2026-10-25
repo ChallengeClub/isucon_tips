@@ -1,0 +1,105 @@
+- name: Prepare or restore ISUCON13 JSON access logging
+  hosts: isucon-target
+  become: true
+  gather_facts: false
+  vars:
+    backup: '/var/lib/isucon-nginx-log-backups/{{ preparation_id }}'
+    fragment: /etc/nginx/isucon-measurement-log-format.conf
+  tasks:
+    - name: Validate operation arguments
+      ansible.builtin.assert:
+        that:
+          - preparation_id is match('^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$')
+          - logging_mode in ['enable', 'restore']
+    - name: Inspect current main configuration
+      ansible.builtin.stat:
+        path: /etc/nginx/nginx.conf
+        checksum_algorithm: sha256
+      register: current
+    - name: Inspect format
+      ansible.builtin.stat:
+        path: '{{ fragment }}'
+        checksum_algorithm: sha256
+      register: current_format
+    - name: Inspect backup
+      ansible.builtin.stat:
+        path: '{{ backup }}/nginx.conf'
+        checksum_algorithm: sha256
+      register: saved
+    - name: Refuse unexpected files or configuration changes
+      ansible.builtin.assert:
+        that:
+          - current.stat.isreg | default(false)
+          - not (current.stat.islnk | default(false))
+          - current.stat.checksum in [baseline_sha256, candidate_sha256]
+          - not current_format.stat.exists or (current_format.stat.isreg | default(false) and not (current_format.stat.islnk | default(false)) and current_format.stat.checksum == format_sha256)
+          - not saved.stat.exists or saved.stat.checksum == baseline_sha256
+          - logging_mode != 'restore' or saved.stat.exists
+          - saved.stat.exists or current.stat.checksum == baseline_sha256
+          - saved.stat.exists or not current_format.stat.exists
+    - name: Create private backup directory
+      ansible.builtin.file:
+        path: '{{ backup }}'
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+      when: logging_mode == 'enable'
+    - name: Save original main configuration once
+      ansible.builtin.copy:
+        src: /etc/nginx/nginx.conf
+        dest: '{{ backup }}/nginx.conf'
+        remote_src: true
+        mode: '0600'
+      when: logging_mode == 'enable' and not saved.stat.exists
+    - name: Install JSON format
+      ansible.builtin.copy:
+        src: '{{ format_path }}'
+        dest: '{{ fragment }}'
+        owner: root
+        group: root
+        mode: '0644'
+      when: logging_mode == 'enable'
+      notify: Reload nginx
+    - name: Install candidate main configuration after syntax check
+      ansible.builtin.copy:
+        src: '{{ candidate_path }}'
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: '0644'
+        validate: /usr/sbin/nginx -t -c %s
+      when: logging_mode == 'enable'
+      notify: Reload nginx
+    - name: Restore original main configuration
+      ansible.builtin.copy:
+        src: '{{ backup }}/nginx.conf'
+        dest: /etc/nginx/nginx.conf
+        remote_src: true
+        owner: root
+        group: root
+        mode: '0644'
+        validate: /usr/sbin/nginx -t -c %s
+      when: logging_mode == 'restore'
+      notify: Reload nginx
+    - name: Remove introduced format after main restoration
+      ansible.builtin.file:
+        path: '{{ fragment }}'
+        state: absent
+      when: logging_mode == 'restore'
+      notify: Reload nginx
+    - name: Check whole nginx configuration
+      ansible.builtin.command:
+        argv: [/usr/sbin/nginx, -t]
+      changed_when: false
+    - name: Apply reload before health check
+      ansible.builtin.meta: flush_handlers
+    - name: Verify Go API through nginx without modifying data
+      ansible.builtin.command:
+        argv: [curl, --insecure, --fail, --silent, --show-error, --max-time, '5', --output, /dev/null, --resolve, 'pipe.u.isucon.local:443:127.0.0.1', 'https://pipe.u.isucon.local/api/tag']
+      changed_when: false
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: reloaded

@@ -1,0 +1,16 @@
+- name: Install explicitly approved OS sampling tools
+  hosts: isucon-target
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Install sysstat without recommendations or cache update
+      ansible.builtin.apt:
+        name: sysstat
+        state: present
+        install_recommends: false
+        update_cache: false
+    - name: Verify tools are available
+      ansible.builtin.command:
+        argv: ['{{ item }}', '-V']
+      loop: [mpstat, pidstat, iostat]
+      changed_when: false

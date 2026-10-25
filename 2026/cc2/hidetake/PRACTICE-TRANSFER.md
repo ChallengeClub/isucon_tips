@@ -19,7 +19,7 @@
 | 計装・採取・解析 | nginx JSON、SQL slow log、OS4種、準備と採取の分離、回収hash、alp/pt-query-digest、READY後に別操作でbenchmark | DB/接続先service・既存接続の閾値・ログ配置・ディスク・負荷区間・容量。再起動で一時設定が戻る場合がある |
 | SQL改善の手順 | EXPLAINと実測の照合、索引の単独検証、N+1の一括化、LIKE照合順序を維持した集合処理 | 初期化後のschema維持・ゼロ件/同点・文字種/照合順序・並行更新・ロック。単体高速化がscore向上とは限らない |
 
-実行scriptは旧ISUCON13の非公開target内の対象別資産で、公開Templateには移植していない。
+実行scriptの元は旧ISUCON13の非公開target内の対象別資産。公開版は[examples/isucon13](examples/isucon13/README.md)に年度別の参考例として保存し、共通Templateとは分ける。
 private-isuやISUCON13のscriptをそのまま実行しない。小さな対象差分の調整を優先し、全面的な共通化は受入れ実績が増えてから判断する。
 当日の環境にあるtoolchainでのremote buildを有力な初手とし、local buildは必要時に詰める代替素材として保持する。
 

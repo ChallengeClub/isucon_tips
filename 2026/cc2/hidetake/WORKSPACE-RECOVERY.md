@@ -43,7 +43,7 @@ Ansibleのrawは読み取りコマンドでもCHANGED表示になる場合があ
 
 ## 引き継ぐべき制約
 
-- 公開の実行script参考例はprivate-isu専用。ISUCON13の非公開targetではGoのlocal/remote build・binary配備・計測を実証済みだが、汎用scriptとして公開Templateへ同梱していない。
+- 公開の年度別参考例はprivate-isuと[ISUCON13](examples/isucon13/README.md)。ISUCON13のGo local/remote build・binary配備・計測資産は調整箇所を明示して保存し、汎用scriptとして共通Templateへ同梱していない。
 - 初回benchmarkの引数・結果JSONは問題依存。他問題で成功判定をそのまま流用しない。
 - ISUCON13では異なる機能のbinary配備とbenchmarkも実証した。変更候補からの実機rollback・DB索引DROP・計装全体の復元は未実証で、同一内容binaryの復旧成功と区別する。
 - 配備直前のsnapshotと元の実行環境を保存する。元の配備SHAが不明なら推測しない。
