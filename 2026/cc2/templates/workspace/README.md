@@ -38,3 +38,7 @@ SSH設定・認証情報はGit管理外で管理し、実際の接続先は対�
 ## 利用する共通ツール
 
 必要なツールと使用revision：未記入。利用時に確認し、更新は明示的に行います。
+
+最初にGit・SSH・Bash・Python、必要ならgh・Ansible・alp・pt-query-digestと対象言語のtoolchainを確認します。
+ghは認証と対象private repositoryへのアクセスまで確認し、認証値は記録しません。不要な再インストールは行いません。
+対象別の状態・成果・ヒントはtarget/docsへ記録し、別年度へ移るときは別workspace・別private targetを使います。

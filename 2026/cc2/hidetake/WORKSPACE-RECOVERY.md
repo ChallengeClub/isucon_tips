@@ -2,6 +2,8 @@
 
 状態：チーム確認待ち。
 
+2026-10-25追記：private-isuからISUCON13への移植・実機試行を実施済み。次の対象は[ISUCON14開始メモ](ISUCON14-START.md)と[練習引き継ぎ](PRACTICE-TRANSFER.md)を優先する。実機の再開情報は非公開targetのRESUME.mdへ残す。
+
 利用者とLLMが別の対象EC2で作業を再開するときのメモです。個別インスタンスの復旧データではありません。
 
 ## 最初に利用者へ確認するもの
@@ -41,9 +43,9 @@ Ansibleのrawは読み取りコマンドでもCHANGED表示になる場合があ
 
 ## 引き継ぐべき制約
 
-- 現在の実行script参考例はprivate-isu専用。Goのビルド・実行ファイル配備は未実装。
+- 公開の実行script参考例はprivate-isu専用。ISUCON13の非公開targetではGoのlocal/remote build・binary配備・計測を実証済みだが、汎用scriptとして公開Templateへ同梱していない。
 - 初回benchmarkの引数・結果JSONは問題依存。他問題で成功判定をそのまま流用しない。
-- 検証済みなのは同一内容の配備・ファイル復元。異なる機能変更、依存更新、DB復旧は未検証。
+- ISUCON13では異なる機能のbinary配備とbenchmarkも実証した。変更候補からの実機rollback・DB索引DROP・計装全体の復元は未実証で、同一内容binaryの復旧成功と区別する。
 - 配備直前のsnapshotと元の実行環境を保存する。元の配備SHAが不明なら推測しない。
 - 中断・失敗時は実行ログとリモート状態を確認してから次を実行する。中断した測定の自動再開と、deploy失敗時の自動rollbackは未実装。
 - 生ログ・実行ID・接続先・バックアップ所在は非公開targetとGit外のartifactsへ記録する。公開の本メモは実際の復旧データの代わりにはならない。
@@ -51,10 +53,12 @@ Ansibleのrawは読み取りコマンドでもCHANGED表示になる場合があ
 ## 計測を移植するとき
 
 [private-isu参考例のRUNBOOK](examples/private-isu/RUNBOOK.md)に、準備・手動採取・復元を分ける手順と依存構成を保存しています。運営benchmarkerをローカルへ持つことは前提にしません。実際の運営Web画面では未検証です。
-新しい問題では最初に初期状態のbenchmarkを実行し、ログ配置・MySQLの版と接続・service・ディスク名を調査してから移植します。Goのdeploy／rollbackは別途実装・検証します。ローカル解析にはalp・pt-query-digestのPATHも確認します。
+新しい問題では変更前保全後に初期状態のbenchmarkを実行し、ログ配置・DBの版と接続・service・ディスク名を確認して必要な処理だけ移植します。Goのdeploy／rollbackは既存資産を対象に合わせて再検証します。ローカル解析にはalp・pt-query-digestのPATH、PR操作にはghの認証も確認します。
 参考例は公開資料の配置場所から直接実行せず、非公開targetへ必要なscripts・ansible・infraを取り込み、設定と試験を対象に合わせます。チーム標準への昇格は別対象での受入れ確認後に検討します。
 
 ## 次の対象へ移る際の合意事項
+
+以下はprivate-isuからISUCON13へ移行した際の記録。ISUCON14では新workspace・新しい許可先・新targetを確認し、具体的な操作をそのまま流用しない。
 
 - ISUCON13は別workspace・別の非公開targetリポジトリで進める。旧workspaceは参照元として残し、SSHエイリアス切り替え後は旧workspaceからremote操作を行わない。
 - 最初は1台で初回benchmark、Goの同一内容deploy／rollback、計測の移植を確認する。本戦前に複数台練習を一度行い、対象指定・ホスト別成果物・復元対象を検証する。複数台でも攻略リポジトリは1つのtargetとする。

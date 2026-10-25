@@ -12,6 +12,8 @@
 | [workspace/AGENTS.md](workspace/AGENTS.md) | workspace/AGENTS.md | LLMへの指示 |
 | [target/README.md](target/README.md) | target/README.md | 対象リポジトリの説明 |
 | [target/docs/RUNBOOK.md](target/docs/RUNBOOK.md) | target/docs/RUNBOOK.md | 対象別の操作手順 |
+| [target/docs/STRATEGY-SEEDS.md](target/docs/STRATEGY-SEEDS.md) | target/docs/STRATEGY-SEEDS.md | 未検証のヒント・別戦略のタネ箱 |
+| [target/docs/RESUME.md](target/docs/RESUME.md) | target/docs/RESUME.md | 保留・再開時の実機とmainの差 |
 | [target/.gitignore](target/.gitignore) | target/.gitignore | 認証ファイル・ログの除外 |
 
 既存ファイルは上書きせず、差分を確認して取り込みます。使用したひな形のcommit SHAを記録し、自動同期しません。
@@ -26,3 +28,5 @@ private-isuで検証した例外的な実装は[個人参考例](../hidetake/exa
 
 利用者とLLMが再開する際は、[再構築メモ](../hidetake/WORKSPACE-RECOVERY.md)で準備と未検証部分を確認します。これはチーム未承認の補足です。
 設定・認証情報・生ログをこの公開ひな形へ書き戻しません。
+
+ISUCON13で得た運用上の学びと素材の選び方は[個人の練習引き継ぎメモ](../hidetake/PRACTICE-TRANSFER.md)を参照。対象固有scriptを共通実装として同梱するものではありません。
